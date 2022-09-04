@@ -1,0 +1,25 @@
+1- one day service have no price
+2- contacts us
+3-cooming soon sliders
+4-nursing assist only
+5-carsoul slider in home page
+
+
+
+
+
+
+// Aldery prices
+12 hours ^ 
+7 days -----> 2800
+15 days -----> 5250
+30 days -----> 10500
+
+
+
+
+// Aldery prices
+24 hours ^ 
+7 days -----> 5000
+15 days -----> 9500
+30 days -----> 19000

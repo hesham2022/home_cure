@@ -1,0 +1,13 @@
+// Copyright (c) 2022, Very Good Ventures
+// https://verygood.ventures
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+import 'package:home_cure/app/app.dart';
+import 'package:home_cure/bootstrap.dart';
+// @32302e322e30JchRxpF6VNNLXF/pxZZdKXQm68FkA3jgC2fstZcCpFg=
+void main() {
+  bootstrap(() => const App());
+}

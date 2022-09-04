@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- <color name="primaryColor">#3468B0</color>
+    <color name="black">#000000</color>
+    <color name="textColor1">#8F8F8F</color>
+    <color name="textColor2">#414246</color>
+    <color name="textColor3">#434343</color> -->
+
+
+   
+</resources>
+<!-- SFProText-Semibold, - 15pt
+Font Family: SFProText-Semibold
+Font Weight:
+Font Size: 15pt
+Color: #000000
+Character Spacing: -11
+Line Spacing: 20 -->
+<!-- Cairo, Regular - 14pt
+Font Family: Cairo
+Font Weight: Regular
+Font Size: 14pt
+Color: #414246
+Character Spacing: 0
+Line Spacing: 26
+Transform: Uppercase -->
+<!-- Cairo, SemiBold - 14pt
+Font Family: Cairo
+Font Weight: SemiBold
+Font Size: 14pt
+Color: #8F8F8F
+Character Spacing: 0
+Line Spacing: 26
+Transform: Uppercase -->
+<!-- Cairo, SemiBold - 14pt
+Font Family: Cairo
+Font Weight: SemiBold
+Font Size: 14pt
+Color: #3468B0
+Character Spacing: 0
+Line Spacing: 26
+Transform: Uppercase -->
+<!-- Cairo, Bold - 20pt
+Font Family: Cairo
+Font Weight: Bold
+Font Size: 20pt
+Color: #3468B0
+Character Spacing: -11
+Line Spacing: 37
+Transform: Titlecase -->
+
+<!-- Cairo, Bold - 18pt
+Font Family: Cairo
+Font Weight: Bold
+Font Size: 18pt
+Color: #3468B0
+Character Spacing: 0
+Line Spacing: 33
+Transform: Uppercase -->
