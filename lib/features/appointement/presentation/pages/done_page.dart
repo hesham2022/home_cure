@@ -5,7 +5,6 @@ import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/check_circle.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
-import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
 
 class DonePage extends StatelessWidget {
   const DonePage({super.key});

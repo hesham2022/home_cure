@@ -1,10 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/validation_regx.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
-import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
+import 'package:home_cure/features/authentication/domain/entities/reset_password_params.dart';
+import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
+import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_state.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 
@@ -31,55 +35,121 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
     _controller.dispose();
   }
 
+  final _formKey = GlobalKey<FormState>();
+  final passwordController = TextEditingController();
+  final confirmCasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(40),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 50.h,
+        body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
+          listener: (context, state) {
+            if (state is ForgetPasswordStateError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.error.errorMessege)),
+              );
+            }
+            if (state is ForgetPasswordStateResetPasswordSuccess) {
+              context.router.pushAndPopUntil(
+                const LoginPagePageRouter(),
+                predicate: (v) => false,
+              );
+            }
+          },
+          builder: (context, state) {
+            return Form(
+              key: _formKey,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(40),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50.h,
+                      ),
+                      Center(child: Assets.img.logo.image()),
+                      SizedBox(
+                        height: 50.h,
+                      ),
+                      Text(
+                        'PASSWORD RESET',
+                        style: textStyleWithPrimaryBold,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      RegisterField(
+                        controller: passwordController,
+                        isPassword: true,
+                        hint: 'password',
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'please enter a new password';
+                          }
+                          if (value.length < 8) {
+                            return 'pasword should be at least 8 characters';
+                          }
+                          if (!ValidationsPatterns.conCharacter
+                              .hasMatch(value)) {
+                            return '''password should contain at least one letter''';
+                          }
+                          if (!ValidationsPatterns.contDigit.hasMatch(value)) {
+                            return '''password should contain at least one number''';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      RegisterField(
+                        isPassword: true,
+                        hint: 'confirm password',
+                        controller: confirmCasswordController,
+                        validator: (value) {
+                          if (value != passwordController.text) {
+                            return 'not identical password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 35.h,
+                      ),
+                      BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
+                        builder: (context, state) {
+                          if (state is ForgetPasswordStateLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Button1(
+                            size: Size(120.w, 30),
+                            title: 'Confirm',
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                if (state
+                                    is ForgetPasswordStateResetTokenLoaded) {
+                                  context
+                                      .read<ForgetPasswordCubit>()
+                                      .resetPassword(
+                                        ResetPasswordParams(
+                                          password: passwordController.text,
+                                          token: state.token,
+                                        ),
+                                      );
+                                }
+                              }
+                            },
+                          );
+                        },
+                      )
+                    ],
+                  ),
                 ),
-                Center(child: Assets.img.logo.image()),
-                SizedBox(
-                  height: 50.h,
-                ),
-                Text(
-                  'PASSWORD RESET',
-                  style: textStyleWithPrimaryBold,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                const RegisterField(
-                  isPassword: true,
-                  hint: 'password',
-                ),
-                SizedBox(
-                  height: 12.h,
-                ),
-                const RegisterField(
-                  isPassword: true,
-                  hint: 'confirm password',
-                ),
-                SizedBox(
-                  height: 35.h,
-                ),
-                Button1(
-                  size: Size(120.w, 30),
-                  title: 'Confirm',
-                  onPressed: () {
-                    context.router.pushAndPopUntil(
-                      const LoginPagePageRouter(),
-                      predicate: (route) => false,
-                    );
-                  },
-                )
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       );
 }

@@ -1,9 +1,13 @@
 part of 'setting_bloc.dart';
 
-abstract class SettingState extends Equatable {
-  const SettingState();  
+class SettingState extends Equatable {
+  const SettingState({this.lang = 'en'});
+  final String lang;
+bool get isEng => lang == 'en';
+bool get isAr => lang == 'ar';
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [lang];
 }
-class SettingInitial extends SettingState {}
+
+// class SettingInitial extends SettingState {}

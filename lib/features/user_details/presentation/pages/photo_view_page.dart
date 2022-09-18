@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -9,7 +7,7 @@ class PhotoViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhotoView(
-      imageProvider: FileImage(File(path)),
+      imageProvider: NetworkImage(path),
     );
   }
 }

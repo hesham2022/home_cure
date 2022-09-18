@@ -14,17 +14,29 @@ class RegisterField extends StatefulWidget {
     this.controller,
     this.onTap,
     this.readOnly = false,
+    this.fillColor,
+    this.suffix,
+    this.onChanged,
     this.keyboardType,
+    this.errorText,
+    this.validator,
+    this.isPhoneNumber = false,
   });
   final String? hint;
   final Widget? icon;
   final bool isPassword;
+  final bool isPhoneNumber;
+
   final bool enabled;
   final bool readOnly;
+  final String? errorText;
+  final Color? fillColor;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final void Function()? onTap;
-
+  final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final Widget? suffix;
   @override
   State<RegisterField> createState() => _RegisterFieldState();
 }
@@ -74,21 +86,33 @@ class _RegisterFieldState extends State<RegisterField> {
         ],
       ),
       child: TextFormField(
+        onChanged: widget.onChanged,
         keyboardType: widget.keyboardType,
+        validator: widget.validator,
         controller: widget.controller,
         onTap: widget.onTap,
         readOnly: widget.readOnly,
         obscureText: showText,
         enabled: widget.enabled,
         decoration: InputDecoration(
+          errorStyle: const TextStyle(
+            color: primaryColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          prefixText: widget.isPhoneNumber == true ? '+2' : null,
+          prefixStyle: Theme.of(context).textTheme.subtitle1,
+          errorText: widget.errorText,
           suffixIcon: widget.isPassword ? visibilityIcon() : null,
           contentPadding: const EdgeInsets.only(left: 16, right: 16),
           hintStyle: textStyleWithSecondSemiBold.copyWith(
             fontSize: 16.sp,
           ),
+          suffix: widget.suffix,
           hintText: widget.hint ?? 'Name',
           // contentPadding: const EdgeInsets.all(5),
-          fillColor: Colors.white,
+          fillColor: widget.fillColor ?? Colors.white,
+
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(26),

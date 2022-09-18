@@ -10,6 +10,8 @@ class ValidationsPatterns {
   static RegExp contLower = RegExp('^(?=.*[a-z])');
   static RegExp contDigit = RegExp('^(?=.*?[0-9])');
   static RegExp contSpecialCh = RegExp(r'(?=.*?[!@#\$&*~])');
+    static RegExp conCharacter = RegExp('^(?=.*?[a-zA-Z])');
+
   static RegExp eightLength = RegExp(r'^.{8,}$');
   static RegExp email = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",

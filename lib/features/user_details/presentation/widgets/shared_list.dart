@@ -10,9 +10,19 @@ import 'package:home_cure/features/user_details/presentation/widgets/edit_dialou
 import 'package:intl/intl.dart';
 
 class SharedList extends StatefulWidget {
-  const SharedList({super.key, required this.title, required this.subTitle});
+  const SharedList({
+    super.key,
+    required this.title,
+    required this.subTitle,
+    required this.list,
+    required this.onSubmit,
+    required this.onEdit,
+  });
   final String title;
   final String subTitle;
+  final List<MediaclModel> list;
+  final Function(List<MediaclModel> list) onSubmit;
+  final Function(List<MediaclModel> list) onEdit;
 
   @override
   State<SharedList> createState() => _SharedListState();
@@ -20,9 +30,7 @@ class SharedList extends StatefulWidget {
 
 class _SharedListState extends State<SharedList> {
   bool english = true;
-  final List<MediaclModel> mdh = [
-    MediaclModel(date: DateTime.now(), description: 'just ill and not good')
-  ];
+
   final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -77,14 +85,16 @@ class _SharedListState extends State<SharedList> {
                 Button1(
                   onPressed: () {
                     if (controller.text.isNotEmpty) {
-                      setState(() {
-                        mdh.add(
-                          MediaclModel(
-                            description: controller.text,
-                            date: DateTime.now(),
-                          ),
-                        );
-                      });
+                      // setState(() {
+                      widget.list.add(
+                        MediaclModel(
+                          id: DateTime.now().toString(),
+                          description: controller.text,
+                          date: DateTime.now(),
+                        ),
+                      );
+                      widget.onSubmit(widget.list);
+                      // });
                       controller.clear();
                     }
                   },
@@ -121,7 +131,7 @@ class _SharedListState extends State<SharedList> {
                       const SizedBox(
                         height: 30,
                       ),
-                      ...mdh
+                      ...widget.list
                           .map(
                             (e) => Container(
                               margin: const EdgeInsets.symmetric(vertical: 20),
@@ -161,18 +171,34 @@ class _SharedListState extends State<SharedList> {
                                         );
                                         if (result != null &&
                                             result.isNotEmpty) {
-                                          final index = mdh.indexWhere(
-                                            (element) => element.date == e.date,
+                                          final index = widget.list.indexWhere(
+                                            (element) => element.id == e.id,
                                           );
-                                          mdh[index] = MediaclModel(
+                                          widget.list[index] = MediaclModel(
+                                            id: e.id,
                                             date: e.date,
                                             description: result,
                                           );
-                                          setState(() {});
+                                          widget.onEdit([...widget.list]);
+                                          // setState(() {});
                                         }
                                       },
                                       icon: const Icon(
                                         Icons.edit,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        widget.list.removeWhere(
+                                          (element) => element.id == e.id,
+                                        );
+
+                                        widget.onEdit([...widget.list]);
+                                        // setState(() {});
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
                                         color: primaryColor,
                                       ),
                                     )

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CommonScaffold extends StatelessWidget {
-  const CommonScaffold({super.key, required this.body});
+  const CommonScaffold({
+    super.key,
+    required this.body,
+    this.bottomNavigationBar,
+    this.customScaffold,
+  });
   final Widget body;
+  final Widget? bottomNavigationBar;
+  final Widget? customScaffold;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -59,10 +66,12 @@ class CommonScaffold extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Scaffold(
-                    backgroundColor: Colors.transparent,
-                    body: body,
-                  ),
+                  customScaffold ??
+                      Scaffold(
+                        backgroundColor: Colors.transparent,
+                        body: body,
+                        bottomNavigationBar: bottomNavigationBar,
+                      ),
                 ],
               ),
             ),

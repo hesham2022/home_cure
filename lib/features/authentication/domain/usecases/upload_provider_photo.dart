@@ -1,0 +1,19 @@
+
+import 'package:dartz/dartz.dart';
+import 'package:home_cure/core/api_errors/network_exceptions.dart';
+import 'package:home_cure/core/useCase/use_case.dart';
+import 'package:home_cure/features/authentication/domain/entities/upload_user_photo_params.dart';
+import 'package:home_cure/features/authentication/domain/entities/user.dart';
+import 'package:home_cure/features/authentication/domain/repositories/i_user.dart';
+
+class UploadProviderPhoto extends UseCase<User, UploadUserPhotoParams> {
+  UploadProviderPhoto(this.repository);
+  final IUserRepository repository;
+
+  @override
+  Future<Either<NetworkExceptions, User>> call(
+    UploadUserPhotoParams params,
+  ) async {
+    return repository.uploadProviderPhoto(params);
+  }
+}

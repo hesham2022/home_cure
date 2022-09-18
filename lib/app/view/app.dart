@@ -5,10 +5,25 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/core/local_storage/secure_storage_instance.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/fcm_utils.dart';
+import 'package:home_cure/di/get_it.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
+import 'package:home_cure/features/authentication/domain/repositories/i_repository.dart';
+import 'package:home_cure/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
+import 'package:home_cure/features/home/presentation/blocs/ads_cubit/ads_cubit.dart';
+import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
+import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
+import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
+import 'package:home_cure/features/provider/presentation/blocs/notifications_cubit/notifications_cubit.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -45,19 +60,17 @@ final textStyleWithSecondSemiBold = TextStyle(
 //#
 class _AppState extends State<App> {
   final _appRouter = AppRouter();
+  final notificationsBudgeCubit = NotificationsBudgeCubit();
   @override
   void initState() {
     Storage.setIsFirst();
-    Storage.isFirst().then((value) {
-      if (value == true) {
-        _appRouter.push(const ChooseLanguagePageRouter());
-      } else {
-        _appRouter.push(const LoginPagePageRouter());
-      }
-    });
+
+    PushNotifications().initToken();
+  
     super.initState();
   }
 
+  final IAuthenticationRepository authenticationRepository = getIt();
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -65,23 +78,100 @@ class _AppState extends State<App> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, cild) {
-        return OverlaySupport.global(
-          child: MaterialApp.router(
-            theme: ThemeData(
-              fontFamily: 'Segoe UI',
-              appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-              primaryColor: primaryColor,
+        return BlocProvider<AuthenticationBloc>(
+          create: (context) => getIt<AuthenticationBloc>(),
+          child: OverlaySupport.global(
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<UserCubit>(create: (_) => getIt()),
+                BlocProvider<HomeBloc>(
+                  create: (ctx) => getIt<HomeBloc>()..add(GetServicesEvent()),
+                ),
+                BlocProvider<ForgetPasswordCubit>(create: (ctx) => getIt()),
+                BlocProvider<TimeSlotCubit>(
+                  create: (ctx) => getIt()..getTimeSlotsFunc(),
+                ),
+                BlocProvider<AppointmentsParamsCubit>(
+                  create: (ctx) => getIt(),
+                ),
+                BlocProvider<AppointmentsCubit>(
+                  create: (ctx) => getIt(),
+                ),
+                 BlocProvider<AdsCubit>(
+                  create: (ctx) => getIt(),
+                ),
+                BlocProvider<MyAppointmentsCubit>(
+                  create: (ctx) => getIt(),
+                ),
+                BlocProvider<NotificationsBudgeCubit>.value(
+                  value: notificationsBudgeCubit,
+                ),
+                BlocProvider<NotificationsCubit>(
+                  create: (_) => NotificationsCubit(),
+                ),
+              ],
+              child: MaterialApp.router(
+                theme: ThemeData(
+                  fontFamily: 'Segoe UI',
+                  appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+                  primaryColor: primaryColor,
+                ),
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                routerDelegate: _appRouter.delegate(),
+                routeInformationParser: _appRouter.defaultRouteParser(),
+                builder: EasyLoading.init(
+                  builder: (context, child) {
+                    return BlocListener<AuthenticationBloc,
+                        AuthenticationState>(
+                      listener: (context, state) async {
+                        switch (state.status) {
+                          case AuthenticationStatus.authenticated:
+                            context.read<UserCubit>().addNewUser(state.user);
+                            await PushNotifications()
+                                .init(context, notificationsBudgeCubit);
+                            if (state.user.role == 'user') {
+                              await _appRouter.pushAndPopUntil(
+                                const MainScaffold(),
+                                predicate: (d) => false,
+                              );
+                            } else {
+                              await _appRouter.pushAndPopUntil(
+                                const MainProviderRouter(),
+                                predicate: (d) => false,
+                              );
+                            }
+
+                            break;
+                          case AuthenticationStatus.unauthenticated:
+                            final isFirst = await Storage.isFirst();
+
+                            await _appRouter.pushAndPopUntil(
+                              isFirst
+                                  ? const ChooseLanguagePageRouter()
+                                  : const LoginPagePageRouter(),
+                              predicate: (d) => false,
+                            );
+
+                            break;
+                          case AuthenticationStatus.unknown:
+                            await _appRouter.pushAndPopUntil(
+                              const SplashScreen(),
+                              predicate: (d) => false,
+                            );
+
+                            break;
+                        }
+                      },
+                      child: child,
+                    );
+                  },
+                ),
+              ),
             ),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerDelegate: _appRouter.delegate(),
-            routeInformationParser: _appRouter.defaultRouteParser(),
-            builder: (context, child) {
-              return child!;
-            },
           ),
         );
       },

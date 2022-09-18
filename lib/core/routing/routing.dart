@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:home_cure/core/widgets/main_scaffold.dart';
 import 'package:home_cure/features/Services/presentation/pages/services_page.dart';
 import 'package:home_cure/features/aboutus_contactus/presentation/pages/about_us.dart';
+import 'package:home_cure/features/agore/video_page.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_for.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_payment.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_second.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_third.dart';
 import 'package:home_cure/features/appointement/presentation/pages/done_page.dart';
+import 'package:home_cure/features/appointement/presentation/pages/web_view_page.dart';
 import 'package:home_cure/features/calling/presentation/pages/calling_page.dart';
 import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/features/login/presentation/pages/choose_language_page.dart';
@@ -17,16 +19,26 @@ import 'package:home_cure/features/login/presentation/pages/reqgister_page.dart'
 import 'package:home_cure/features/login/presentation/pages/resret_password_page.dart';
 import 'package:home_cure/features/login/presentation/pages/splash_screen.dart';
 import 'package:home_cure/features/login/presentation/pages/varication_code_page.dart';
+import 'package:home_cure/features/notifications/presentation/pages/appointment_details_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:home_cure/features/notifications/presentation/pages/user_information_page.dart';
 import 'package:home_cure/features/our_doctors/pages/doctor_profile.dart';
 import 'package:home_cure/features/our_doctors/pages/doctors_page.dart';
+import 'package:home_cure/features/provider/presentation/pages/appointment_details_page_adpter.dart';
+import 'package:home_cure/features/provider/presentation/pages/main_provider_page.dart';
+import 'package:home_cure/features/provider/presentation/pages/provider_home.dart';
+import 'package:home_cure/features/provider/presentation/pages/provider_notifications_page.dart';
+import 'package:home_cure/features/provider/presentation/pages/provider_qualifications_page.dart';
+import 'package:home_cure/features/provider/presentation/pages/provider_setting_page.dart';
 import 'package:home_cure/features/setting/presentation/pages/setting_page.dart';
+import 'package:home_cure/features/user_details/presentation/pages/allergy_page.dart';
 import 'package:home_cure/features/user_details/presentation/pages/attachments_page.dart';
+import 'package:home_cure/features/user_details/presentation/pages/chronic_deseases_page.dart';
 import 'package:home_cure/features/user_details/presentation/pages/current_medications.dart';
-import 'package:home_cure/features/user_details/presentation/pages/family_diseases.dart';
-import 'package:home_cure/features/user_details/presentation/pages/medical_history_page.dart';
+import 'package:home_cure/features/user_details/presentation/pages/main_complaintment_page.dart';
 import 'package:home_cure/features/user_details/presentation/pages/pdf_viewer_page.dart';
 import 'package:home_cure/features/user_details/presentation/pages/photo_view_page.dart';
+import 'package:home_cure/features/user_details/presentation/pages/previous_sergerious_page.dart';
 import 'package:home_cure/features/user_details/presentation/pages/user_details_page.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/shared_list.dart';
 
@@ -77,6 +89,13 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
             CustomRoute<void>(
               barrierDismissible: true,
               transitionsBuilder: TransitionsBuilders.slideTop,
+              path: 'webview_payment',
+              page: WebViewPaymentPage,
+            ),
+
+            CustomRoute<void>(
+              barrierDismissible: true,
+              transitionsBuilder: TransitionsBuilders.slideTop,
               path: 'create_appointement_third',
               page: CreateAppointementThirdPage,
             ),
@@ -113,10 +132,39 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
             //
           ],
         ),
-        AutoRoute<void>(
+        CustomRoute<void>(
+          transitionsBuilder: TransitionsBuilders.slideTop,
           path: 'notification',
           name: 'NotificationsRouter',
-          page: NotificationsPage,
+          barrierDismissible: true,
+          page: EmptyRouterPage,
+          children: [
+            AutoRoute<void>(
+              path: '',
+              page: NotificationsPage,
+            ),
+            AutoRoute<void>(
+              path: 'appointment_details',
+              name: 'AppointmentDetailsPageRoute',
+              page: AppointmentDetailsPage,
+            ),
+            CustomRoute<void>(
+              barrierDismissible: true,
+              transitionsBuilder: TransitionsBuilders.slideTop,
+              path: 'webview_payment',
+              page: WebViewPaymentPage,
+            ),
+            AutoRoute<void>(
+              path: 'photo_view_page',
+              name: 'PhotoViewPageeRouter',
+              page: PhotoViewPage,
+            ),
+            AutoRoute<void>(
+              path: 'pdf_view_page',
+              name: 'PdfViewerPageRouter',
+              page: PdfViewerPage,
+            ),
+          ],
         ),
         AutoRoute<void>(
           path: 'calling',
@@ -151,21 +199,33 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               name: 'UserDetailsPageRouter',
               page: UserDetailsPage,
             ),
-            AutoRoute<void>(
-              path: 'medical_history',
-              name: 'MedicalHistoryPageeRouter',
-              page: MedicalHistoryPage,
-            ),
+
             AutoRoute<void>(
               path: 'current_medications',
               name: 'CurrentMedicationsPageRouter',
               page: CurrentMedicationsPage,
             ),
             AutoRoute<void>(
-              path: 'family_deseasesPage',
-              name: 'FamilyDeseasesPageRouter',
-              page: FamilyDeseasesPage,
+              path: 'chornic_deseases',
+              name: 'ChronicDiseasesPageouter',
+              page: ChronicDiseasesPagePage,
             ),
+            AutoRoute<void>(
+              path: 'complaiments',
+              name: 'MainComplainmentPageRouter',
+              page: MainComplainmentPage,
+            ),
+            AutoRoute<void>(
+              path: 'chornic_deseases',
+              name: 'AllergyPageRouter',
+              page: AllergyPagePage,
+            ),
+            AutoRoute<void>(
+              path: 'previous_surgeriesPage',
+              name: 'PreviousSurgeriesPageRouter',
+              page: PreviousSurgeriesPage,
+            ),
+
             AutoRoute<void>(
               path: 'shared_list',
               name: 'SharedListRouter',
@@ -204,6 +264,11 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
       page: LoginPage,
     ),
     AutoRoute<void>(
+      path: 'video_page',
+      name: 'VideoPageeRouter',
+      page: VideoPage,
+    ),
+    AutoRoute<void>(
       path: 'register',
       name: 'RegisterPagePageRouter',
       page: RegisterPage,
@@ -227,6 +292,121 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
       path: 'choose_language_page',
       name: 'ChooseLanguagePageRouter',
       page: ChooseLanguagePage,
+    ),
+    AutoRoute<void>(
+      page: MainProviderPage,
+      path: 'main_provider',
+      name: 'MainProviderRouter',
+      // page: ProviderHome,
+      children: [
+        AutoRoute<void>(
+          path: 'provider_home',
+          name: 'ProviderHomeRouter',
+
+          page: EmptyRouterScreen,
+          children: [
+            AutoRoute<void>(
+              path: '',
+              page: ProviderHome,
+            ),
+            AutoRoute<void>(
+              path: 'appointment_etails_pageAdpter',
+              name: 'AppointmentDetailsPageAdpterRoute',
+              page: AppointmentDetailsPageAdpter,
+            ),
+            AutoRoute<void>(
+              path: 'user_inforation_page',
+              name: 'UserInformationPageRoute',
+              page: EmptyRouterPage,
+              children: [
+                AutoRoute<void>(
+                  path: '',
+                  page: UserInformationPage,
+                ),
+              ],
+            ),
+            AutoRoute<void>(
+              path: 'attachments_page2',
+              name: 'AttachmentsPageRouter2',
+              page: AttachmentsPage,
+            ),
+            AutoRoute<void>(
+              path: 'photo_view_page',
+              name: 'PhotoViewPageeRouter',
+              page: PhotoViewPage,
+            ),
+            AutoRoute<void>(
+              path: 'pdf_view_page',
+              name: 'PdfViewerPageRouter',
+              page: PdfViewerPage,
+            ),
+          ],
+          // page: ProviderHome,
+        ),
+        AutoRoute<void>(
+          path: 'provider_settings',
+          name: 'ProviderSettingRouter',
+          page: EmptyRouterScreen,
+          children: [
+            AutoRoute<void>(
+              path: '',
+              page: ProviderSettingPage,
+            ),
+            AutoRoute<void>(
+              path: 'provider_qualifications',
+              name: 'ProviderQualificationsRouter',
+              page: ProviderQualificationsPage,
+            ),
+            AutoRoute<void>(
+              path: 'photo_view_page',
+              name: 'PhotoViewPageeRouter',
+              page: PhotoViewPage,
+            ),
+            AutoRoute<void>(
+              path: 'pdf_view_page',
+              name: 'PdfViewerPageRouter',
+              page: PdfViewerPage,
+            ),
+          ],
+        ),
+        AutoRoute<void>(
+          path: 'provider_notifications',
+          name: 'ProviderNotificationsRouter',
+          page: EmptyRouterPage,
+          children: [
+            AutoRoute<void>(
+              path: '',
+              page: ProviderNotificationsPage,
+              children: [],
+            ),
+            AutoRoute<void>(
+              path: 'appointment_etails_pageAdpter',
+              name: 'AppointmentDetailsPageAdpterRoute',
+              page: AppointmentDetailsPageAdpter,
+            ),
+            AutoRoute<void>(
+              path: 'user_inforation_page',
+              name: 'UserInformationPageRoute',
+              page: UserInformationPage,
+            ),
+            AutoRoute<void>(
+              path: 'attachments_page2',
+              name: 'AttachmentsPageRouter2',
+              page: AttachmentsPage,
+            ),
+            AutoRoute<void>(
+              path: 'photo_view_page',
+              name: 'PhotoViewPageeRouter',
+              page: PhotoViewPage,
+            ),
+            AutoRoute<void>(
+              path: 'pdf_view_page',
+              name: 'PdfViewerPageRouter',
+              page: PdfViewerPage,
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 )

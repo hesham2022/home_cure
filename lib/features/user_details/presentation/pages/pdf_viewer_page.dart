@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -8,8 +6,9 @@ class PdfViewerPage extends StatelessWidget {
   final String paht;
   @override
   Widget build(BuildContext context) {
-    return SfPdfViewer.file(
-      File(paht),
+    print(paht);
+    return SfPdfViewer.network(
+      paht,
       canShowScrollHead: false,
       canShowScrollStatus: false,
     );

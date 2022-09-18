@@ -1,16 +1,20 @@
 // ignore_for_file: use_full_hex_values_for_flutter_colors
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/app.dart';
-import 'package:home_cure/core/routing/routing.gr.dart';
-import 'package:home_cure/core/widgets/common_container.dart';
-import 'package:home_cure/features/user_details/presentation/widgets/user_details_tap.dart';
-import 'package:home_cure/gen/assets.gen.dart';
 
 class SmookingAlchol extends StatefulWidget {
-  const SmookingAlchol({super.key});
+  const SmookingAlchol({
+    super.key,
+    required this.smooking,
+    required this.alcoholics,
+    required this.onSmookingChange,
+    required this.onAlcholChange,
+  });
+  final bool smooking;
+  final bool alcoholics;
+  final Function(bool value) onSmookingChange;
+  final Function(bool value) onAlcholChange;
 
   @override
   State<SmookingAlchol> createState() => _SmookingAlcholState();
@@ -19,6 +23,14 @@ class SmookingAlchol extends StatefulWidget {
 class _SmookingAlcholState extends State<SmookingAlchol> {
   bool smooking = false;
   bool alcoholics = false;
+  @override
+  void initState() {
+    smooking = widget.smooking;
+    alcoholics = widget.alcoholics;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(20),
@@ -41,8 +53,9 @@ class _SmookingAlcholState extends State<SmookingAlchol> {
                     ),
                     value: smooking,
                     onChanged: (v) {
+                      widget.onSmookingChange(v!);
                       setState(() {
-                        smooking = v!;
+                        smooking = v;
                       });
                     },
                   ),
@@ -65,8 +78,10 @@ class _SmookingAlcholState extends State<SmookingAlchol> {
                     ),
                     value: alcoholics,
                     onChanged: (v) {
+                      widget.onAlcholChange(v!);
+
                       setState(() {
-                        alcoholics = v!;
+                        alcoholics = v;
                       });
                     },
                   ),

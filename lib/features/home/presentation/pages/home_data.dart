@@ -30,19 +30,21 @@ class Service {
 }
 
 final homeDoctor = Service(
-  mainService: 'Home Doctor',//630a21791f84589ab92621cf
+  mainService: 'Home Doctor', //630a21791f84589ab92621cf
   title: 'Home Doctor',
   photo: Assets.img.image1.path,
   children: [
     Service(
       mainService: 'Home Doctor',
-      title: 'Neurologists',///630a225cb1d9ba9bff24fef6
+      title: 'Neurologists',
+
+      ///630a225cb1d9ba9bff24fef6
       photo: Assets.svg.brain.path,
       children: subHomeDoctor,
     ),
     Service(
       mainService: 'Home Doctor',
-      title: 'Cardiology',//630a2397b1d9ba9bff24ff05
+      title: 'Cardiology', //630a2397b1d9ba9bff24ff05
       photo: Assets.svg.cardiolgy.path,
       children: subHomeDoctor,
     ),
@@ -302,22 +304,7 @@ final eldryCare = Service(
           days: 7,
           photo: '',
           price: 3500,
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 3500,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 6500,
-            // )
-          ],
+          children: [],
         ),
         Service(
           mainService: 'Eldery Care',
@@ -325,104 +312,16 @@ final eldryCare = Service(
           photo: '',
           price: 6500,
           days: 15,
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 6500,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 12000,
-            // )
-          ],
+          children: [],
         ),
         Service(
           mainService: 'Eldery Care',
           title: '30 days',
           photo: '',
           days: 30,
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 11500,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 22000,
-            // )
-          ],
+          children: [],
           price: 11500,
         ),
-
-        //   /////
-        //   // Service(
-        //   //   mainService: 'Eldery Care',
-        //   //   title: '12 hrs',
-        //   //   photo: '',
-        //   //   children: [
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '7 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 3500,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '15 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 6500,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '30 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 11500,
-        //   //     ),
-        //   //   ],
-        //   // ),
-        //   // Service(
-        //   //   mainService: 'Eldery Care',
-        //   //   title: '24 hrs',
-        //   //   photo: '',
-        //   //   children: [
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '7 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 6500,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '15 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 12000,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '30 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 22000,
-        //   //     ),
-        //   //   ],
-        //   // ),
       ],
     ),
     Service(
@@ -447,44 +346,14 @@ final eldryCare = Service(
           photo: '',
           price: 5000,
           days: 7,
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 2800,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 5000,
-            // )
-          ],
+          children: [],
         ),
         Service(
           mainService: 'Eldery Care',
           title: '15 days',
           photo: '',
           days: 15,
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 5250,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 9500,
-            // )
-          ],
+          children: [],
           price: 9500,
         ),
         Service(
@@ -492,82 +361,9 @@ final eldryCare = Service(
           title: '30 days',
           days: 30,
           photo: '',
-          children: [
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '12 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 10500,
-            // ),
-            // Service(
-            //   mainService: 'Eldery Care',
-            //   title: '24 hrs',
-            //   photo: '',
-            //   children: [],
-            //   price: 19000,
-            // )
-          ],
+          children: [],
           price: 19000,
         ),
-
-        //   /////
-        //   // Service(
-        //   //   mainService: 'Eldery Care',
-        //   //   title: '12 hrs',
-        //   //   photo: '',
-        //   //   children: [
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '7 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 2800,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '15 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 5250,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '30 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 10500,
-        //   //     ),
-        //   //   ],
-        //   // ),
-        //   // Service(
-        //   //   mainService: 'Eldery Care',
-        //   //   title: '24 hrs',
-        //   //   photo: '',
-        //   //   children: [
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '7 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 5000,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '15 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 9500,
-        //   //     ),
-        //   //     Service(
-        //   //       mainService: 'Eldery Care',
-        //   //       title: '30 days',
-        //   //       photo: '',
-        //   //       children: [],
-        //   //       price: 19000,
-        //   //     ),
-        //   //   ],
-        //   // ),
       ],
     ),
   ],
@@ -789,35 +585,7 @@ final services = [
       ),
     ],
   ),
-  // Service(
-  //   mainService: 'Laps',
-  //   title: 'Laps',
-  //   photo:
-  // Assets.img.closeUpResearcherWorkingWithMicroscope232148882102.path,
-  //   children: [
-  //     Service(
-  //       mainService: 'Home Doctor',
-  //       title: 'Consultant',
-  //       photo: Assets.svg.consultant.path,
-  //       children: [],
-  //     ),
-  //     Service(
-  //       mainService: 'Home Doctor',
-  //       title: 'Spicialist',
-  //       photo: Assets.svg.spcialist.path,
-  //       children: [],
-  //     ),
-  //   ],
-  // ),
   telemedicine,
-  // Service(
-  //   isPackage: true,
-  //   mainService: 'Telemedicine',
-  //   title: 'Telemedicine',
-  //   photo: Assets.img.doctorOfferingMedicalTeleconsultation232149328978.path,
-  //   children: [],
-  //   features: <String, dynamic>{'1': 'Hot Line'},
-  // ),
   videoConsultation,
   eldryCare,
   Service(
@@ -829,6 +597,8 @@ final services = [
     children: [],
     features: <String, dynamic>{'1': 'Maternity Follow up Request'},
   ),
+
+  /// TDOD
   Service(
     mainService: 'Our Doctors',
     title: 'Our Doctors',

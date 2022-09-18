@@ -35,7 +35,7 @@ class ApiClient {
   Future<Response> post(
     String url, {
     Map<String, dynamic>? queryParams,
-    required dynamic body,
+    dynamic body,
   }) async {
     queryParams ??= <String, String>{'': ''};
     print(body);
@@ -53,8 +53,7 @@ class ApiClient {
     required Map<String, dynamic> body,
   }) async {
     queryParams ??= <String, String>{'': ''};
-    print(body);
-    final r = await dio.post<Map<String, dynamic>>(
+    final r = await dio.patch<Map<String, dynamic>>(
       url,
       data: FormData.fromMap(body),
       queryParameters: queryParams,

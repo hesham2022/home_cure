@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/small_text.dart';
 
 class NumberOfSessionsWidget extends StatefulWidget {
@@ -58,6 +60,7 @@ class _NumberOfSessionsWidgetState extends State<NumberOfSessionsWidget> {
                   counter++;
                   controller.text = counter.toString();
                   setState(() {});
+                  context.read<AppointmentsParamsCubit>().addSessions(counter);
                 },
                 icon: const Icon(
                   Icons.add,

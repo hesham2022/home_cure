@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 
 enum ReqestNotificion { request, notification }
@@ -6,11 +7,14 @@ class NotificationTapWidget extends StatefulWidget {
   const NotificationTapWidget({
     super.key,
     required this.initialValue,
+    this.firstTitle,
+    this.secondTitle,
     required this.onChange,
   });
   final ReqestNotificion initialValue;
   final Function(ReqestNotificion value) onChange;
-
+  final String? firstTitle;
+  final String? secondTitle;
   @override
   State<NotificationTapWidget> createState() => _NotificationTapWidgetState();
 }
@@ -25,6 +29,7 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
     super.initState();
   }
 
+  ClientRole s;
   @override
   Widget build(BuildContext context) => Container(
         height: 35,
@@ -52,7 +57,7 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      'Request Status',
+                      widget.firstTitle ?? 'Request Status',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
@@ -82,7 +87,7 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      'Notifications',
+                      widget.secondTitle ?? 'Notifications',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,

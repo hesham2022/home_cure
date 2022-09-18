@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
-import 'package:home_cure/features/Services/presentation/pages/services_page.dart';
 
 class AboutUs extends StatelessWidget {
   const AboutUs({super.key});

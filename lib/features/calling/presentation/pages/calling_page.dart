@@ -45,6 +45,8 @@ class _CallingPageState extends State<CallingPage> {
     ContactMethod(icon: Assets.svg.twitter.path),
     ContactMethod(icon: Assets.svg.whatsapp.path),
   ];
+ 
+
   int current = 0;
   @override
   Widget build(BuildContext context) {

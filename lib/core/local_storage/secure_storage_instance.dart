@@ -20,8 +20,16 @@ class Storage {
       prefs.write(key: 'userType', value: user);
   static Future<String?> getUserType() async => prefs.read(key: 'userType');
   static Future<void> removeUserType() async => prefs.delete(key: 'userType');
-
+  static Future<void> setLang(String user) async =>
+      prefs.write(key: 'lang', value: user);
+  static Future<String?> getLang() async => prefs.read(key: 'lang');
+  static Future<void> removeLang() async => prefs.delete(key: 'lang');
+  static Future<void> setRole(String role) async =>
+      prefs.write(key: 'role', value: role);
+  static Future<String?> getRole() async => prefs.read(key: 'role');
+  static Future<void> removeRole() async => prefs.delete(key: 'role');
   static Future<String?> getPassword() async => prefs.read(key: passKey);
+
   static Future<void> setIsFirst() async =>
       prefs.write(key: isFirstKey, value: isFirstKey);
   static Future<void> removeIsFirst() async => prefs.delete(key: isFirstKey);

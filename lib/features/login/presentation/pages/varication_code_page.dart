@@ -1,12 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/core/widgets/resend_timer.dart';
+import 'package:home_cure/features/authentication/domain/entities/verify_password_params.dart';
+import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
+import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_state.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -20,7 +24,7 @@ class VaricationCodePage extends StatefulWidget {
 class _VaricationCodePageState extends State<VaricationCodePage> {
   final _timerController = TimeController(seconds: 60);
   bool showResend = false;
-
+  late ForgetPasswordStateForgetPasswordTokenLoaded successState;
   @override
   void initState() {
     _timerController.addListener(() {
@@ -30,6 +34,8 @@ class _VaricationCodePageState extends State<VaricationCodePage> {
         });
       }
     });
+    successState = context.read<ForgetPasswordCubit>().state
+        as ForgetPasswordStateForgetPasswordTokenLoaded;
     super.initState();
   }
 
@@ -39,114 +45,163 @@ class _VaricationCodePageState extends State<VaricationCodePage> {
     super.dispose();
   }
 
+  String code = '';
+
   @override
   Widget build(BuildContext context) {
     return CommonScaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(40.sp),
-            child: Column(
-              children: [
-                const SizedBox(height: 50),
-                Center(child: Assets.img.logo.image()),
-                const SizedBox(height: 50),
-                // otp
-                Text(
-                  'Enter a 4-digit code sent to your mobile number to confirm the password change',
-                  textAlign: TextAlign.center,
-                  style: textStyleWithPrimaryBold.copyWith(
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                PinCodeTextField(
-                  appContext: context,
+      body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
+        listener: (context, state) {
+          if (state is ForgetPasswordStateError) {
+            Future.delayed(Duration.zero, () {
+              ScaffoldMessenger.of(context)
+                ..clearSnackBars()
+                ..showSnackBar(
+                  SnackBar(content: Text(state.error.errorMessege)),
+                );
+            });
+          }
 
-                  length: 4,
-                  animationType: AnimationType.fade,
-                  pinTheme: PinTheme(
-                    shape: PinCodeFieldShape.box,
-                    borderRadius: BorderRadius.circular(8),
-                    fieldHeight: 60.h,
-                    fieldWidth: 60.h,
-                    activeColor: const Color(0xffE5E5E5),
-                    inactiveColor: const Color(0xffE5E5E5),
-                    activeFillColor: const Color(0xffF5F5F5),
-                    selectedColor: const Color(0xffE5E5E5),
-                    selectedFillColor: Colors.white,
-                    inactiveFillColor: Colors.white,
-                  ),
-                  animationDuration: const Duration(milliseconds: 300),
-                  // backgroundColor: Colors.blue.shade50,
-                  enableActiveFill: true,
-                  // errorAnimationController: errorController,
-                  //    controller: textEditingController,
-                  onCompleted: (v) {
-                    if (v == '1234') {
-                      context.router.push(const ReserPasswordPageRouter());
-                    }
-                  },
-                  onChanged: (value) {
-                    // print(value);
-                    // setState(() {
-                    //   currentText = value;
-                    // });
-                  },
-                  //1234
-                  beforeTextPaste: (text) {
-                    print('Allowing to paste $text');
-                    //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                    //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                    return true;
-                  },
-                ),
-                SizedBox(
-                  height: 50.h,
-                ),
-                Button1(
-                  title: 'Send',
-                  onPressed: () {
-                    context.router.push(const ReserPasswordPageRouter());
-                  },
-                  size: Size(120.w, 36.h),
-                ),
-                SizedBox(
-                  height: 15.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          if (state is ForgetPasswordStateResetTokenLoaded) {
+            context.router.push(const ReserPasswordPageRouter());
+          }
+        },
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(40.sp),
+                child: Column(
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "Didn't receive a message?",
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            if (showResend != true) {
-                              setState(() {
-                                showResend = true;
-                                _timerController.inint();
-                              });
-                            }
-                          },
-                        style: textStyleWithPrimaryBold,
+                    const SizedBox(height: 50),
+                    Center(child: Assets.img.logo.image()),
+                    const SizedBox(height: 50),
+                    // otp
+                    Text(
+                      'Enter a 4-digit code sent to your mobile number to confirm the password change',
+                      textAlign: TextAlign.center,
+                      style: textStyleWithPrimaryBold.copyWith(
+                        fontSize: 16.sp,
+                        color: Colors.black,
                       ),
                     ),
-                    if (showResend)
-                      SizedBox(
-                        width: 5.h,
+                    SizedBox(height: 16.h),
+                    PinCodeTextField(
+                      appContext: context,
+
+                      length: 6,
+                      animationType: AnimationType.fade,
+                      pinTheme: PinTheme(
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(8),
+                        fieldHeight: 60.h,
+                        fieldWidth: 60.h,
+                        activeColor: const Color(0xffE5E5E5),
+                        inactiveColor: const Color(0xffE5E5E5),
+                        activeFillColor: const Color(0xffF5F5F5),
+                        selectedColor: const Color(0xffE5E5E5),
+                        selectedFillColor: Colors.white,
+                        inactiveFillColor: Colors.white,
                       ),
-                    if (showResend)
-                      ResendTime(
-                        controller: _timerController,
-                      )
+                      animationDuration: const Duration(milliseconds: 300),
+                      // backgroundColor: Colors.blue.shade50,
+                      enableActiveFill: true,
+                      // errorAnimationController: errorController,
+                      //    controller: textEditingController,
+                      onCompleted: (v) {
+                        print(v);
+
+                        if (state
+                            is ForgetPasswordStateForgetPasswordTokenLoaded) {
+                          successState = state;
+                        }
+                        context
+                            .read<ForgetPasswordCubit>()
+                            .verifyForgetPasswordOtp(
+                              VerifyForgetPasswordParam(
+                                token: successState.token,
+                                code: v,
+                              ),
+                            );
+                        // if (v == '1234') {
+                        //   context.router.push(const ReserPasswordPageRouter());
+                        // }
+                      },
+                      onChanged: (value) {
+                        code = value;
+
+                        // print(value);
+                        // setState(() {
+                        //   currentText = value;
+                        // });
+                      },
+                      //1234
+                      beforeTextPaste: (text) {
+                        print('Allowing to paste $text');
+                        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                        //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                        return true;
+                      },
+                    ),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    Button1(
+                      title: 'Send',
+                      onPressed: () {
+                        if (state
+                            is ForgetPasswordStateForgetPasswordTokenLoaded) {
+                          successState = state;
+                        }
+                        context
+                            .read<ForgetPasswordCubit>()
+                            .verifyForgetPasswordOtp(
+                              VerifyForgetPasswordParam(
+                                token: successState.token,
+                                code: code,
+                              ),
+                            );
+                        // context.router.push(const ReserPasswordPageRouter());
+                      },
+                      size: Size(120.w, 36.h),
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: "Didn't receive a message?",
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                if (showResend != true) {
+                                  setState(() {
+                                    showResend = true;
+                                    _timerController.inint();
+                                  });
+                                }
+                              },
+                            style: textStyleWithPrimaryBold,
+                          ),
+                        ),
+                        if (showResend)
+                          SizedBox(
+                            width: 5.h,
+                          ),
+                        if (showResend)
+                          ResendTime(
+                            controller: _timerController,
+                          )
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

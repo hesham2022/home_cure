@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:home_cure/features/home/presentation/pages/home_data.dart';
+import 'package:home_cure/features/home/domain/entities/service.dart';
 
 class HorizontalListItem extends StatelessWidget {
   const HorizontalListItem({
@@ -8,7 +8,7 @@ class HorizontalListItem extends StatelessWidget {
     required this.service,
   });
 
-  final Service service;
+  final ServiceEntity service;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,7 +39,7 @@ class HorizontalListItem extends StatelessWidget {
               },
               blendMode: BlendMode.srcATop,
               child: Image.asset(
-                service.photo!,
+                service.photo,
                 height: 27,
                 fit: BoxFit.cover,
               ),
