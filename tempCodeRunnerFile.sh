@@ -1,1 +1,1 @@
-ild_runner build --delete-conflicting-outputs
+r pub run build_runner build --delete-conflicting-outputs

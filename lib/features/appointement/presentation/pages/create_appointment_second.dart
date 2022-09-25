@@ -39,7 +39,7 @@ class _CreateAppointementSecondPageState
       context.read<AppointmentsParamsCubit>().addDate(
             DateTime.now().add(
               const Duration(
-                days: 1,
+                days: 2,
               ),
             ),
           );
@@ -112,12 +112,12 @@ class _CreateAppointementSecondPageState
                                 initialDate: _firstDate ??
                                     DateTime.now().add(
                                       const Duration(
-                                        days: 1,
+                                        days: 2,
                                       ),
                                     ),
                                 firstDate: DateTime.now().add(
                                   const Duration(
-                                    days: 1,
+                                    days: 2,
                                   ),
                                 ),
                                 lastDate: DateTime.now().add(
@@ -340,7 +340,6 @@ class _CreateAppointementSecondPageState
                                         .price
                                         .toDouble();
                                   } else {
-                                    print('Ok');
                                     finalPrice = widget
                                             .service.children[0].price
                                             .toDouble() *
@@ -433,11 +432,14 @@ class _MultiSelectCalenderState extends State<MultiSelectCalender> {
       );
     }
     return SfDateRangePicker(
+      initialDisplayDate: DateTime.now().add(const Duration(days: 6)),
+      initialSelectedDate: DateTime.now().add(const Duration(days: 6)),
+
       selectionMode: DateRangePickerSelectionMode.range,
       enablePastDates: false,
-      onViewChanged: (dateRangePickerViewChangedArgs) {
-        print('sad');
-      },
+      // onViewChanged: (dateRangePickerViewChangedArgs) {
+      //   print('sad');
+      // },
       controller: controller,
     );
   }

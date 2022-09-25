@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class CustomerServiceHeader extends StatelessWidget {
   const CustomerServiceHeader({
@@ -41,19 +42,21 @@ class CustomerServiceHeader extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SizedBox(height: 40),
+                  children: [
+                    const SizedBox(height: 40),
                     Text(
-                      'Contact',
-                      style: TextStyle(
+                      context.l10n.contact,
+                      // 'Contact',
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 22,
                         color: Color(0xff409CE6),
                       ),
                     ),
                     Text(
-                      'Customer Service',
-                      style: TextStyle(
+                      context.l10n.customaer_service,
+                      //   'Customer Service',
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 18,
                         color: Color(0xff1AA9A0),
@@ -61,8 +64,8 @@ class CustomerServiceHeader extends StatelessWidget {
                     ),
                     Text(
                       '''
-Select what you feel\n and we will call you soon''',
-                      style: TextStyle(
+${context.l10n.select_what_you_feel}\n ${context.l10n.and_we_will_contact_you_soon}''',
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                         color: Color(0xff1AA9A0),

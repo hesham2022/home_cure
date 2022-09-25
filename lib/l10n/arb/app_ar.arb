@@ -1,0 +1,15 @@
+{
+  "@@locale": "ar",
+  "counterAppBarTitle": "Counter",
+  "@counterAppBarTitle": {
+    "description": "Text shown in the AppBar of the Counter Page"
+  },
+  "home_doctor": "طبيب منزلي",
+  "and_we_will_contact_you_soon": "وسوف نتصل بك قريبًا",
+  "contact": "اتصل",
+  "customaer_service": "خدمة العملاء:",
+  "hello": "مرحبا",
+  "select_what_you_feel": "حدد ما تشعر به"
+
+
+}

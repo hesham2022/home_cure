@@ -2,16 +2,37 @@ import 'package:flutter/material.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:home_cure/core/utils/map_utils/location_service.dart';
 
 class MapHelper extends ChangeNotifier {
+  MapHelper() {
+    if (LocationService.position != null) {
+      latLong = LatLng(
+        LocationService.position!.latitude,
+        LocationService.position!.longitude,
+      );
+    }
+  }
   late GoogleMapController controller;
-  final CameraPosition initialPosition = const CameraPosition(
-    target: LatLng(30, 31),
-    zoom: 10,
-  );
+  LatLng latLong = const LatLng(30, 31);
+  CameraPosition initialPosition() => CameraPosition(
+        target: latLong,
+        zoom: 10,
+      );
   void init(GoogleMapController ctr) {
     controller = ctr;
-    addMarker(initialPosition.target);
+    addMarker(initialPosition().target);
+  }
+
+  Future<void> getMyLocation() async {
+    final position = await determinePosition();
+
+    if (position != null) {
+      latLong = LatLng(position.latitude, position.longitude);
+      await controller.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)),
+      );
+    }
   }
 
   // Future<Placemark> getAdressFromCurrent() async {
@@ -25,25 +46,28 @@ class MapHelper extends ChangeNotifier {
   //   return placemark;
   // }
 
-  Future<Position> determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+  Future<Position?> determinePosition() async {
+    try {
+      bool serviceEnabled;
+      LocationPermission permission;
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
       }
-    }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return Future.error('Location permissions are denied');
+        }
+      }
 
-    if (permission == LocationPermission.deniedForever) {
-      
+      if (permission == LocationPermission.deniedForever) {}
+      return Geolocator.getCurrentPosition();
+    } catch (e) {
+      print(e);
+      return null;
     }
-    return Geolocator.getCurrentPosition();
   }
 
   // void getLocationFromAdreees() {

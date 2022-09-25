@@ -6,7 +6,6 @@ import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
-import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 
 class ChooseLanguagePage extends StatefulWidget {
@@ -18,6 +17,16 @@ class ChooseLanguagePage extends StatefulWidget {
 
 class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
   bool english = true;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        english = Localizations.localeOf(context).toString() == 'en';
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +67,7 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
                           child: InkWell(
                             onTap: () => setState(() {
                               english = false;
+                              App.changeLanguage(context, 'ar');
                             }),
                             child: Container(
                               alignment: Alignment.center,
@@ -65,10 +75,15 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
                                 color: english == true
                                     ? Colors.white
                                     : primaryColor,
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  topLeft: Radius.circular(20),
-                                ),
+                                borderRadius: !english
+                                    ? const BorderRadius.only(
+                                        bottomRight: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      )
+                                    : const BorderRadius.only(
+                                        bottomLeft: Radius.circular(20),
+                                        topLeft: Radius.circular(20),
+                                      ),
                               ),
                               child: Text(
                                 'عربي',
@@ -85,15 +100,21 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
                           child: InkWell(
                             onTap: () => setState(() {
                               english = true;
+                              App.changeLanguage(context, 'en');
                             }),
                             child: Container(
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: english ? primaryColor : Colors.white,
-                                borderRadius: const BorderRadius.only(
-                                  bottomRight: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
+                                borderRadius: english
+                                    ? const BorderRadius.only(
+                                        bottomRight: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      )
+                                    : const BorderRadius.only(
+                                        bottomLeft: Radius.circular(20),
+                                        topLeft: Radius.circular(20),
+                                      ),
                               ),
                               child: Text(
                                 'English',

@@ -59,92 +59,95 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
             return Form(
               key: _formKey,
               child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 50.h,
-                      ),
-                      Center(child: Assets.img.logo.image()),
-                      SizedBox(
-                        height: 50.h,
-                      ),
-                      Text(
-                        'PASSWORD RESET',
-                        style: textStyleWithPrimaryBold,
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      RegisterField(
-                        controller: passwordController,
-                        isPassword: true,
-                        hint: 'password',
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'please enter a new password';
-                          }
-                          if (value.length < 8) {
-                            return 'pasword should be at least 8 characters';
-                          }
-                          if (!ValidationsPatterns.conCharacter
-                              .hasMatch(value)) {
-                            return '''password should contain at least one letter''';
-                          }
-                          if (!ValidationsPatterns.contDigit.hasMatch(value)) {
-                            return '''password should contain at least one number''';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      RegisterField(
-                        isPassword: true,
-                        hint: 'confirm password',
-                        controller: confirmCasswordController,
-                        validator: (value) {
-                          if (value != passwordController.text) {
-                            return 'not identical password';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 35.h,
-                      ),
-                      BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
-                        builder: (context, state) {
-                          if (state is ForgetPasswordStateLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return Button1(
-                            size: Size(120.w, 30),
-                            title: 'Confirm',
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                if (state
-                                    is ForgetPasswordStateResetTokenLoaded) {
-                                  context
-                                      .read<ForgetPasswordCubit>()
-                                      .resetPassword(
-                                        ResetPasswordParams(
-                                          password: passwordController.text,
-                                          token: state.token,
-                                        ),
-                                      );
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Center(child: Assets.img.logo.image()),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Text(
+                          'PASSWORD RESET',
+                          style: textStyleWithPrimaryBold,
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        RegisterField(
+                          controller: passwordController,
+                          isPassword: true,
+                          hint: 'password',
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'please enter a new password';
+                            }
+                            if (value.length < 8) {
+                              return 'pasword should be at least 8 characters';
+                            }
+                            if (!ValidationsPatterns.conCharacter
+                                .hasMatch(value)) {
+                              return '''password should contain at least one letter''';
+                            }
+                            if (!ValidationsPatterns.contDigit
+                                .hasMatch(value)) {
+                              return '''password should contain at least one number''';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 12.h,
+                        ),
+                        RegisterField(
+                          isPassword: true,
+                          hint: 'confirm password',
+                          controller: confirmCasswordController,
+                          validator: (value) {
+                            if (value != passwordController.text) {
+                              return 'not identical password';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 35.h,
+                        ),
+                        BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
+                          builder: (context, state) {
+                            if (state is ForgetPasswordStateLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return Button1(
+                              size: Size(120.w, 30),
+                              title: 'Confirm',
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  if (state
+                                      is ForgetPasswordStateResetTokenLoaded) {
+                                    context
+                                        .read<ForgetPasswordCubit>()
+                                        .resetPassword(
+                                          ResetPasswordParams(
+                                            password: passwordController.text,
+                                            token: state.token,
+                                          ),
+                                        );
+                                  }
                                 }
-                              }
-                            },
-                          );
-                        },
-                      )
-                    ],
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

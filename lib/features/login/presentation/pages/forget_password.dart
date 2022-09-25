@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
-import 'package:home_cure/core/utils/validation_regx.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/features/authentication/domain/entities/forget_password_params.dart';
@@ -78,16 +77,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         height: 22.h,
                       ),
                       RegisterField(
+                        isPhoneNumber: true,
                         // hint: 'Phone number',
-                        hint: 'Email',
+                        hint: 'Phone Number',
                         controller: controller,
                         validator: (v) {
+                          const patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+                          final regExp = RegExp(patttern);
                           if (v!.isEmpty) {
-                            return 'please enter your email';
+                            return 'please enter your Phone Number';
                           }
-                          return ValidationsPatterns.emailValidate.hasMatch(v)
+                          return regExp.hasMatch(v)
                               ? null
-                              : 'invalid email';
+                              : 'invalid Phone Number';
                         },
                       ),
                       SizedBox(

@@ -37,3 +37,12 @@ https://pub.dev/packages/callkeep/example
 
 pdf preview 
 Video preview
+
+
+when delete time slot deleted in all services contain it
+
+
+
+// Is Tele
+
+//validation in pay

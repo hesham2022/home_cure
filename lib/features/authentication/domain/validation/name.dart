@@ -28,6 +28,7 @@ class Name extends FormzInput<String, NameValidationError> {
     } else if (value.length < 4) {
       return NameValidationError.short;
     }
+
     return null;
   }
 }
@@ -46,10 +47,11 @@ class Birth extends FormzInput<DateTime?, BurthValidator> {
 
   @override
   BurthValidator? validator(DateTime? value) {
-    if (value != null) {
-      if (value.isAfter(DateTime.now())) {
-        return BurthValidator.invalid;
-      }
+    if (value == null) {
+      return BurthValidator.invalid;
+    }
+    if (value.isAfter(DateTime.now())) {
+      return BurthValidator.invalid;
     }
 
     return null;

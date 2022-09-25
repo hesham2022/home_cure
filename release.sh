@@ -1,0 +1,1 @@
+flutter build apk --split-per-abi --flavor production --target lib/main_production.dart

@@ -11,6 +11,7 @@ import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.d
 import 'package:home_cure/features/home/presentation/widgets/cutomer_service.dart';
 import 'package:home_cure/features/home/presentation/widgets/horizontal_item.dart';
 import 'package:home_cure/features/home/presentation/widgets/offers_widget.dart';
+import 'package:home_cure/features/provider/presentation/blocs/notifications_cubit/notifications_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     context.read<MyAppointmentsCubit>().getMyAppointsFunc();
     AppointmentsParamsCubit.get(context).clear();
     context.read<AdsCubit>().getAdsFunc();
+    context.read<NotificationsCubit>().getUserNotifications();
 
     super.initState();
   }

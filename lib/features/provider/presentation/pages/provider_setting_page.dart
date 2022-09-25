@@ -24,6 +24,16 @@ class ProviderSettingPage extends StatefulWidget {
 
 class _ProviderSettingPageState extends State<ProviderSettingPage> {
   bool english = true;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        english = Localizations.localeOf(context).toString() == 'en';
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +137,7 @@ class _ProviderSettingPageState extends State<ProviderSettingPage> {
                                   child: InkWell(
                                     onTap: () => setState(() {
                                       english = false;
+                                      App.changeLanguage(context, 'ar');
                                     }),
                                     child: Container(
                                       alignment: Alignment.center,
@@ -134,10 +145,16 @@ class _ProviderSettingPageState extends State<ProviderSettingPage> {
                                         color: english == true
                                             ? Colors.white
                                             : primaryColor,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          topLeft: Radius.circular(20),
-                                        ),
+                                        borderRadius: !english
+                                            ? const BorderRadius.only(
+                                                bottomRight:
+                                                    Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                              )
+                                            : const BorderRadius.only(
+                                                bottomLeft: Radius.circular(20),
+                                                topLeft: Radius.circular(20),
+                                              ),
                                       ),
                                       child: Text(
                                         'عربي',
@@ -155,6 +172,7 @@ class _ProviderSettingPageState extends State<ProviderSettingPage> {
                                   child: InkWell(
                                     onTap: () => setState(() {
                                       english = true;
+                                      App.changeLanguage(context, 'en');
                                     }),
                                     child: Container(
                                       alignment: Alignment.center,
@@ -162,10 +180,16 @@ class _ProviderSettingPageState extends State<ProviderSettingPage> {
                                         color: english
                                             ? primaryColor
                                             : Colors.white,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomRight: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
+                                        borderRadius: english
+                                            ? const BorderRadius.only(
+                                                bottomRight:
+                                                    Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                              )
+                                            : const BorderRadius.only(
+                                                bottomLeft: Radius.circular(20),
+                                                topLeft: Radius.circular(20),
+                                              ),
                                       ),
                                       child: Text(
                                         'English',

@@ -14,21 +14,23 @@ import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cub
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
 import 'package:home_cure/features/provider/presentation/blocs/notifications_cubit/notifications_cubit.dart';
 
-class NotificationsBudgeCubit extends Cubit<bool> {
-  NotificationsBudgeCubit() : super(false);
-  void newNotifion() => emit(true);
-  void read() => emit(false);
+class NotificationsBudgeCubit extends Cubit<int> {
+  NotificationsBudgeCubit() : super(0);
+  void newNotifion() => emit(state + 1);
+  void read() => emit(0);
 }
 
 class PushNotifications {
   factory PushNotifications() => _instance;
   PushNotifications._internal();
-  static String? fcmToken;
 
+  static String? fcmToken;
   static final PushNotifications _instance = PushNotifications._internal();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future<void> initToken() async {
+    debugPrint('===== Begin =====');
+
     await _firebaseMessaging.requestPermission();
     await _firebaseMessaging.getToken().then((token) {
       debugPrint('===== FCM Token =====');
@@ -67,6 +69,7 @@ class PushNotifications {
             event.data['appointment'] as String,
           );
           final notificationModel = NotificationsModel(
+            title: event.notification!.title!,
             sentTime: event.sentTime!,
             appointment: appointment,
           );
@@ -74,13 +77,19 @@ class PushNotifications {
           context
               .read<MyAppointmentsCubit>()
               .addFromFcm(notificationModel.appointment);
-
-          await Hive.box<Map<dynamic, dynamic>>(
-            HiveService.providerNotificationBox,
-          ).put(
-           event.messageId,
-            notificationModel.toMap(),
-          );
+          if (event.data['to'] == 'provider') {
+            await Hive.box<Map<dynamic, dynamic>>(
+              HiveService.providerNotificationBox,
+            ).put(
+              event.messageId,
+              notificationModel.toMap(),
+            );
+          } else {
+            await HiveService.userBox().put(
+              event.messageId,
+              notificationModel.toMap(),
+            );
+          }
         }
 
         await AwesomeNotifications().createNotification(

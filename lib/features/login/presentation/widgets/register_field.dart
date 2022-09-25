@@ -79,13 +79,16 @@ class _RegisterFieldState extends State<RegisterField> {
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff137ca733).withOpacity(.3),
+            color: widget.enabled
+                ? const Color(0xff137ca733).withOpacity(.3)
+                : Colors.transparent,
             offset: const Offset(0, 3),
             blurRadius: 6,
           )
         ],
       ),
       child: TextFormField(
+        style: !widget.enabled ? textStyleWithSecondSemiBold : null,
         onChanged: widget.onChanged,
         keyboardType: widget.keyboardType,
         validator: widget.validator,

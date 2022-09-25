@@ -22,6 +22,6 @@ class ForgetPasswordParam {
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'email': email,
+        'phoneNumber': '+2$email',
       };
 }

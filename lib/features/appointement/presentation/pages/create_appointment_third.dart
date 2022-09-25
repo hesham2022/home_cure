@@ -241,6 +241,14 @@ class _CreateAppointementThirdPageState
                               );
                             return;
                           }
+                          if (widget.service.isVideo || widget.service.isTele) {
+                            context.router.push(
+                              CreateAppointmentPayment(
+                                service: widget.service,
+                              ),
+                            );
+                            return;
+                          }
                           context.router.push(
                             CreateAppointementFourthRoute(
                               service: widget.service,

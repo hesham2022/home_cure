@@ -19,6 +19,7 @@ class ServiceModel extends ServiceEntity {
     required super.priceDiscount,
     required super.id,
     required super.isVideo,
+    required super.isTele,
     super.parent,
     super.days,
     super.numberOfSessions,
@@ -34,7 +35,7 @@ class ServiceModel extends ServiceEntity {
         ),
         isLeaf: json['isLeaf'] as bool,
         active: json['active'] as bool,
-        isVideo: (json['active'] as bool?) ?? false,
+        isVideo: (json['isVideo'] as bool?) ?? false,
         ratingsAverage: (json['ratingsAverage'] as num).toDouble(),
         ratingsQuantity: json['ratingsQuantity'] as int,
         timeSlots: List.from(
@@ -52,6 +53,7 @@ class ServiceModel extends ServiceEntity {
         price: json['price'] as int,
         priceDiscount: json['priceDiscount'] as int?,
         id: json['id'] as String,
+        isTele: (json['isTele'] as bool?) ?? false,
         days: json['days'] as int?,
         parent: json['parent'] as String?,
         numberOfSessions: (json['numberOfSessions'] as bool?) ?? false,
@@ -73,6 +75,8 @@ class ServiceModel extends ServiceEntity {
         'price': price,
         'priceDiscount': priceDiscount,
         'id': id,
+        'isTele': isTele ,
+        'isVideo':isVideo,
         'parent': parent,
       };
 }

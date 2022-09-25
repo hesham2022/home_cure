@@ -1,15 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/request_agora_permissions.dart';
 import 'package:home_cure/core/widgets/big_form_field.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
+import 'package:home_cure/core/widgets/common_container.dart';
+import 'package:home_cure/di/get_it.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/agora_token_cubit/agora_token_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
@@ -21,6 +26,7 @@ import 'package:home_cure/features/notifications/presentation/widgets/appointeme
 import 'package:home_cure/features/notifications/presentation/widgets/appointment_action_dialouge.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/map_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   const AppointmentDetailsPage({super.key, required this.appointment});
@@ -32,15 +38,42 @@ class AppointmentDetailsPage extends StatefulWidget {
 class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   final List<ServiceEntity> list = [];
   late Appointment _appointment;
+
   bool inProviderApp = false;
   @override
   void initState() {
-    _appointment = widget.appointment;
+    if (context.read<MyAppointmentsCubit>().state
+        is MyAppointmentsCubitStateLoaded) {
+      if ((context.read<MyAppointmentsCubit>().state
+              as MyAppointmentsCubitStateLoaded)
+          .appointments
+          .map((e) => e.id)
+          .contains(widget.appointment.id)) {
+        _appointment = (context.read<MyAppointmentsCubit>().state
+                as MyAppointmentsCubitStateLoaded)
+            .appointments
+            .firstWhere((element) => element.id == widget.appointment.id);
+      }
+    } else {
+      _appointment = widget.appointment;
+    }
     if (UserCubit.get(context).state is UserCubitStateInitil) {
       UserCubit.get(context).getUserFuc(_appointment.user);
       inProviderApp = true;
     }
-
+    context.read<MyAppointmentsCubit>().stream.listen((state) {
+      if (state is MyAppointmentsCubitStateLoaded) {
+        if (state.appointments
+            .map((e) => e.id)
+            .toList()
+            .contains(_appointment.id)) {
+          setState(() {
+            _appointment = state.appointments
+                .firstWhere((element) => element.id == _appointment.id);
+          });
+        }
+      }
+    });
     super.initState();
   }
 
@@ -88,11 +121,11 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   /// this function to make all app listen to this internal Change;
   void listenToChange(BuildContext context, Appointment appointment) {
     context.read<MyAppointmentsCubit>().addModified(appointment);
-    // context.router.push(const DoneRoute());
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(_appointment.id);
     return BlocBuilder<UserCubit, UserCubitState>(
       builder: (context, state) {
         if (state is UserCubitStateLoaded) {
@@ -126,6 +159,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 // EasyLoading.showSuccess('success');
               }
               if (state is AppointmentsCubitStatePayed) {
+                print(_appointment.payed);
                 EasyLoading.dismiss();
                 setState(() {
                   _appointment = state.appointment;
@@ -173,10 +207,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                       .toList()
                     ..add(leafService);
                   return Padding(
-                    padding: const EdgeInsets.all(40),
+                    padding: const EdgeInsets.all(20),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          const SizedBox(
+                            height: 60,
+                          ),
+
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -185,10 +223,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                             ),
                             child: Center(
                               child: Text(
-                                ancestors
-                                    .map((e) => e.title)
-                                    .toList()
-                                    .join('/'),
+                                ancestors.first.title,
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.w400,
@@ -198,122 +233,588 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                             ),
                           ),
-
-                          const SizedBox(
-                            height: 60,
-                          ),
-                          if (inProviderApp)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Pateient Name: :',
-                                      style: textStyleWithPrimaryBold,
-                                    ),
-                                    Text(
-                                      user.name,
-                                      style: textStyleWithSecondBold(),
-                                    )
-                                  ],
-                                ),
-
-                                /// More
-                                InkWell(
-                                  child: Text(
-                                    'More ',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.double,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    context.router.push(
-                                      UserInformationPageRoute(
-                                        user: user,
-                                      ),
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
-                          const SizedBox(height: 30),
-                          // Payment Tap
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Payed :',
-                                    style: textStyleWithPrimaryBold,
-                                  ),
-                                  if (_appointment.payed)
-                                    const Icon(
-                                      Icons.check,
-                                      color: seocondColor,
-                                      size: 30,
-                                    )
-                                  else
-                                    const Icon(
-                                      Icons.close,
-                                      color: seocondColor,
-                                      size: 30,
-                                    ),
-                                ],
-                              ),
-                              if (!_appointment.payed)
-                                Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    InkWell(
-                                      child: Text(
-                                        'Pay Now',
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.double,
+                              IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(
+                                    ClipboardData(text: _appointment.id),
+                                  ).then((_) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Id copied to clipboard',
                                         ),
                                       ),
-                                      onTap: () {
-                                        context
-                                            .read<AppointmentsCubit>()
-                                            .cratePaymentLinkFunc(
-                                              _appointment.id,
-                                            );
-                                      },
-                                    )
-                                  ],
-                                ),
+                                    );
+                                  });
+                                },
+                                icon: const Icon(Icons.copy_all),
+                              ),
                             ],
                           ),
+
                           const SizedBox(
                             height: 30,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                'Price :',
-                                style: textStyleWithPrimaryBold,
+                          CommonContainer(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 20,
                               ),
-                              Text(
-                                '${leafService.price} LE',
-                                style: textStyleWithSecondBold(),
-                              )
-                            ],
+                              child: Column(
+                                children: [
+                                  const Text('Appointmnet'),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Status',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      Chip(
+                                        backgroundColor: primaryColor,
+                                        label: Text(
+                                          _appointment.isOpened
+                                              ? 'Requested'
+                                              : _appointment.isWaiting
+                                                  ? 'Pending'
+                                                  : _appointment.isOnPeocessing
+                                                      ? 'On Proccesing'
+                                                      : 'Done',
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          'Service',
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    ancestors
+                                        .sublist(1)
+                                        .map((e) => e.title)
+                                        .toList()
+                                        .join('/'),
+                                    style:
+                                        textStyleWithPrimarySemiBold.copyWith(),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 30),
+                          CommonContainer(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 20,
+                              ),
+                              child: Column(
+                                children: [
+                                  const Text('Payment Info'),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Price ',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${_appointment.price ?? leafService.price} LE',
+                                        style: textStyleWithSecondBold(),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Payment Method',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      Text(
+                                        _appointment.paymentMethod.replaceRange(
+                                          0,
+                                          1,
+                                          _appointment
+                                              .paymentMethod.characters.first
+                                              .toUpperCase(),
+                                        ),
+                                        style: textStyleWithSecondBold(),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Payed',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      CircleAvatar(
+                                        radius: 17,
+                                        child: Icon(
+                                          _appointment.payed
+                                              ? Icons.check
+                                              : Icons.close,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  if (!_appointment.payed &&
+                                      _appointment.isCredifCard)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Please try to pay your appointment',
+                                            ),
+                                            InkWell(
+                                              child: const Text(
+                                                'Pay Now',
+                                                style: TextStyle(
+                                                  color: Colors.blueAccent,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.italic,
+                                                  decorationStyle:
+                                                      TextDecorationStyle
+                                                          .double,
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                context
+                                                    .read<AppointmentsCubit>()
+                                                    .cratePaymentLinkFunc(
+                                                      _appointment.id,
+                                                    );
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Section 1
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          CommonContainer(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 20,
+                              ),
+                              child: Column(
+                                children: [
+                                  const Text('Date'),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Date ',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat.yMMMMd()
+                                            .format(_appointment.date),
+                                        style: textStyleWithSecondBold(),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'From',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      BlocBuilder<TimeSlotCubit,
+                                          TimeSlotCubitState>(
+                                        builder: (context, state) {
+                                          if (state
+                                              is TimeSlotCubitStateLoaded) {
+                                            final timeSlot =
+                                                state.timeSlots.firstWhere(
+                                              (element) =>
+                                                  element.id ==
+                                                  _appointment.timeslot,
+                                            );
+                                            return Text(
+                                              timeSlot.startSting,
+                                              style: textStyleWithSecondBold(),
+                                            );
+                                          }
+                                          if (state
+                                              is TimeSlotCubitStateLoading) {
+                                            return const Text('Loading...');
+                                          }
+                                          return const SizedBox();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'To',
+                                        style: textStyleWithPrimarySemiBold
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      BlocBuilder<TimeSlotCubit,
+                                          TimeSlotCubitState>(
+                                        builder: (context, state) {
+                                          if (state
+                                              is TimeSlotCubitStateLoaded) {
+                                            final timeSlot =
+                                                state.timeSlots.firstWhere(
+                                              (element) =>
+                                                  element.id ==
+                                                  _appointment.timeslot,
+                                            );
+                                            return Text(
+                                              timeSlot.endSting,
+                                              style: textStyleWithSecondBold(),
+                                            );
+                                          }
+                                          if (state
+                                              is TimeSlotCubitStateLoading) {
+                                            return const Text('Loading...');
+                                          }
+                                          return const SizedBox();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  if (_appointment.hasDays)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Days',
+                                              style:
+                                                  textStyleWithPrimarySemiBold
+                                                      .copyWith(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              _appointment.days.toString(),
+                                              style: textStyleWithSecondBold(),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  if (_appointment.hasSessions)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Days',
+                                              style:
+                                                  textStyleWithPrimarySemiBold
+                                                      .copyWith(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              _appointment.sessions.toString(),
+                                              style: textStyleWithSecondBold(),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'Status :',
+                          //       style: textStyleWithPrimarySemiBold,
+                          //     ),
+                          //     Text(
+                          //       _appointment.isOpened
+                          //           ? 'Requested'
+                          //           : _appointment.isWaiting
+                          //               ? 'Pending'
+                          //               : _appointment.isOnPeocessing
+                          //                   ? 'On Proccesing'
+                          //                   : 'Done',
+                          //       style: textStyleWithSecondBold(),
+                          //     )
+                          //   ],
+                          // ),
+                          if (inProviderApp)
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          if (inProviderApp)
+                            CommonContainer(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                  horizontal: 20,
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Text('Patient Information'),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Patient Name ',
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(
+                                            fontSize: 20,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Text(
+                                          user.name,
+                                          style: textStyleWithSecondBold(),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Phone Number',
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(color: Colors.black),
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            await launchUrl(
+                                              Uri.parse(
+                                                'tel:${user.phoneNumber}',
+                                              ),
+                                            );
+                                          },
+                                          child: Text(
+                                            user.phoneNumber,
+                                            style: textStyleWithSecondBold()
+                                                .copyWith(
+                                              color: Colors.blueAccent,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Button1(
+                                      size: const Size(200, 15),
+                                      title: 'More ',
+                                      onPressed: () {
+                                        context.router.push(
+                                          UserInformationPageRoute(
+                                            user: user,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          // if (inProviderApp)
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Row(
+                          //       children: [
+                          //         Text(
+                          //           'Pateient Name: :',
+                          //           style: textStyleWithPrimarySemiBold,
+                          //         ),
+                          //         Text(
+                          //           user.name,
+                          //           style: textStyleWithSecondBold(),
+                          //         )
+                          //       ],
+                          //     ),
+
+                          //     /// More
+                          //     InkWell(
+                          //       child: Text(
+                          //         'More ',
+                          //         style: TextStyle(
+                          //           color: Colors.blue,
+                          //           fontSize: 20.sp,
+                          //           fontWeight: FontWeight.bold,
+                          //           fontStyle: FontStyle.italic,
+                          //           decoration: TextDecoration.underline,
+                          //           decorationStyle:
+                          //               TextDecorationStyle.double,
+                          //         ),
+                          //       ),
+                          //       onTap: () {
+                          //         context.router.push(
+                          //           UserInformationPageRoute(
+                          //             user: user,
+                          //           ),
+                          //         );
+                          //       },
+                          //     )
+                          //   ],
+                          // ),
+
+                          // const SizedBox(height: 30),
+                          // Payment Tap
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Row(
+                          //       children: [
+                          //         Text(
+                          //           'Payed :',
+                          //           style: textStyleWithPrimarySemiBold,
+                          //         ),
+                          //         if (_appointment.payed)
+                          //           const Icon(
+                          //             Icons.check,
+                          //             color: seocondColor,
+                          //             size: 30,
+                          //           )
+                          //         else
+                          //           const Icon(
+                          //             Icons.close,
+                          //             color: seocondColor,
+                          //             size: 30,
+                          //           ),
+                          //       ],
+                          //     ),
+                          //     if (!_appointment.payed &&
+                          //         _appointment.isCredifCard)
+                          //       Row(
+                          //         children: [
+                          //           const SizedBox(
+                          //             width: 20,
+                          //           ),
+                          //           InkWell(
+                          //             child: Text(
+                          //               'Pay Now',
+                          //               style: TextStyle(
+                          //                 color: Colors.blue,
+                          //                 fontSize: 20.sp,
+                          //                 fontWeight: FontWeight.bold,
+                          //                 fontStyle: FontStyle.italic,
+                          //                 decoration: TextDecoration.underline,
+                          //                 decorationStyle:
+                          //                     TextDecorationStyle.double,
+                          //               ),
+                          //             ),
+                          //             onTap: () {
+                          //               context
+                          //                   .read<AppointmentsCubit>()
+                          //                   .cratePaymentLinkFunc(
+                          //                     _appointment.id,
+                          //                   );
+                          //             },
+                          //           )
+                          //         ],
+                          //       ),
+                          //   ],
+                          // ),
+
                           if (_appointment.hasSessions)
                             Column(
                               children: [
@@ -324,7 +825,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                   children: [
                                     Text(
                                       'Sessions :',
-                                      style: textStyleWithPrimaryBold,
+                                      style: textStyleWithPrimarySemiBold,
                                     ),
                                     Text(
                                       '${_appointment.sessions} ',
@@ -335,71 +836,48 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ],
                             ),
 
-                          if (_appointment.hasDays)
-                            Column(
-                              children: [
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Days :',
-                                      style: textStyleWithPrimaryBold,
-                                    ),
-                                    Text(
-                                      '${_appointment.days} ',
-                                      style: textStyleWithSecondBold(),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Date :',
-                                style: textStyleWithPrimaryBold,
-                              ),
-                              Text(
-                                DateFormat.yMMMMd().format(_appointment.date),
-                                style: textStyleWithSecondBold(),
-                              )
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'Date :',
+                          //       style: textStyleWithPrimarySemiBold,
+                          //     ),
+                          //     Text(
+                          //       DateFormat.yMMMMd().format(_appointment.date),
+                          //       style: textStyleWithSecondBold(),
+                          //     )
+                          //   ],
+                          // ),
 
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Time :',
-                                style: textStyleWithPrimaryBold,
-                              ),
-                              BlocBuilder<TimeSlotCubit, TimeSlotCubitState>(
-                                builder: (context, state) {
-                                  if (state is TimeSlotCubitStateLoaded) {
-                                    final timeSlot = state.timeSlots.firstWhere(
-                                      (element) =>
-                                          element.id == _appointment.timeslot,
-                                    );
-                                    return Text(
-                                      '''${timeSlot.startSting} To ${timeSlot.endSting}''',
-                                      style: textStyleWithSecondBold(),
-                                    );
-                                  }
-                                  if (state is TimeSlotCubitStateLoading) {
-                                    return const Text('Loading...');
-                                  }
-                                  return const SizedBox();
-                                },
-                              )
-                            ],
-                          ),
+                          // const SizedBox(
+                          //   height: 30,
+                          // ),
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'Time :',
+                          //       style: textStyleWithPrimarySemiBold,
+                          //     ),
+                          //     BlocBuilder<TimeSlotCubit, TimeSlotCubitState>(
+                          //       builder: (context, state) {
+                          //         if (state is TimeSlotCubitStateLoaded) {
+                          //           final timeSlot = state.timeSlots.firstWhere(
+                          //             (element) =>
+                          //                 element.id == _appointment.timeslot,
+                          //           );
+                          //           return Text(
+                          //             '''${timeSlot.startSting} To ${timeSlot.endSting}''',
+                          //             style: textStyleWithSecondBold(),
+                          //           );
+                          //         }
+                          //         if (state is TimeSlotCubitStateLoading) {
+                          //           return const Text('Loading...');
+                          //         }
+                          //         return const SizedBox();
+                          //       },
+                          //     )
+                          //   ],
+                          // ),
                           const SizedBox(
                             height: 30,
                           ),
@@ -408,31 +886,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                             height: 20,
                           ),
 
-                          if (_appointment.isVideo)
-                            Button1(
-                              title: '',
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Start Vedio Now',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      height: 1,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Icon(
-                                    Icons.video_call,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
+                          if (_appointment.isVideo && !_appointment.isDone)
+                            StartVideoButton(appointment: _appointment),
                           if (widget.appointment.attachments.isNotEmpty)
                             Column(
                               children: [
@@ -441,7 +896,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                   children: [
                                     Text(
                                       'Attcahments:',
-                                      style: textStyleWithPrimaryBold,
+                                      style: textStyleWithPrimarySemiBold,
                                       textAlign: TextAlign.start,
                                     ),
                                   ],
@@ -454,19 +909,55 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 ),
                               ],
                             ),
-                          if (_appointment.location != null)
-                            Row(
-                              children: [
-                                Text(
-                                  'Adress :',
-                                  style: textStyleWithPrimaryBold,
+
+                          if (_appointment.location != null &&
+                              !_appointment.isVideo)
+                            CommonContainer(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                  horizontal: 20,
                                 ),
-                                Text(_appointment.location!.address)
-                              ],
+                                child: Column(
+                                  children: [
+                                    const Text('Address'),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Address',
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(color: Colors.black),
+                                        ),
+                                        Text(
+                                          _appointment.location!.address,
+                                          style: textStyleWithPrimarySemiBold
+                                              .copyWith(),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'Adress :',
+                          //       style: textStyleWithPrimarySemiBold,
+                          //     ),
+                          //     Text(_appointment.location!.address)
+                          //   ],
+                          // ),
                           const SizedBox(height: 30),
                           if (_appointment.location != null &&
-                              _appointment.location!.coordinates.isNotEmpty)
+                              _appointment.location!.coordinates.isNotEmpty &&
+                              !_appointment.isVideo)
                             SizedBox(
                               height: 300,
                               child: MapWidget(
@@ -477,14 +968,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                             ),
                           const SizedBox(height: 30),
-                          if (_appointment.providerComment != null)
+                          if (_appointment.providerComment != null &&
+                              inProviderApp)
                             Column(
                               children: [
                                 Row(
                                   children: [
                                     Text(
                                       'Your Note:',
-                                      style: textStyleWithPrimaryBold,
+                                      style: textStyleWithPrimarySemiBold,
                                       textAlign: TextAlign.start,
                                     ),
                                   ],
@@ -501,12 +993,26 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 ),
                               ],
                             ),
-                          if (!_appointment.isDone)
+                          if (!_appointment.isDone && inProviderApp)
                             Button1(
                               title: getButtonTitle(),
                               size: const Size(330, 40),
                               onPressed: () {
                                 getAcction(context);
+                              },
+                            ),
+                          const SizedBox(height: 30),
+                          if (_appointment.isDone &&
+                              inProviderApp &&
+                              !_appointment.payed &&
+                              _appointment.isCash)
+                            Button1(
+                              title: 'Pay',
+                              size: const Size(330, 40),
+                              onPressed: () {
+                                context
+                                    .read<AppointmentsCubit>()
+                                    .providerPayFunc(_appointment.id);
                               },
                             )
                         ],
@@ -527,6 +1033,68 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         }
         return const SizedBox();
       },
+    );
+  }
+}
+
+class StartVideoButton extends StatelessWidget {
+  const StartVideoButton({super.key, required this.appointment});
+  final Appointment appointment;
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<AgoraTokenCubitCubit>(
+      create: (context) => getIt(),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<AgoraTokenCubitCubit, AgoraTokenCubitCubitState>(
+            listener: (context, state) {
+              if (state is AgoraTokenCubitCubitStateLoaded) {
+                EasyLoading.dismiss();
+
+                // listenToChange(context, state.appointment);
+                requestAgoraPermissions().then((value) {
+                  context.router.push(
+                    VideoPageeRouter(
+                      token: state.appointments.token,
+                      uid: state.appointments.uid,
+                      channelName: appointment.id,
+                    ),
+                  );
+                });
+              }
+            },
+            child: Button1(
+              onPressed: () async {
+                await context
+                    .read<AgoraTokenCubitCubit>()
+                    .stratVideoFunc(appointment.id);
+              },
+              title: '',
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Start Vedio Now',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      height: 1,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Icon(
+                    Icons.video_call,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

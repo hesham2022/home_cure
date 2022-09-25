@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/validation_regx.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/features/authentication/domain/entities/update_user_params.dart';
@@ -24,6 +25,16 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   bool english = true;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        english = Localizations.localeOf(context).toString() == 'en';
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +111,7 @@ class _SettingPageState extends State<SettingPage> {
                               child: InkWell(
                                 onTap: () => setState(() {
                                   english = false;
+                                  App.changeLanguage(context, 'ar');
                                 }),
                                 child: Container(
                                   alignment: Alignment.center,
@@ -107,10 +119,15 @@ class _SettingPageState extends State<SettingPage> {
                                     color: english == true
                                         ? Colors.white
                                         : primaryColor,
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      topLeft: Radius.circular(20),
-                                    ),
+                                    borderRadius: !english
+                                        ? const BorderRadius.only(
+                                            bottomRight: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          )
+                                        : const BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            topLeft: Radius.circular(20),
+                                          ),
                                   ),
                                   child: Text(
                                     'عربي',
@@ -128,16 +145,22 @@ class _SettingPageState extends State<SettingPage> {
                               child: InkWell(
                                 onTap: () => setState(() {
                                   english = true;
+                                  App.changeLanguage(context, 'en');
                                 }),
                                 child: Container(
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     color:
                                         english ? primaryColor : Colors.white,
-                                    borderRadius: const BorderRadius.only(
-                                      bottomRight: Radius.circular(20),
-                                      topRight: Radius.circular(20),
-                                    ),
+                                    borderRadius: english
+                                        ? const BorderRadius.only(
+                                            bottomRight: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          )
+                                        : const BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            topLeft: Radius.circular(20),
+                                          ),
                                   ),
                                   child: Text(
                                     'English',
@@ -152,6 +175,41 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      SettingTap(
+                        icon: const Icon(
+                          Icons.email,
+                          color: Colors.white,
+                        ),
+                        title: user.email,
+                        onTap: () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (_) => ChangeDialouge(
+                              keyboardType: TextInputType.emailAddress,
+                              title: 'E-mail',
+                              current: user.email,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'E-mail is empty';
+                                }
+                                if (!ValidationsPatterns.emailValidate
+                                    .hasMatch(value)) {
+                                  return 'Inavlid E-mail';
+                                }
+                                return null;
+                              },
+                              onDone: (value) {
+                                context.read<UserCubit>().updateUserFunc(
+                                      UpdateUserParams(email: value),
+                                    );
+                              },
+                            ),
+                          );
+                        },
                       ),
                       SizedBox(
                         height: 30.h,

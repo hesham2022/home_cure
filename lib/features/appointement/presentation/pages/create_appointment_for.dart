@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/map_utils/location_service.dart';
 import 'package:home_cure/core/utils/map_utils/map_helper.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
@@ -128,13 +129,14 @@ class _CreateAppointementFourthPageState
                   height: 20.h,
                 ),
                 Button1(
+                  onPressed: mapHelper.getMyLocation,
                   titelStyle: textStyleWithPrimaryBold.copyWith(
                     color: Colors.white,
                     height: 1,
                     fontSize: 18.sp,
                   ),
                   size: Size(MediaQuery.of(context).size.width, 45.h),
-                  title: 'Change Your Location',
+                  title: 'Get Your Current Location',
                 ),
 
                 ///
@@ -175,6 +177,7 @@ class _CreateAppointementFourthPageState
                               ],
                             ),
                           );
+
                       context.router.push(
                         CreateAppointmentPayment(
                           service: widget.service,
@@ -208,23 +211,35 @@ class _MapWidgetState extends State<MapWidget> {
     _mapHelper.addListener(() {
       setState(() {});
     });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      // initialCameraPosition: MapHelper().initialPosition,
-      onCameraMove: (position) {
-        _mapHelper.addMarker(position.target);
-      },
-      myLocationEnabled: true,
-      onTap: (point) async {
-        _mapHelper.addMarker(point);
-      },
-      markers: _mapHelper.markers,
-      onMapCreated: _mapHelper.init,
-      initialCameraPosition: _mapHelper.initialPosition,
+    print(LocationService.position);
+    print(widget.mapHelper.initialPosition);
+
+    return Column(
+      children: [
+        Expanded(
+          child: GoogleMap(
+            // initialCameraPosition: MapHelper().initialPosition,
+            onCameraMove: (position) {
+              _mapHelper.addMarker(position.target);
+            },
+            myLocationEnabled: true,
+            onTap: (point) async {
+              setState(() {
+                _mapHelper.addMarker(point);
+              });
+            },
+            markers: _mapHelper.markers,
+            onMapCreated: _mapHelper.init,
+            initialCameraPosition: _mapHelper.initialPosition(),
+          ),
+        ),
+      ],
     );
   }
 }

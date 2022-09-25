@@ -1,6 +1,6 @@
 //const kBaseUrl = 'http://192.168.1.3:3000/v1';
 // const domain = 'https://wyca.herokuapp.com';
-const domain = 'http://192.168.1.2:8000';
+const domain = 'http://192.168.1.4:8000';
 
 // const kBaseUrl = 'https://wyca.herokuapp.com/v1';
 const kBaseUrl = '$domain/v1';
@@ -8,7 +8,11 @@ const kBaseUrl = '$domain/v1';
 const kRegister = '$kBaseUrl/auth/register';
 const kRegisterProvider = '$kBaseUrl/auth/provider/register';
 const kForgotPassword = '$kBaseUrl/auth/forgot-password';
+const kSendOtp = '$kBaseUrl/auth/send-verification-otp';
+
 const kverifyForgotPassword = '$kBaseUrl/auth/verify-forget-password-otp';
+const kVerifyOtp = '$kBaseUrl/auth/verify-otp';
+
 const kResetPassword = '$kBaseUrl/auth/reset-password';
 const kLogin = '$kBaseUrl/auth/login';
 const kProviderLogin = '$kBaseUrl/provider-auth/login';
@@ -32,6 +36,10 @@ const kOnProccessingAppointments = '$kApppointment/provider/OnProcessing/';
 const kDoneAppointments = '$kApppointment/provider/done/';
 
 const kUserPay = '$kApppointment/pay/';
+const kPorividerPay = '$kApppointment/provider/pay/';
+
+const kStartVideo = '$kApppointment/video/';
+
 const kCreatePaymentLink = '$kApppointment/get_payment_link/';
 
 const kGetMeProvider = '$kBaseUrl/auth/provider/get-me';

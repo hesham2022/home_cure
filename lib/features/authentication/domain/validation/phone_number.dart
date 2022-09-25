@@ -26,7 +26,7 @@ class PhoneNumber extends FormzInput<String, PhoneNumberValidationError> {
 }
 
 Either<PhoneNumberValidationError, void> phoneNumberValidator(String value) {
-  const patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+  const patttern = r'(^(?:[+0]9)?(?:[+?0?0?966]+)?[0-9]{10,12}$)';
   final regExp = RegExp(patttern);
   if (value.isEmpty) {
     return const Left(PhoneNumberValidationError.empty);

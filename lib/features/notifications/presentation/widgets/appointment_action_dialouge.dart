@@ -48,7 +48,7 @@ class _ApppointmentActionDiaougeState extends State<ApppointmentActionDiaouge> {
           ],
         ),
         height: widget.appointment.isOnPeocessing ? 450 : 150,
-        width: 380,
+        // width: 300,
         child: Form(
           key: _key,
           child: Padding(
@@ -112,8 +112,6 @@ class _ApppointmentActionDiaougeState extends State<ApppointmentActionDiaouge> {
                     ),
                   ],
                 ),
-
-             
               ],
             ),
           ),

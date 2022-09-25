@@ -3,24 +3,27 @@ import 'package:agora_rtc_engine/rtc_local_view.dart' as localView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as remoteView;
 import 'package:flutter/material.dart';
 
-const appId = '28e8f388feda4fdc998971a43e355b81';
-const appCertificate = 'c18579944eae4eff9fa5319efa391c38';
+const APP_ID = '28e8f388feda4fdc998971a43e355b81';
+String Token =
+    '007eJxTYFAQ3SvwLuaC/7ntTxnybjy2nSceN9Nk9wnTd8p/Pm56E8GvwJBkbJ6UampkbpRkZmRiYGGSmGaRam5qZmCaaGmclmiZrFGhkbz0pGbymdJORkYGCATxWRiMDIwMGRgArykhZg==';
+const role = ClientRole.Broadcaster;
+String channelName2 = '2021';
 
-class VideoPage extends StatefulWidget {
-  const VideoPage({
+class Call extends StatefulWidget {
+  const Call({
     super.key,
-    this.channelName,
-    this.role = ClientRole.Broadcaster,
+    required this.uid,
     required this.token,
+    required this.channelName,
   });
-  final String? channelName;
-  final ClientRole? role;
+  final int uid;
   final String token;
+  final String channelName;
   @override
-  State<VideoPage> createState() => _VideoPageState();
+  State<Call> createState() => _CallState();
 }
 
-class _VideoPageState extends State<VideoPage> {
+class _CallState extends State<Call> {
   final users = <int>[];
   final infoStrings = <String>[];
   bool muted = false;
@@ -28,6 +31,8 @@ class _VideoPageState extends State<VideoPage> {
   late RtcEngine engine;
   @override
   void initState() {
+    print('token is ${widget.token}');
+    print('uid is ${widget.uid}');
     intialze();
     super.initState();
   }
@@ -35,40 +40,45 @@ class _VideoPageState extends State<VideoPage> {
   @override
   void dispose() {
     users.clear();
-    engine
-      ..leaveChannel()
-      ..destroy();
+    engine.leaveChannel();
+    engine.destroy();
     super.dispose();
   }
 
   Future<void> intialze() async {
-    if (appId.isEmpty) {
+    if (APP_ID.isEmpty) {
       setState(() {
-        infoStrings
-          ..add('App Id is empty')
-          ..add('engine not starting');
+        infoStrings.add('App Id is empty');
+        infoStrings.add('engine not starting');
       });
       return;
     }
-    engine = await RtcEngine.create(appId);
+    engine = await RtcEngine.create(APP_ID);
     await engine.enableVideo();
 
     await engine.enableAudio();
     await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-    await engine.setClientRole(widget.role!);
+    await engine.setClientRole(ClientRole.Broadcaster);
     addAgoraEventHandler();
-    final configuration = VideoEncoderConfiguration()
-      ..dimensions = const VideoDimensions(width: 1920, height: 1088);
+    final configuration = VideoEncoderConfiguration();
+    configuration.dimensions = const VideoDimensions(width: 1920, height: 1088);
     await engine.setVideoEncoderConfiguration(configuration);
-    await engine.joinChannel(widget.token, widget.channelName!, null, 0);
+    await engine.joinChannel(
+      widget.token,
+      widget.channelName,
+      null,
+      widget.uid,
+    );
   }
 
+  // ignore: always_declare_return_types, type_annotate_public_apis
   void addAgoraEventHandler() {
     engine.setEventHandler(
       RtcEngineEventHandler(
         error: (err) {
           setState(() {
             final info = 'Error i s $err';
+            print(info);
             infoStrings.add(info);
           });
         },
@@ -105,14 +115,14 @@ class _VideoPageState extends State<VideoPage> {
 
   Widget rowViews() {
     final list = <StatefulWidget>[];
-    if (widget.role == ClientRole.Broadcaster) {
+    if (role == ClientRole.Broadcaster) {
       list.add(const localView.SurfaceView());
     }
     for (final i in users) {
       list.add(
         remoteView.SurfaceView(
           uid: i,
-          channelId: widget.channelName!,
+          channelId: widget.channelName,
         ),
       );
     }

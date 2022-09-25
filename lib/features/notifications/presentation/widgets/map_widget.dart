@@ -30,7 +30,10 @@ class _MapWidgetState extends State<MapWidget> {
 
       markers: _mapHelper.markers,
       onMapCreated: _mapHelper.init,
-      initialCameraPosition: _mapHelper.initialPosition,
+      initialCameraPosition: CameraPosition(
+        target: widget.latLong,
+        zoom: 10,
+      ),
     );
   }
 }

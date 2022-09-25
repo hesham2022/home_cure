@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/fcm_utils.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 
 final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -138,6 +140,16 @@ class _MainScaffoldState extends State<MainScaffold> {
                                   (index) => InkWell(
                                     onTap: () => setState(() {
                                       currentIndex = index;
+                                      if (context
+                                                  .read<
+                                                      NotificationsBudgeCubit>()
+                                                  .state >
+                                              0 &&
+                                          currentIndex == 3) {
+                                        context
+                                            .read<NotificationsBudgeCubit>()
+                                            .read();
+                                      }
 
                                       /// ! this is ver danegrous
                                       /// you can di it sempily like this
@@ -190,15 +202,48 @@ class _MainScaffoldState extends State<MainScaffold> {
                                               )
                                             ],
                                           )
-                                        : SvgPicture.asset(
-                                            icons[index].path,
-                                            height: currentIndex == index
-                                                ? kBottomNavigationBarHeight *
-                                                    1.2
-                                                : null,
-                                            color: currentIndex == index
-                                                ? null
-                                                : const Color(0xff1AA9A0),
+                                        : BlocBuilder<NotificationsBudgeCubit,
+                                            int>(
+                                            buildWhen: (previous, current) =>
+                                                index == 3,
+                                            builder: (context, state) {
+                                              return Stack(
+                                                clipBehavior: Clip.none,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    icons[index].path,
+                                                    height: currentIndex ==
+                                                            index
+                                                        ? kBottomNavigationBarHeight *
+                                                            1.2
+                                                        : null,
+                                                    color: currentIndex == index
+                                                        ? null
+                                                        : const Color(
+                                                            0xff1AA9A0,
+                                                          ),
+                                                  ),
+                                                  if (state > 0 && index == 3)
+                                                    Positioned(
+                                                      top: 0,
+                                                      right: -4,
+                                                      child: CircleAvatar(
+                                                        radius: 10,
+                                                        child: Text(
+                                                          state.toString(),
+                                                          style:
+                                                              textStyleWithPrimaryBold
+                                                                  .copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                ],
+                                              );
+                                            },
                                           ),
                                   ),
                                 ),

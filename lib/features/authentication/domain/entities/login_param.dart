@@ -9,7 +9,8 @@ import 'package:home_cure/core/utils/fcm_utils.dart';
 class LoginParam {
   LoginParam({
     required this.password,
-    required this.email,
+    this.email,
+    this.phoneNumber,
   });
   factory LoginParam.fromJson(String str) =>
       LoginParam.fromMap(json.decode(str) as Map<String, dynamic>);
@@ -21,7 +22,9 @@ class LoginParam {
   String toJson() => json.encode(toMap());
 
   final String password;
-  final String email;
+  final String? phoneNumber;
+
+  final String? email;
 
   LoginParam copyWith({
     String? password,
@@ -32,9 +35,21 @@ class LoginParam {
         email: email ?? this.email,
       );
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        'password': password,
-        'email': email,
-        'fcm':PushNotifications.fcmToken
-      };
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{
+      'password': password,
+      'fcm': PushNotifications.fcmToken
+    };
+    if (email != null) {
+      if (email!.isNotEmpty) {
+        map.addAll(<String, dynamic>{'email': email});
+      }
+    }
+    if (phoneNumber != null) {
+      if (phoneNumber!.isNotEmpty) {
+        map.addAll(<String, dynamic>{'phoneNumber': phoneNumber});
+      }
+    }
+    return map;
+  }
 }

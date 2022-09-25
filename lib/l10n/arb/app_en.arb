@@ -1,7 +1,13 @@
 {
-    "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+  "@@locale": "en",
+  "counterAppBarTitle": "Counter",
+  "@counterAppBarTitle": {
+    "description": "Text shown in the AppBar of the Counter Page"
+  },
+  "and_we_will_contact_you_soon": "and we will contact you soon",
+  "contact": "Contact",
+  "customaer_service": "Customer Service",
+  "hello": "hello",
+  "home_doctor": "home doctor",
+  "select_what_you_feel": "Select what you feel"
 }

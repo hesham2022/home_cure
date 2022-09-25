@@ -89,12 +89,14 @@ android {
         }
         staging {
             dimension "default"
-            applicationIdSuffix ".stg"
+             applicationIdSuffix ""
+            // applicationIdSuffix ".stg"
             manifestPlaceholders = [appName: "[STG] Home Cure"]
         }
         development {
             dimension "default"
-            applicationIdSuffix ".dev"
+             applicationIdSuffix ""
+            // applicationIdSuffix ".dev"
             manifestPlaceholders = [appName: "[DEV] Home Cure"]
         }
     }

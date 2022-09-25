@@ -19,6 +19,9 @@ class Appointment extends Equatable {
     required this.canceled,
     this.days,
     this.sessions,
+    this.videoToken,
+    required this.isTele,
+    this.uid,
     this.price,
     this.providerComment,
   });
@@ -28,6 +31,8 @@ class Appointment extends Equatable {
   final String status;
   final bool payed;
   final bool isVideo;
+  final bool isTele;
+
   final String id;
   final String reason;
   final DateTime date;
@@ -38,7 +43,9 @@ class Appointment extends Equatable {
   final String paymentMethod;
   final String? link;
   final bool canceled;
+  final String? videoToken;
   final int? days;
+  final int? uid;
   final int? sessions;
   Appointment copyWith({
     Location? location,
@@ -49,13 +56,16 @@ class Appointment extends Equatable {
     String? id,
     String? reason,
     DateTime? date,
+    bool? isTele,
     String? timeslot,
     String? user,
     String? service,
+    int? uid,
     String? paymentMethod,
     String? link,
     bool? canceled,
     int? days,
+    String? videoToken,
     int? sessions,
   }) {
     return Appointment(
@@ -65,10 +75,13 @@ class Appointment extends Equatable {
       payed: payed ?? this.payed,
       isVideo: isVideo ?? this.isVideo,
       id: id ?? this.id,
+      uid: uid ?? this.uid,
       reason: reason ?? this.reason,
       date: date ?? this.date,
+      isTele: isTele ?? this.isTele,
       timeslot: timeslot ?? this.timeslot,
       user: user ?? this.user,
+      videoToken: videoToken ?? this.videoToken,
       service: service ?? this.service,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       link: link ?? this.link,
@@ -87,6 +100,7 @@ class Appointment extends Equatable {
   bool get hasDays => days != null;
   bool get hasSessions => sessions != null;
 
+  bool get hasVideoToken => videoToken != null;
   @override
   List<Object?> get props => [
         location,
@@ -98,10 +112,13 @@ class Appointment extends Equatable {
         reason,
         date,
         timeslot,
+        isTele,
         user,
         service,
         paymentMethod,
         link,
         canceled,
+        videoToken,
+        uid
       ];
 }

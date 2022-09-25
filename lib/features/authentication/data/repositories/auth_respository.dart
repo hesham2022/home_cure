@@ -34,7 +34,7 @@ class AuthenticationRepository extends IAuthenticationRepository {
       yield AuthenticationStatus.unauthenticated;
     } else {
       _apiConfig.init(token);
-       yield AuthenticationStatus.authenticated;
+      yield AuthenticationStatus.authenticated;
       // if (userType == 'user') {
       //   yield AuthenticationStatus.authenticated;
       // }
@@ -107,7 +107,7 @@ class AuthenticationRepository extends IAuthenticationRepository {
               .saveToken(loginResponse.tokens.access.token);
           await Storage.setIsFirst();
           await Storage.setPassword(signParams.password);
-          controller.add(AuthenticationStatus.authenticated);
+          controller.add(AuthenticationStatus.signUpSucess);
           print('___' * 100);
         },
         failureCallBack: () =>
@@ -125,6 +125,15 @@ class AuthenticationRepository extends IAuthenticationRepository {
   }
 
   @override
+  Future<Either<NetworkExceptions, String>> sendOtp() {
+    return guardFuture<String>(
+      () async {
+        return authRemotDataSource.sendOtp();
+      },
+    );
+  }
+
+  @override
   Future<Either<NetworkExceptions, String>> verifyForgetPasswordOtp(
     VerifyForgetPasswordParam verifyForgetPasswordParam,
   ) {
@@ -132,6 +141,17 @@ class AuthenticationRepository extends IAuthenticationRepository {
       () async {
         return authRemotDataSource
             .verifyForgotPassword(verifyForgetPasswordParam.toMap());
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, void>> verifyOtp(
+    VerifyForgetPasswordParam verifyForgetPasswordParam,
+  ) {
+    return guardFuture<void>(
+      () async {
+        return authRemotDataSource.verifyOtp(verifyForgetPasswordParam.toMap());
       },
     );
   }
@@ -148,52 +168,4 @@ class AuthenticationRepository extends IAuthenticationRepository {
     );
   }
 
-  // @override
-  // Future<Either<NetworkExceptions, String>> forgotPassword(
-  //   ForgetPasswordParam forgetPasswordParam,
-  // ) {
-  //   return guardFuture<String>(
-  //     () async {
-  //       return authRemotDataSource.forgotPassword(forgetPasswordParam.toMap());
-  //     },
-  //   );
-  // }
-
-  // @override
-  // Future<Either<NetworkExceptions, String>> verifyForgetPasswordOtp(
-  //   VerifyForgetPasswordParam verifyForgetPasswordParam,
-  // ) {
-  //   return guardFuture<String>(
-  //     () async {
-  //       return authRemotDataSource
-  //           .verifyForgotPassword(verifyForgetPasswordParam.toMap());
-  //     },
-  //   );
-  // }
-
-  // @override
-  // Future<Either<NetworkExceptions, void>> resetPassword(
-  //   ResetPasswordParams verifyForgetPasswordParam,
-  // ) {
-  //   return guardFuture<void>(
-  //     () async {
-  //       return authRemotDataSource
-  //           .resetPassword(verifyForgetPasswordParam.toMap());
-  //     },
-  //   );
-  // }
-
-  // @override
-  // Future<Either<NetworkExceptions, void>> resetPassword(
-  //   ResetPasswordParam resetPasswordParam,
-  // ) {
-  //   throw UnimplementedError();
-  // }
-
-  // @override
-  // Future<Either<NetworkExceptions, void>> updatePassword(
-  //   UpdatePasswordParam updatePasswordParam,
-  // ) {
-  //   throw UnimplementedError();
-  // }
 }

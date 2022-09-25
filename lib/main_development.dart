@@ -23,6 +23,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
     'resource://mipmap/launcher_icon',
     [
       NotificationChannel(
+        playSound: true,
         channelGroupKey: 'basic_tests',
         channelKey: 'basic_channel',
         channelName: 'Basic notifications',

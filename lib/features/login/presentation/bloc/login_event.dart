@@ -16,6 +16,14 @@ class LoginUsernameChanged extends LoginEvent {
   List<Object> get props => [username];
 }
 
+class LoginEmailOrPhoneChanged extends LoginEvent {
+  const LoginEmailOrPhoneChanged(this.username);
+  final String username;
+
+  @override
+  List<Object> get props => [username];
+}
+
 class LoginPasswordChanged extends LoginEvent {
   const LoginPasswordChanged(this.password);
 
@@ -24,6 +32,7 @@ class LoginPasswordChanged extends LoginEvent {
   @override
   List<Object> get props => [password];
 }
+
 class LoginConfirmPasswordChanged extends LoginEvent {
   const LoginConfirmPasswordChanged(this.password);
 
@@ -69,8 +78,18 @@ class ChangeErrorMessage extends LoginEvent {
   List<Object> get props => [msg];
 }
 
+class ResetFields extends LoginEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
+}
+
+class LoginWithEmail extends LoginEvent {
+  const LoginWithEmail({required this.loginWithEmail});
+  final bool loginWithEmail;
 }
 
 class LoginBirthChanged extends LoginEvent {

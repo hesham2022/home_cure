@@ -1,0 +1,11 @@
+{
+  "folders": [
+	{
+		"name": "home_cure",
+		"path": "../../.."
+	}
+],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "interactive"
+  }
+}

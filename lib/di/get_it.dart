@@ -8,7 +8,9 @@ import 'package:home_cure/features/appointement/domain/usecases/accept_appointme
 import 'package:home_cure/features/appointement/domain/usecases/create_appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/create_payment_link.dart';
 import 'package:home_cure/features/appointement/domain/usecases/get_appointments.dart';
+import 'package:home_cure/features/appointement/domain/usecases/start_video.dart';
 import 'package:home_cure/features/appointement/domain/usecases/user_pay.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/agora_token_cubit/agora_token_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
@@ -40,6 +42,7 @@ import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.d
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_bloc.dart';
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
+import 'package:home_cure/features/login/presentation/verify_otp/verify_otp_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -81,6 +84,7 @@ Future<void> init() async {
     ..registerLazySingleton<UpdateProvider>(() => UpdateProvider(getIt()))
     ..registerLazySingleton<UpdateUserDetails>(() => UpdateUserDetails(getIt()))
     ..registerLazySingleton<GetTimeSlots>(() => GetTimeSlots(getIt()))
+    ..registerLazySingleton<StartVideo>(() => StartVideo(getIt()))
     ..registerLazySingleton<UploadUserAttachments>(
       () => UploadUserAttachments(getIt()),
     )
@@ -96,9 +100,13 @@ Future<void> init() async {
     ..registerLazySingleton<GetServices>(() => GetServices(getIt()))
     ..registerLazySingleton<CreateAppointment>(() => CreateAppointment(getIt()))
     ..registerLazySingleton<UserPay>(() => UserPay(getIt()))
+        ..registerLazySingleton<ProviderPay>(() => ProviderPay(getIt()))
+
     ..registerLazySingleton<GetAppointments>(() => GetAppointments(getIt()))
     ..registerLazySingleton<CreatePaymentLink>(() => CreatePaymentLink(getIt()))
     ..registerLazySingleton<AcceptAppointment>(() => AcceptAppointment(getIt()))
+        ..registerLazySingleton<Cancel>(() => Cancel(getIt()))
+
     ..registerLazySingleton<OnPorogressAppointment>(
       () => OnPorogressAppointment(getIt()),
     )
@@ -131,6 +139,12 @@ Future<void> init() async {
     ..registerFactory<ForgetPasswordCubit>(
       () => ForgetPasswordCubit(authenticationRepository: getIt()),
     )
+
+   ..registerFactory<VerifyOtpCubit>(
+      () => VerifyOtpCubit(authenticationRepository: getIt()),
+    )
+
+    
     ..registerFactory<LoginBloc>(
       () => LoginBloc(authenticationRepository: getIt()),
     )
@@ -153,11 +167,17 @@ Future<void> init() async {
         acceptAppointment: getIt(),
         createAppointement: getIt(),
         userPay: getIt(),
+        providerPay: getIt(),
         createPaymentLink: getIt(),
+        startVideo: getIt(),
+        cancel: getIt(),
       ),
     )
     ..registerFactory<MyAppointmentsCubit>(
       () => MyAppointmentsCubit(getIt()),
+    )
+    ..registerFactory<AgoraTokenCubitCubit>(
+      () => AgoraTokenCubitCubit(getIt()),
     );
 
   // ..registerFactory<SearchMovieCubit>(

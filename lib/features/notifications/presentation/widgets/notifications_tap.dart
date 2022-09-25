@@ -29,7 +29,6 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
     super.initState();
   }
 
-  ClientRole s;
   @override
   Widget build(BuildContext context) => Container(
         height: 35,

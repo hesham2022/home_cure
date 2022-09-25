@@ -7,7 +7,9 @@ import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
+import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:intl/intl.dart';
 
 // class AppointmentsStatus  {
 //  static const  opened= 'opened';
@@ -32,6 +34,45 @@ class AppointmentInfoWidget extends StatelessWidget {
       return 'Completed';
     }
     return 'Pending';
+  }
+
+  Color getColor() {
+    if (request.isOpened) return seocondColor;
+    if (request.isWaiting) return seocondColor;
+    if (request.isOnPeocessing) return seocondColor;
+
+    return primaryColor;
+  }
+
+  Widget getIcon() {
+    if (request.isVideo) {
+      return Icon(
+        Icons.video_call,
+        size: 25,
+        color: getColor(),
+      );
+    }
+    if (request.isTele) {
+      return Assets.svg.phone3.svg(
+        height: 25,
+        color: getColor(),
+      );
+    }
+    return Icon(
+      Icons.location_pin,
+      size: 25,
+      color: getColor(),
+    );
+  }
+
+  String getTitleString() {
+    if (request.isVideo) {
+      return 'Video Request';
+    }
+    if (request.isTele) {
+      return 'Call Request';
+    }
+    return 'Appointment Request';
   }
 
   @override
@@ -81,8 +122,8 @@ class AppointmentInfoWidget extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 6,
                                 ),
-                                height: 20.h,
-                                width: 80.w,
+                                height: 25.h,
+                                width: 120.w,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: request.status == 'waiting'
@@ -94,7 +135,8 @@ class AppointmentInfoWidget extends StatelessWidget {
                                               .withOpacity(.2),
                                 ),
                                 child: Text(
-                                  getStatus(),
+                                  'On Processing',
+                                  // getStatus(),
                                   style: textStyleWithSecondSemiBold.copyWith(
                                     fontSize: 12.sp,
                                     height: 1,
@@ -105,7 +147,7 @@ class AppointmentInfoWidget extends StatelessWidget {
                                 height: 10.h,
                               ),
                               Text(
-                                'Call Request',
+                                getTitleString(), //  'Call Request',
                                 style: textStyleWithPrimarySemiBold.copyWith(
                                   fontSize: 14.sp,
                                   height: 1,
@@ -133,25 +175,42 @@ class AppointmentInfoWidget extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Friday',
+                                      DateFormat('EEEE')
+                                          .format(request.date), //   'Friday',
                                       style: textStyleWithPrimarySemiBold
                                           .copyWith(fontSize: 14.sp),
                                     ),
                                     Text(
-                                      '25 June 2022',
+                                      DateFormat('EEEE, d MMM, yyyy')
+                                          .format(request.date),
                                       style:
                                           textStyleWithPrimarySemiBold.copyWith(
                                         fontSize: 12.sp,
                                         color: const Color(0xff5D6C7A),
                                       ),
                                     ),
-                                    Text(
-                                      '05:52 PM',
-                                      style:
-                                          textStyleWithPrimarySemiBold.copyWith(
-                                        fontSize: 12.sp,
-                                        color: const Color(0xff5D6C7A),
-                                      ),
+                                    BlocBuilder<TimeSlotCubit,
+                                        TimeSlotCubitState>(
+                                      builder: (context, state) {
+                                        if (state is TimeSlotCubitStateLoaded) {
+                                          final timeSlots = state.timeSlots;
+
+                                          final timeSlot = timeSlots.firstWhere(
+                                            (element) =>
+                                                element.id == request.timeslot,
+                                          );
+                                          return Text(
+                                            timeSlot
+                                                .startSting, //   '05:52 PM',
+                                            style: textStyleWithPrimarySemiBold
+                                                .copyWith(
+                                              fontSize: 12.sp,
+                                              color: const Color(0xff5D6C7A),
+                                            ),
+                                          );
+                                        }
+                                        return const Text('');
+                                      },
                                     ),
                                     Text(
                                       'Number: 20010000000000',
@@ -163,13 +222,7 @@ class AppointmentInfoWidget extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Assets.svg.phone3.svg(
-                                  color: request.isOpened
-                                      ? const Color(0xffD74B7F)
-                                      : request.isDone
-                                          ? null
-                                          : seocondColor,
-                                ),
+                                getIcon(),
                               ],
                             ),
                           ),

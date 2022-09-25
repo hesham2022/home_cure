@@ -7,6 +7,7 @@ import 'package:home_cure/features/appointement/domain/entities/done_params.dart
 import 'package:home_cure/features/appointement/domain/usecases/accept_appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/create_appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/create_payment_link.dart';
+import 'package:home_cure/features/appointement/domain/usecases/start_video.dart';
 import 'package:home_cure/features/appointement/domain/usecases/user_pay.dart';
 
 part './appointments_cubit_state.dart';
@@ -19,13 +20,20 @@ class AppointmentsCubit extends Cubit<AppointmentsCubitState> {
     required this.acceptAppointment,
     required this.onPorogressAppointment,
     required this.doneAppointment,
+    required this.startVideo,
+    required this.cancel,
+    required this.providerPay,
   }) : super(AppointmentsCubitStateIntial());
   final CreateAppointment createAppointement;
   final UserPay userPay;
+  final ProviderPay providerPay;
+
   final CreatePaymentLink createPaymentLink;
   final AcceptAppointment acceptAppointment;
   final OnPorogressAppointment onPorogressAppointment;
   final DoneAppointment doneAppointment;
+  final StartVideo startVideo;
+  final Cancel cancel;
   Future<void> createAppointementFunc(
     CreateAppointmentParams params,
   ) async {
@@ -40,11 +48,32 @@ class AppointmentsCubit extends Cubit<AppointmentsCubitState> {
     });
   }
 
+//AppointmentsCubitStateStartVideo
   Future<void> userPayFunc(
     String params,
   ) async {
     emit(AppointmentsCubitStateLoading());
     final response = await userPay(params);
+    response.fold((l) => emit(AppointmentsCubitStateError(l)), (r) {
+      emit(AppointmentsCubitStatePayed(r));
+    });
+  }
+
+  Future<void> cancelFunc(
+    String params,
+  ) async {
+    emit(AppointmentsCubitStateLoading());
+    final response = await cancel(params);
+    response.fold((l) => emit(AppointmentsCubitStateError(l)), (r) {
+      emit(AppointmentsCubitStateCancelled());
+    });
+  }
+
+  Future<void> providerPayFunc(
+    String params,
+  ) async {
+    emit(AppointmentsCubitStateLoading());
+    final response = await providerPay(params);
     response.fold((l) => emit(AppointmentsCubitStateError(l)), (r) {
       emit(AppointmentsCubitStatePayed(r));
     });

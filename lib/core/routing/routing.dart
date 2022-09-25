@@ -3,6 +3,7 @@ import 'package:home_cure/core/widgets/main_scaffold.dart';
 import 'package:home_cure/features/Services/presentation/pages/services_page.dart';
 import 'package:home_cure/features/aboutus_contactus/presentation/pages/about_us.dart';
 import 'package:home_cure/features/agore/video_page.dart';
+import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_for.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointment_payment.dart';
@@ -17,8 +18,10 @@ import 'package:home_cure/features/login/presentation/pages/forget_password.dart
 import 'package:home_cure/features/login/presentation/pages/login_page.dart';
 import 'package:home_cure/features/login/presentation/pages/reqgister_page.dart';
 import 'package:home_cure/features/login/presentation/pages/resret_password_page.dart';
+import 'package:home_cure/features/login/presentation/pages/send_otp_page.dart';
 import 'package:home_cure/features/login/presentation/pages/splash_screen.dart';
 import 'package:home_cure/features/login/presentation/pages/varication_code_page.dart';
+import 'package:home_cure/features/login/presentation/pages/verify_otp_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/appointment_details_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/user_information_page.dart';
@@ -48,6 +51,18 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
     CustomRoute<void>(
       page: SplashScreen,
       path: '/',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+    CustomRoute<void>(
+      page: VaricationOtpPage,
+      name: 'VaricationOtpPageRoute',
+      path: 'verify_otp_page',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+    CustomRoute<void>(
+      page: SendOtpPage,
+      name: 'SendOtpPageRoute',
+      path: 'send_otp_page',
       transitionsBuilder: TransitionsBuilders.noTransition,
     ),
     AutoRoute<void>(
@@ -110,6 +125,11 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               transitionsBuilder: TransitionsBuilders.slideTop,
               path: 'create_appointement_payment',
               page: CreateAppointmentPayment,
+            ),
+            AutoRoute<Appointment>(
+              path: 'appointment_details',
+              name: 'AppointmenCompletePayPageRoute',
+              page: AppointmentDetailsPage,
             ),
             CustomRoute<void>(
               barrierDismissible: true,
@@ -266,7 +286,7 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
     AutoRoute<void>(
       path: 'video_page',
       name: 'VideoPageeRouter',
-      page: VideoPage,
+      page: Call,
     ),
     AutoRoute<void>(
       path: 'register',

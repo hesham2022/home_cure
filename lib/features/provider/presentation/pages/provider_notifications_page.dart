@@ -11,7 +11,7 @@ class ProviderNotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<NotificationsBudgeCubit>().state) {
+    if (context.read<NotificationsBudgeCubit>().state > 0) {
       context.read<NotificationsBudgeCubit>().read();
     }
 
@@ -20,9 +20,9 @@ class ProviderNotificationsPage extends StatelessWidget {
         padding: EdgeInsets.all(35.w),
         child: Column(
           children: [
-            SizedBox(
-              height: 50.h,
-            ),
+            // SizedBox(
+            //   height: 50.h,
+            // ),
             const CommonHeader(
               title: 'Notifications',
               bottom: 10,
@@ -40,7 +40,7 @@ class ProviderNotificationsPage extends StatelessWidget {
                     itemBuilder: (c, i) => Container(
                       margin: EdgeInsets.only(bottom: 30.h),
                       child: RequestInfoWidget(
-                        request: state.appointments[i],
+                        request: state.appointments.reversed.toList()[i],
                       ),
                     ),
                   );

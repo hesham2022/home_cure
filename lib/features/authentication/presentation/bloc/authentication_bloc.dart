@@ -46,12 +46,20 @@ class AuthenticationBloc
     switch (event.status) {
       case AuthenticationStatus.unauthenticated:
         return emit(AuthenticationState.unauthenticated(''));
+      case AuthenticationStatus.signUpSucess:
+        final user = await _getMe(NoParams());
+        return user.fold(
+          (l) => emit(AuthenticationState.unauthenticated(l.errorMessege)),
+          (r) {
+            emit(AuthenticationState.authenticated(r));
+          },
+        );
+
       case AuthenticationStatus.authenticated:
         final user = await _getMe(NoParams());
         return user.fold(
           (l) => emit(AuthenticationState.unauthenticated(l.errorMessege)),
           (r) {
-            print(r.id);
             emit(AuthenticationState.authenticated(r));
           },
         );

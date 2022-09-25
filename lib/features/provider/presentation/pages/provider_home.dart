@@ -17,7 +17,7 @@ class _ProviderHomeState extends State<ProviderHome> {
   @override
   void initState() {
     context.read<MyAppointmentsCubit>().getMyAppointsFunc();
-    context.read<NotificationsCubit>().getNotifications();
+    context.read<NotificationsCubit>().getProviderNotifications();
 
     // Hive.box<Map<dynamic, dynamic>>(userNotificationsBox)
     //   ..listenable().addListener(() {
@@ -70,12 +70,18 @@ class _ProviderHomeState extends State<ProviderHome> {
             BlocBuilder<MyAppointmentsCubit, MyAppointmentsCubitState>(
               builder: (context, state) {
                 if (state is MyAppointmentsCubitStateLoaded) {
-                  final appointments =
-                      initialValue == ReqestNotificion.notification
-                          ? state.appointments
-                              .where((element) => element.status != 'done')
-                              .toList()
-                          : state.appointments;
+                  final appointments = initialValue ==
+                          ReqestNotificion.notification
+                      ? state.appointments
+                          .where((element) => element.status != 'done')
+                          .toList()
+                          .reversed
+                          .toList()
+                      : state.appointments
+                          .where((element) => element.isDone)
+                          .toList()
+                          .reversed
+                          .toList();
                   if (appointments.isEmpty) {
                     return const Center(
                       child: Text('No Appointments found  😥 😥'),

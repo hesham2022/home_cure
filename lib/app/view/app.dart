@@ -12,10 +12,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/core/local_storage/secure_storage_instance.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/utils/fcm_utils.dart';
+import 'package:home_cure/core/utils/map_utils/location_service.dart';
 import 'package:home_cure/di/get_it.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
+import 'package:home_cure/features/appointement/presentation/pages/create_appointment_second.dart';
 import 'package:home_cure/features/authentication/domain/repositories/i_repository.dart';
 import 'package:home_cure/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
@@ -23,13 +25,19 @@ import 'package:home_cure/features/home/presentation/blocs/ads_cubit/ads_cubit.d
 import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
+import 'package:home_cure/features/login/presentation/verify_otp/verify_otp_cubit.dart';
 import 'package:home_cure/features/provider/presentation/blocs/notifications_cubit/notifications_cubit.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
-
+  static bool isAr(BuildContext context) =>
+      context.findRootAncestorStateOfType<_AppState>()!._locale == 'ar';
+  static void changeLanguage(BuildContext context, String language) =>
+      context.findRootAncestorStateOfType<_AppState>()!.setLocale(language);
+  static FormState? formState(BuildContext context) =>
+      context.findRootAncestorStateOfType<FormState>();
   @override
   State<App> createState() => _AppState();
 }
@@ -59,14 +67,29 @@ final textStyleWithSecondSemiBold = TextStyle(
 
 //#
 class _AppState extends State<App> {
+  void setLocale(String locale) {
+    setState(() {
+      _locale = locale;
+    });
+    print(locale);
+    Storage.setLang(locale);
+  }
+
+  String _locale = 'en';
   final _appRouter = AppRouter();
   final notificationsBudgeCubit = NotificationsBudgeCubit();
   @override
   void initState() {
-    Storage.setIsFirst();
-
+    Storage.getLang().then(
+      (value) {
+        setState(() {
+          print(_locale);
+          _locale = value!;
+        });
+      },
+    );
     PushNotifications().initToken();
-  
+    LocationService().init();
     super.initState();
   }
 
@@ -97,7 +120,7 @@ class _AppState extends State<App> {
                 BlocProvider<AppointmentsCubit>(
                   create: (ctx) => getIt(),
                 ),
-                 BlocProvider<AdsCubit>(
+                BlocProvider<AdsCubit>(
                   create: (ctx) => getIt(),
                 ),
                 BlocProvider<MyAppointmentsCubit>(
@@ -109,8 +132,12 @@ class _AppState extends State<App> {
                 BlocProvider<NotificationsCubit>(
                   create: (_) => NotificationsCubit(),
                 ),
+                BlocProvider<VerifyOtpCubit>(
+                  create: (_) => getIt(),
+                ),
               ],
               child: MaterialApp.router(
+                locale: Locale(_locale),
                 theme: ThemeData(
                   fontFamily: 'Segoe UI',
                   appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
@@ -125,26 +152,41 @@ class _AppState extends State<App> {
                 routeInformationParser: _appRouter.defaultRouteParser(),
                 builder: EasyLoading.init(
                   builder: (context, child) {
+                    // return const Call(
+                    //   token:
+                    //       '00628e8f388feda4fdc998971a43e355b81IACJ7diqOI9kzzynJRlFKwW8rl/MUBr4+Tt3xmbWAzHC84p+Kioddm3/IgDKMgtCh9UpYwQAAQCH1SljAgCH1SljAwCH1SljBACH1Slj',
+                    //   channelName: 'flutter',
+                    // );
+
                     return BlocListener<AuthenticationBloc,
                         AuthenticationState>(
                       listener: (context, state) async {
                         switch (state.status) {
                           case AuthenticationStatus.authenticated:
+                            print(state.user.id);
                             context.read<UserCubit>().addNewUser(state.user);
                             await PushNotifications()
                                 .init(context, notificationsBudgeCubit);
                             if (state.user.role == 'user') {
-                              await _appRouter.pushAndPopUntil(
-                                const MainScaffold(),
-                                predicate: (d) => false,
-                              );
+                              if (!state.user.isOtpVerified) {
+                                await _appRouter.pushAndPopUntil(
+                                  const SendOtpPageRoute(),
+                                  predicate: (d) => false,
+                                );
+                              } else {
+                                await _appRouter.pushAndPopUntil(
+                                  const MainScaffold(),
+                                  predicate: (d) => false,
+                                );
+                              }
                             } else {
+                              print('I am Provider ${state.user.id}');
                               await _appRouter.pushAndPopUntil(
                                 const MainProviderRouter(),
                                 predicate: (d) => false,
                               );
                             }
-
+                            await Storage.setIsFirst();
                             break;
                           case AuthenticationStatus.unauthenticated:
                             final isFirst = await Storage.isFirst();
@@ -155,18 +197,35 @@ class _AppState extends State<App> {
                                   : const LoginPagePageRouter(),
                               predicate: (d) => false,
                             );
-
+                            await Storage.setIsFirst();
                             break;
                           case AuthenticationStatus.unknown:
                             await _appRouter.pushAndPopUntil(
                               const SplashScreen(),
                               predicate: (d) => false,
                             );
-
+                            await Storage.setIsFirst();
+                            break;
+                          case AuthenticationStatus.signUpSucess:
+                            print('*' * 1000);
+                            await _appRouter.pushAndPopUntil(
+                              const VaricationOtpPageRoute(),
+                              predicate: (d) => false,
+                            );
+                            await Storage.setIsFirst();
                             break;
                         }
                       },
-                      child: child,
+                      child:
+                          // MapWidget(
+                          //   mapHelper: MapHelper(),
+                          // ),
+                          Directionality(
+                        textDirection: _locale == 'ar'
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                        child: child!,
+                      ),
                     );
                   },
                 ),

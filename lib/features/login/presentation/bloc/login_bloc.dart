@@ -22,6 +22,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<LoginSubmitted>(_onSubmitted);
     on<ChangeErrorMessage>(_onChangeErrorMessage);
+    on<ResetFields>(_onResetFields);
+    on<LoginPhoneNumberChanged>(_onPhoneNumberChanged);
+
+    on<LoginWithEmail>(_onLoginWithEmail);
+    on<LoginEmailOrPhoneChanged>(
+      (event, emit) {
+        final username = EmailOrPhone.dirty(event.username);
+
+        emit(
+          state.copyWith(
+            emailOrPhone: username,
+            status: Formz.validate(
+              [
+                state.password,
+                username,
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   final IAuthenticationRepository _authenticationRepository;
@@ -30,6 +51,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     emit(state.copyWith(failureMessege: event.msg));
+  }
+
+  void _onPhoneNumberChanged(
+    LoginPhoneNumberChanged event,
+    Emitter<LoginState> emit,
+  ) {
+    final phoneNumber = PhoneNumber.dirty(event.phoneNumber);
+    emit(
+      state.copyWith(
+        phoneNumber: phoneNumber,
+        status: Formz.validate([state.password, phoneNumber]),
+      ),
+    );
   }
 
   void _onUsernameChanged(
@@ -51,6 +85,29 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
+  void _onLoginWithEmail(
+    LoginWithEmail event,
+    Emitter<LoginState> emit,
+  ) {
+    if (event.loginWithEmail) {
+      const phoneNumber = PhoneNumber.pure();
+      emit(
+        state.copyWith(
+          phoneNumber: phoneNumber,
+          loginWithEmail: event.loginWithEmail,
+        ),
+      );
+    } else {
+      const email = Email.pure();
+      emit(
+        state.copyWith(
+          username: email,
+          loginWithEmail: event.loginWithEmail,
+        ),
+      );
+    }
+  }
+
   void _onPasswordChanged(
     LoginPasswordChanged event,
     Emitter<LoginState> emit,
@@ -61,10 +118,38 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: password,
         status: Formz.validate([
           password,
-          state.username,
+          state.emailOrPhone,
         ]),
       ),
     );
+    // if (state.loginWithEmail) {
+    //   emit(
+    //     state.copyWith(
+    //       password: password,
+    //       status: Formz.validate([
+    //         password,
+    //         state.username,
+    //       ]),
+    //     ),
+    //   );
+    // } else {
+    //   emit(
+    //     state.copyWith(
+    //       password: password,
+    //       status: Formz.validate([
+    //         password,
+    //         state.phoneNumber,
+    //       ]),
+    //     ),
+    //   );
+    // }
+  }
+
+  String phoneNumberFormatter(String value) {
+    if (!value.startsWith('+') && value.startsWith('2')) return '+$value';
+    if (!value.startsWith('+2')) return '+2$value';
+
+    return value;
   }
 
   Future<void> _onSubmitted(
@@ -73,22 +158,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
-      final isProvideLogin =
-          state.username.value.split('@').last == 'homecure.com';
-      print(state.username.value.split('@').last);
+      final isProvideLogin = state.emailOrPhone.isEmail &&
+          state.emailOrPhone.value.split('@').last == 'homecure.com';
+      print(state.emailOrPhone.value.split('@').last);
       // try {
       final result = isProvideLogin
           ? await _authenticationRepository.logibProvider(
               LoginParam(
                 password: state.password.value,
-                email: state.username.value,
+                email: state.emailOrPhone.value,
                 // fcm: kFcm,
               ),
             )
           : await _authenticationRepository.logIn(
               LoginParam(
                 password: state.password.value,
-                email: state.username.value,
+                email: state.emailOrPhone.isEmail
+                    ? state.emailOrPhone.value
+                    : null,
+                phoneNumber: !state.emailOrPhone.isEmail
+                    ? phoneNumberFormatter(state.emailOrPhone.value)
+                    : null,
                 // fcm: kFcm,
               ),
             );
@@ -103,6 +193,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         (r) => emit(state.copyWith(status: FormzStatus.submissionSuccess)),
       );
     }
+  }
+
+  void _onResetFields(
+    ResetFields event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(
+      const LoginState(),
+    );
   }
 }
 
@@ -124,6 +223,7 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginRegisterSubmitted>(_onRegisterSubmitted);
     on<LoginSubmitted>(_onSubmitted);
     on<ChangeErrorMessage>(_onChangeErrorMessage);
+    on<ResetFields>(_onResetFields);
   }
 
   final IAuthenticationRepository _authenticationRepository;
@@ -132,6 +232,15 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     emit(state.copyWith(failureMessege: event.msg));
+  }
+
+  void _onResetFields(
+    ResetFields event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(
+      const LoginState(),
+    );
   }
 
   void _onUsernameChanged(
@@ -220,7 +329,7 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
           state.username,
           state.gender,
           state.name,
-          state.birth,
+          birth,
           state.phoneNumber
         ]),
       ),

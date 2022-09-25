@@ -15,12 +15,15 @@ class ServiceEntity extends Equatable {
     this.features,
     required this.title,
     required this.isVideo,
+        required this.isTele,
+
     required this.description,
     required this.photo,
     this.numberOfSessions = false,
     required this.price,
     required this.priceDiscount,
     required this.id,
+
     this.parent,
   });
   List<ServiceEntity> children = <ServiceEntity>[];
@@ -39,12 +42,15 @@ class ServiceEntity extends Equatable {
   final String description;
   final String photo;
   final bool numberOfSessions;
+  final bool isTele;
   final int price;
+
   final int? priceDiscount;
   final String id;
   final int? days;
   final String? parent;
   final bool isVideo;
+
   ServiceEntity copyWith({
     List<String>? ancestors,
     String? role,
@@ -55,6 +61,7 @@ class ServiceEntity extends Equatable {
     int? ratingsQuantity,
     List<String>? timeSlots,
     bool? isPackage,
+    bool? isTele,
     List<dynamic>? features,
     String? title,
     String? description,
@@ -85,6 +92,7 @@ class ServiceEntity extends Equatable {
       description: description ?? this.description,
       photo: photo ?? this.photo,
       price: price ?? this.price,
+      isTele: isTele ?? this.isTele,
       priceDiscount: priceDiscount ?? this.priceDiscount,
       id: id ?? this.id,
       parent: parent ?? this.parent,
@@ -92,5 +100,5 @@ class ServiceEntity extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, title, children];
+  List<Object?> get props => [id, title, children, isVideo];
 }

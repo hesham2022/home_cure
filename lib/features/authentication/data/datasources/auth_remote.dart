@@ -13,7 +13,10 @@ abstract class IAuthRemotDataSource {
   Future<void> logoOtt();
   Future<String> forgotPassword(Map<String, dynamic> body);
   Future<String> verifyForgotPassword(Map<String, dynamic> body);
+  Future<void> verifyOtp(Map<String, dynamic> body);
+
   Future<void> resetPassword(Map<String, dynamic> body);
+  Future<String> sendOtp();
 }
 
 class AuthRemotDataSource extends IAuthRemotDataSource {
@@ -58,9 +61,20 @@ class AuthRemotDataSource extends IAuthRemotDataSource {
   }
 
   @override
+  Future<String> sendOtp() async {
+    final response = await apiClient.post(kSendOtp);
+    return response.data['verifyOtpToken'] as String;
+  }
+
+  @override
   Future<String> verifyForgotPassword(Map<String, dynamic> body) async {
     final response = await apiClient.post(kverifyForgotPassword, body: body);
     return response.data['resetPasswordToken'] as String;
+  }
+
+  @override
+  Future<void> verifyOtp(Map<String, dynamic> body) async {
+    await apiClient.post(kVerifyOtp, body: body);
   }
 
   @override

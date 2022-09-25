@@ -8,8 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
+import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
+import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
 import 'package:home_cure/features/appointement/presentation/widgets/fees_widget.dart';
 import 'package:home_cure/features/appointement/presentation/widgets/payment_stipper.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
@@ -28,6 +30,7 @@ class CreateAppointmentPayment extends StatefulWidget {
 }
 
 class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
+  Appointment? _appointment;
   String paymentMethod = '';
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,11 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
             EasyLoading.showError(state.error.errorMessege);
           }
           if (state is AppointmentsCubitStateCreatedWithPayLink) {
+            context.read<MyAppointmentsCubit>().addFromFcm(state.appointment);
+            setState(() {
+              _appointment = state.appointment;
+            });
+
             EasyLoading.dismiss();
             context.router.push(
               WebViewPaymentRoute(
@@ -62,12 +70,27 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
           }
           if (state is AppointmentsCubitStateCreated) {
             EasyLoading.dismiss();
-            context.router.push(const DoneRoute());
+            context.router.pushAndPopUntil(
+              const DoneRoute(),
+              predicate: (router) => false,
+            );
+          }
+          if (state is AppointmentsCubitStateCancelled) {
+            EasyLoading.dismiss();
+            context.read<MyAppointmentsCubit>().delete(_appointment!);
+            context.router.pushAndPopUntil(
+              const DoneRoute(),
+              predicate: (route) => false,
+            );
           }
 
           if (state is AppointmentsCubitStatePayed) {
             EasyLoading.dismiss();
-            context.router.push(const DoneRoute());
+            EasyLoading.dismiss();
+            context.router.pushAndPopUntil(
+              const DoneRoute(),
+              predicate: (router) => false,
+            );
           }
         },
         child: Column(
@@ -105,38 +128,43 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        paymentMethod = 'cash';
-                                      });
-                                      context
-                                          .read<AppointmentsParamsCubit>()
-                                          .addPaymentMethod(paymentMethod);
-                                    },
-                                    child: Container(
-                                      decoration: paymentMethod != 'cash'
-                                          ? null
-                                          : BoxDecoration(
-                                              border:
-                                                  Border.all(color: Colors.red),
-                                            ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Assets.img.currency.image(),
-                                        ],
+                                if (!widget.service.isVideo &&
+                                    !widget.service.isTele)
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          paymentMethod = 'cash';
+                                        });
+                                        context
+                                            .read<AppointmentsParamsCubit>()
+                                            .addPaymentMethod(paymentMethod);
+                                      },
+                                      child: Container(
+                                        decoration: paymentMethod != 'cash'
+                                            ? null
+                                            : BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Assets.img.currency.image(),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  color: const Color(0xff1AA9A0),
-                                  width: 1,
-                                  margin: const EdgeInsets.only(top: 10),
-                                ),
+                                if (!widget.service.isVideo &&
+                                    !widget.service.isTele)
+                                  Container(
+                                    color: const Color(0xff1AA9A0),
+                                    width: 1,
+                                    margin: const EdgeInsets.only(top: 10),
+                                  ),
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
@@ -233,21 +261,53 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Button1(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (_appointment != null) {
+                        context.read<AppointmentsCubit>().cancelFunc(
+                              _appointment!.id,
+                            );
+                      } else {
+                        context.router.popUntil((route) => route.isFirst);
+                      }
+                    },
                     title: 'Cancel',
                     color: const Color(0xff1AA9A0),
                   ),
-                  Button1(
-                    onPressed: () {
-                      final appointmentParamsSatet =
-                          context.read<AppointmentsParamsCubit>().state;
-                      context.read<AppointmentsCubit>().createAppointementFunc(
-                            appointmentParamsSatet.toCreateAppointmentParams(),
-                          );
-                      // context.router.push(const DoneRoute());
-                    },
-                    title: 'Done',
-                  ),
+                  if (_appointment == null)
+                    Button1(
+                      onPressed: () {
+                        final appointmentParamsSatet =
+                            context.read<AppointmentsParamsCubit>().state;
+                        context
+                            .read<AppointmentsCubit>()
+                            .createAppointementFunc(
+                              appointmentParamsSatet
+                                  .toCreateAppointmentParams(),
+                            );
+                        // context.router.push(const DoneRoute());
+                      },
+                      title: 'Done',
+                    )
+                  else
+                    Button1(
+                      onPressed: () async {
+                        final appointment =
+                            await context.router.push<Appointment>(
+                          AppointmenCompletePayPageRoute(
+                            appointment: _appointment!,
+                          ),
+                        );
+                        setState(() {
+                          _appointment = appointment;
+                        });
+                        // AppointmentDetailsPageRoute
+                        // context.router.pushAndPopUntil(
+                        //   const MainScaffold(),
+                        //   predicate: (r) => false,
+                        // );
+                      },
+                      title: 'Complete Pyament',
+                    )
                 ],
               ),
             )

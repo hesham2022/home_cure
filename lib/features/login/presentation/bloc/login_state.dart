@@ -18,14 +18,17 @@ class LoginState extends Equatable {
     this.phoneNumber = const PhoneNumber.pure(),
     this.confirmPassword = const ConfirmPassword.pure(''),
     this.failureMessege = '',
+    this.emailOrPhone = const EmailOrPhone.pure(),
+    this.loginWithEmail = false,
   });
   final FormzStatus status;
   final Email username;
   final Password password;
   final Name name;
   final Birth birth;
+  final EmailOrPhone emailOrPhone;
   final ConfirmPassword confirmPassword;
-
+  final bool loginWithEmail;
   final PhoneNumber phoneNumber;
   final Gender gender;
 
@@ -36,18 +39,22 @@ class LoginState extends Equatable {
     Email? username,
     Password? password,
     Name? name,
+    bool? loginWithEmail,
     Gender? gender,
     PhoneNumber? phoneNumber,
     Birth? birth,
     ConfirmPassword? confirmPassword,
+    EmailOrPhone? emailOrPhone,
     String? failureMessege,
   }) {
     return LoginState(
       status: status ?? this.status,
       username: username ?? this.username,
       password: password ?? this.password,
+      loginWithEmail: loginWithEmail ?? this.loginWithEmail,
       name: name ?? this.name,
       gender: gender ?? this.gender,
+      emailOrPhone: emailOrPhone ?? this.emailOrPhone,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       failureMessege: failureMessege ?? this.failureMessege,
       birth: birth ?? this.birth,
@@ -63,8 +70,10 @@ class LoginState extends Equatable {
         name,
         phoneNumber,
         gender,
+        loginWithEmail,
         failureMessege,
         birth,
+        emailOrPhone,
         confirmPassword
       ];
 }

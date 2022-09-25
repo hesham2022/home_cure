@@ -7,7 +7,12 @@ import 'package:home_cure/core/api_errors/network_exceptions.dart';
 import 'package:home_cure/features/authentication/domain/entities/entities.dart';
 import 'package:home_cure/features/authentication/domain/entities/verify_password_params.dart';
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum AuthenticationStatus {
+  unknown,
+  authenticated,
+  unauthenticated,
+  signUpSucess
+}
 
 abstract class IAuthenticationRepository {
   IAuthenticationRepository({required this.apiConfig});
@@ -24,7 +29,11 @@ abstract class IAuthenticationRepository {
   Future<Either<NetworkExceptions, String>> forgotPassword(
     ForgetPasswordParam forgetPasswordParam,
   );
+  Future<Either<NetworkExceptions, String>> sendOtp();
   Future<Either<NetworkExceptions, String>> verifyForgetPasswordOtp(
+    VerifyForgetPasswordParam verifyForgetPasswordParam,
+  );
+  Future<Either<NetworkExceptions, void>> verifyOtp(
     VerifyForgetPasswordParam verifyForgetPasswordParam,
   );
   Future<Either<NetworkExceptions, void>> resetPassword(

@@ -14,6 +14,7 @@ class AppointmentModel extends Appointment {
     required super.reason,
     required super.date,
     required super.timeslot,
+    required super.isTele,
     required super.user,
     required super.service,
     required super.paymentMethod,
@@ -22,6 +23,8 @@ class AppointmentModel extends Appointment {
     super.sessions,
     super.providerComment,
     super.price,
+    super.uid,
+    super.videoToken,
     required super.canceled,
   });
   factory AppointmentModel.fromEntity(Appointment entity) => AppointmentModel(
@@ -31,17 +34,20 @@ class AppointmentModel extends Appointment {
         payed: entity.payed,
         isVideo: entity.isVideo,
         id: entity.id,
+        isTele: entity.isTele,
         reason: entity.reason,
         date: entity.date,
         timeslot: entity.timeslot,
         user: entity.user,
         service: entity.service,
+        videoToken: entity.videoToken,
         paymentMethod: entity.paymentMethod,
         canceled: entity.canceled,
         days: entity.days,
         providerComment: entity.providerComment,
         sessions: entity.sessions,
         price: entity.price,
+        uid: entity.uid,
       );
   factory AppointmentModel.fromJson(String source) =>
       AppointmentModel.fromMap(json.decode(source) as Map<String, dynamic>);
@@ -53,6 +59,7 @@ class AppointmentModel extends Appointment {
       status: map['status'] as String,
       providerComment: map['providerComment'] as String?,
       payed: map['payed'] as bool,
+      isTele: map['isTele'] as bool,
       isVideo: map['isVideo'] as bool,
       id: map['id'] != null ? map['id'] as String : map['_id'] as String,
       reason: map['reason'] as String,
@@ -68,6 +75,8 @@ class AppointmentModel extends Appointment {
       days: map['days'] as int?,
       price: map['price'] as int?,
       sessions: map['sessions'] as int?,
+      videoToken: map['videoToken'] as String?,
+      uid: map['uid'] as int?,
     );
   }
 
@@ -86,11 +95,14 @@ class AppointmentModel extends Appointment {
       'paymentMethod': paymentMethod,
       'link': link,
       'canceled': canceled,
+      'isTele':isTele,
     };
     if (providerComment != null) map['providerComment'] = providerComment;
     if (price != null) map['price'] = price;
     if (days != null) map['days'] = days;
     if (sessions != null) map['sessions'] = sessions;
+    if (videoToken != null) map['videoToken'] = videoToken;
+    if (uid != null) map['uid'] = uid;
     if (location != null) {
       map.addAll(<String, dynamic>{
         'location': location!.toMap(),

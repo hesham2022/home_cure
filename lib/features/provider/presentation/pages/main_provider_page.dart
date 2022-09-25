@@ -70,7 +70,9 @@ class _MainProviderPageState extends State<MainProviderPage> {
                       (index) => InkWell(
                         onTap: () => setState(() {
                           currentIndex = index;
-                          if (context.read<NotificationsBudgeCubit>().state) {
+                          if (context.read<NotificationsBudgeCubit>().state >
+                                  0 &&
+                              currentIndex == 2) {
                             context.read<NotificationsBudgeCubit>().read();
                           }
 
@@ -117,7 +119,7 @@ class _MainProviderPageState extends State<MainProviderPage> {
                                   )
                                 ],
                               )
-                            : BlocBuilder<NotificationsBudgeCubit, bool>(
+                            : BlocBuilder<NotificationsBudgeCubit, int>(
                                 buildWhen: (previous, current) => index == 2,
                                 builder: (context, state) {
                                   return Stack(
@@ -132,12 +134,20 @@ class _MainProviderPageState extends State<MainProviderPage> {
                                             ? null
                                             : const Color(0xff1AA9A0),
                                       ),
-                                      if (state == true && index == 2)
-                                        const Positioned(
+                                      if (state > 0 && index == 2)
+                                        Positioned(
                                           top: 0,
-                                          right: 0,
+                                          right: -4,
                                           child: CircleAvatar(
-                                            radius: 5,
+                                            radius: 10,
+                                            child: Text(
+                                              state.toString(),
+                                              style: textStyleWithPrimaryBold
+                                                  .copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         )
                                     ],

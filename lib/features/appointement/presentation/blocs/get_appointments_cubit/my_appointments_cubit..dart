@@ -24,12 +24,20 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsCubitState> {
             appointment
           ]),
         );
+      } else {
+        emit(
+          MyAppointmentsCubitStateLoaded([
+            ...(state as MyAppointmentsCubitStateLoaded)
+                .appointments
+                .map((e) => e.id == appointment.id ? appointment : e)
+                .toList(),
+          ]),
+        );
       }
     }
   }
 
   void addModified(Appointment appointment) {
-    print('Appointmenr :${appointment.id}');
     if (state is MyAppointmentsCubitStateLoaded) {
       final appointments =
           (state as MyAppointmentsCubitStateLoaded).appointments;
@@ -37,6 +45,18 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsCubitState> {
         MyAppointmentsCubitStateLoaded([
           ...appointments.map((e) => e.id == appointment.id ? appointment : e)
         ]),
+      );
+    }
+  }
+
+  void delete(Appointment appointment) {
+    if (state is MyAppointmentsCubitStateLoaded) {
+      final appointments =
+          (state as MyAppointmentsCubitStateLoaded).appointments;
+      emit(
+        MyAppointmentsCubitStateLoaded(
+          [...appointments.where((e) => e.id != appointment.id)],
+        ),
       );
     }
   }

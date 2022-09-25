@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:home_cure/core/api_config/index.dart';
+import 'package:home_cure/features/appointement/data/models/agora_token_model.dart';
 import 'package:home_cure/features/appointement/data/models/appoinmrnt_model.dart';
 import 'package:home_cure/features/appointement/data/models/get_appointments_response.dart';
+import 'package:home_cure/features/appointement/domain/entities/agora_token.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
 
@@ -10,6 +12,12 @@ abstract class IAppointmentRemote {
   final ApiClient apiConfig;
   Future<Appointment> createAppointement(Map<String, dynamic> body);
   Future<Appointment> userPayAppointment(String appointmentId);
+  Future<void> cancel(String appointmentId);
+
+  Future<Appointment> providerPayAppointment(String appointmentId);
+
+  Future<AgoraToken> startVideo(String appointmentId);
+
   Future<Appointment> createPaymentLink(String appointmentId);
   Future<Appointment> acceptAppointment(String appointmentId);
   Future<Appointment> onProgressAppointment(String appointmentId);
@@ -51,11 +59,34 @@ class AppointmentRemote extends IAppointmentRemote {
   }
 
   @override
+  Future<void> cancel(String appointmentId) async {
+    await apiConfig.delete('$kApppointment/$appointmentId');
+  }
+
+  @override
   Future<Appointment> userPayAppointment(String appointmentId) async {
     final response = await apiConfig.post(kUserPay + appointmentId);
     final data = response.data as Map<String, dynamic>;
 
     final appointmentResult = AppointmentModel.fromMap(data);
+    return appointmentResult;
+  }
+
+  @override
+  Future<Appointment> providerPayAppointment(String appointmentId) async {
+    final response = await apiConfig.post(kPorividerPay + appointmentId);
+    final data = response.data as Map<String, dynamic>;
+
+    final appointmentResult = AppointmentModel.fromMap(data);
+    return appointmentResult;
+  }
+
+  @override
+  Future<AgoraToken> startVideo(String appointmentId) async {
+    final response = await apiConfig.post(kStartVideo + appointmentId);
+    final data = response.data as Map<String, dynamic>;
+
+    final appointmentResult = AgoraTokenModel.fromMap(data);
     return appointmentResult;
   }
 
