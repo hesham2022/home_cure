@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/features/user_details/data/models/medical_model.dart';
+import 'package:home_cure/l10n/l10n.dart';
 import 'package:intl/intl.dart';
 
 class MedicalTableWidget extends StatelessWidget {
@@ -36,6 +37,7 @@ class MedicalTableWidget extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
+              if (list.isEmpty) Text(context.l10n.noData),
               ...list
                   .map(
                     (e) => Container(

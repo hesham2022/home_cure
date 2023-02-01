@@ -11,25 +11,80 @@ class PickWidget extends StatelessWidget {
     this.width,
     this.fromRight = false,
     this.file,
+    this.onTap,
   });
   final bool fromRight;
   final double? height;
   final double? width;
   final String? file;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) => Column(
         children: [
           if (file != null)
             Container(
+              margin: fromRight
+                  ? const EdgeInsets.only(right: 40, left: 40)
+                  : const EdgeInsets.only(left: 40),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: FileImage(
                     File(file!),
                   ),
+                  fit: BoxFit.cover,
+                ),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(0, 8),
+                    blurRadius: 6,
+                    color: Colors.black.withOpacity(.1),
+                  )
+                ],
+                borderRadius: BorderRadiusDirectional.circular(
+                  8,
                 ),
               ),
               height: height ?? 65.h,
-              width: 100.w,
+              width: width ?? 87.w,
+              child: Padding(
+                padding: const EdgeInsets.all(1),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: onTap,
+                          child: Container(
+                            height: 30.h,
+                            width: 30.h,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(.2),
+                                  blurRadius: 6,
+                                  offset: const Offset(
+                                    -3,
+                                    1,
+                                  ), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(1),
+                            child: const Icon(
+                              Icons.close,
+                              color: Color(0xff1AA9A0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             )
           else
             Container(

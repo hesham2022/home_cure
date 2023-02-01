@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:home_cure/core/widgets/main_scaffold.dart';
 import 'package:home_cure/features/Services/presentation/pages/services_page.dart';
 import 'package:home_cure/features/aboutus_contactus/presentation/pages/about_us.dart';
+import 'package:home_cure/features/aboutus_contactus/presentation/pages/pricavy.dart';
 import 'package:home_cure/features/agore/video_page.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/presentation/pages/create_appointement.dart';
@@ -13,15 +14,23 @@ import 'package:home_cure/features/appointement/presentation/pages/done_page.dar
 import 'package:home_cure/features/appointement/presentation/pages/web_view_page.dart';
 import 'package:home_cure/features/calling/presentation/pages/calling_page.dart';
 import 'package:home_cure/features/home/presentation/pages/home.dart';
+import 'package:home_cure/features/login/presentation/pages/change_phone_number.dart';
+import 'package:home_cure/features/login/presentation/pages/change_phone_number_firebase.dart';
 import 'package:home_cure/features/login/presentation/pages/choose_language_page.dart';
 import 'package:home_cure/features/login/presentation/pages/forget_password.dart';
+import 'package:home_cure/features/login/presentation/pages/forget_password_firebase.dart';
 import 'package:home_cure/features/login/presentation/pages/login_page.dart';
+import 'package:home_cure/features/login/presentation/pages/otp_firebase.dart';
 import 'package:home_cure/features/login/presentation/pages/reqgister_page.dart';
+import 'package:home_cure/features/login/presentation/pages/reset_password_firebase.dart';
 import 'package:home_cure/features/login/presentation/pages/resret_password_page.dart';
 import 'package:home_cure/features/login/presentation/pages/send_otp_page.dart';
 import 'package:home_cure/features/login/presentation/pages/splash_screen.dart';
 import 'package:home_cure/features/login/presentation/pages/varication_code_page.dart';
+import 'package:home_cure/features/login/presentation/pages/verify_change_phone_page%20copy.dart';
+import 'package:home_cure/features/login/presentation/pages/verify_code_firebase.dart';
 import 'package:home_cure/features/login/presentation/pages/verify_otp_page.dart';
+import 'package:home_cure/features/login/presentation/pages/verify_phone_number_firebase.dart';
 import 'package:home_cure/features/notifications/presentation/pages/appointment_details_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:home_cure/features/notifications/presentation/pages/user_information_page.dart';
@@ -54,9 +63,33 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
       transitionsBuilder: TransitionsBuilders.noTransition,
     ),
     CustomRoute<void>(
+      barrierDismissible: true,
+      transitionsBuilder: TransitionsBuilders.slideTop,
+      path: 'webview_payment',
+      page: WebViewPaymentPage,
+    ),
+    CustomRoute<void>(
       page: VaricationOtpPage,
       name: 'VaricationOtpPageRoute',
       path: 'verify_otp_page',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+    CustomRoute<void>(
+      page: OtpFirebasePage,
+      name: 'OtpFirebasePagePageRoute',
+      path: 'otp_firebase_page',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+    CustomRoute<void>(
+      page: ChangePhoneNumberFirebasePage,
+      name: 'ChangePhoneNumberFirebasePageRoute',
+      path: 'change_phoneNumber_firebase_page',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+    CustomRoute<void>(
+      page: VerifyChangePhoneNumberFirebasePage,
+      name: 'VerifyChangePhoneNumberFirebasePageRoute',
+      path: 'verify_change_phoneNumber_firebasePage',
       transitionsBuilder: TransitionsBuilders.noTransition,
     ),
     CustomRoute<void>(
@@ -100,12 +133,6 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               transitionsBuilder: TransitionsBuilders.slideTop,
               path: 'create_appointement_second',
               page: CreateAppointementSecondPage,
-            ),
-            CustomRoute<void>(
-              barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
-              path: 'webview_payment',
-              page: WebViewPaymentPage,
             ),
 
             CustomRoute<void>(
@@ -168,12 +195,12 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               name: 'AppointmentDetailsPageRoute',
               page: AppointmentDetailsPage,
             ),
-            CustomRoute<void>(
-              barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
-              path: 'webview_payment',
-              page: WebViewPaymentPage,
-            ),
+            // CustomRoute<void>(
+            //   barrierDismissible: true,
+            //   transitionsBuilder: TransitionsBuilders.slideTop,
+            //   path: 'webview_payment',
+            //   page: WebViewPaymentPage,
+            // ),
             AutoRoute<void>(
               path: 'photo_view_page',
               name: 'PhotoViewPageeRouter',
@@ -219,7 +246,11 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               name: 'UserDetailsPageRouter',
               page: UserDetailsPage,
             ),
-
+            AutoRoute<void>(
+              path: 'prrivacy',
+              name: 'PrivacyPageRouter',
+              page: Privacy,
+            ),
             AutoRoute<void>(
               path: 'current_medications',
               name: 'CurrentMedicationsPageRouter',
@@ -299,14 +330,39 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
       page: ForgotPasswordPage,
     ),
     AutoRoute<void>(
+      path: 'forgot_password_firebase_page',
+      name: 'ForgotPasswordFirebasePageRouter',
+      page: ForgetPasswordFirebasePage,
+    ),
+    AutoRoute<void>(
+      path: 'change_phone_number_page',
+      name: 'ChangePhoneNumberPageRouter',
+      page: ChangePhoneNumberPage,
+    ),
+    AutoRoute<void>(
       path: 'varication_code_page',
       name: 'VaricationCodePageRouter',
       page: VaricationCodePage,
+    ),
+     AutoRoute<void>(
+      path: 'varication_code_firebase_page',
+      name: 'VaricationCodeFirebasePageRouter',
+      page: VaricationCodeFirebasePage,
+    ),
+    AutoRoute<void>(
+      path: 'varify_phone_number_page',
+      name: 'VerifyChangePhoneNumberPageRouter',
+      page: VerifyChangePhoneNumberPage,
     ),
     AutoRoute<void>(
       path: 'reser_password_page',
       name: 'ReserPasswordPageRouter',
       page: ReserPasswordPage,
+    ),
+    AutoRoute<void>(
+      path: 'reser_password_firebase_page',
+      name: 'ReserPasswordFirebasePageRouter',
+      page: ReserPasswordFirebasePage,
     ),
     AutoRoute<void>(
       path: 'choose_language_page',

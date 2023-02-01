@@ -5,6 +5,7 @@ import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/check_circle.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class DonePage extends StatelessWidget {
   const DonePage({super.key});
@@ -29,14 +30,14 @@ class DonePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          'Deal Completed',
+                          context.l10n.orderPlaced,
                           style: textStyleWithPrimaryBold.copyWith(
                             fontSize: 30,
                           ),
                         ),
                         const CeckCircl(),
                         Text(
-                          'Thank you',
+                          context.l10n.thankyou,
                           style: textStyleWithPrimarySemiBold.copyWith(
                             fontSize: 22,
                             fontWeight: FontWeight.w200,
@@ -54,7 +55,7 @@ class DonePage extends StatelessWidget {
                     const MainScaffold(),
                     predicate: (Route<dynamic> r) => false,
                   ),
-                  title: 'Done',
+                  title: context.l10n.done,
                   size: const Size(142, 40),
                   titelStyle: textStyleWithPrimarySemiBold.copyWith(
                     color: Colors.white,

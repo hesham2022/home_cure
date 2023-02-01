@@ -35,13 +35,21 @@ class AppointmentsCubitStateAccepted extends AppointmentsCubitState {
   @override
   List<Object?> get props => [appointment];
 }
+
+class AppointmentsCubitStateRated extends AppointmentsCubitState {
+  AppointmentsCubitStateRated(this.appointment);
+
+  final Appointment appointment;
+  @override
+  List<Object?> get props => [appointment];
+}
+
 class AppointmentsCubitStateCancelled extends AppointmentsCubitState {
   AppointmentsCubitStateCancelled();
 
   @override
   List<Object?> get props => [];
 }
-
 
 class AppointmentsCubitStateOnProgress extends AppointmentsCubitState {
   AppointmentsCubitStateOnProgress(this.appointment);

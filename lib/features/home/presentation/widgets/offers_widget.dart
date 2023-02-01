@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/features/home/presentation/blocs/ads_cubit/ads_cubit.dart';
+import 'package:home_cure/l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OffersWidget extends StatelessWidget {
@@ -12,13 +13,14 @@ class OffersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ar = context.l10n.localeName == 'ar';
     return BlocBuilder<AdsCubit, AdsCubitState>(
       builder: (context, state) {
         if (state is AdsCubitStateLoaded) {
           return SizedBox(
             child: CarouselSlider(
               options: CarouselOptions(
-                height: 200.h,
+                height: 180.h,
                 viewportFraction: .65,
                 autoPlay: true,
                 enlargeCenterPage: true,
@@ -31,14 +33,14 @@ class OffersWidget extends StatelessWidget {
                         launchUrl(Uri.parse(i.url));
                       },
                       child: CommonContainer(
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(-6, 6),
-                            blurRadius: 6,
-                            color: Colors.grey.withOpacity(.5),
-                          ),
+                        boxShadow: const [
+                          // BoxShadow(
+                          //   offset: const Offset(-6, 6),
+                          //   blurRadius: 6,
+                          //   color: Colors.grey.withOpacity(.5),
+                          // ),
                         ],
-                        height: 200,
+                        height: 180,
                         width: 200,
                         br: 15,
                         color: Colors.white,
@@ -58,22 +60,26 @@ class OffersWidget extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(5),
                               child: Column(
                                 children: [
                                   Center(
                                     child: Text(
-                                      i.title,
+                                      ar == true
+                                          ? (i.arTitle ?? i.title)
+                                          : i.title,
                                       style: textStyleWithPrimaryBold.copyWith(
-                                        fontSize: 18.sp,
+                                        fontSize: 14.sp,
                                       ),
                                     ),
                                   ),
                                   Center(
                                     child: Text(
-                                      i.description,
+                                      ar == true
+                                          ? (i.arDescription ?? i.description)
+                                          : i.description,
                                       style: textStyleWithSecondBold().copyWith(
-                                        fontSize: 14.sp,
+                                        fontSize: 12.sp,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),

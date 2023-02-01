@@ -11,6 +11,9 @@ import 'package:home_cure/features/authentication/domain/entities/upload_user_ph
 abstract class IUserRepository {
   Future<Either<NetworkExceptions, User>> getMe();
   Future<Either<NetworkExceptions, User>> getUser(String id);
+    Future<Either<NetworkExceptions, User>> getProvider(String id);
+
+  Future<Either<NetworkExceptions, List<User>>> getOurDoctors();
 
   Future<Either<NetworkExceptions, User>> updateUser(UpdateUserParams params);
   Future<Either<NetworkExceptions, User>> updateProvider(
@@ -23,6 +26,12 @@ abstract class IUserRepository {
   );
   Future<Either<NetworkExceptions, User>> uploadProviderAttatchment(
     UploadPorviderAttachmentParams params,
+  );
+   Future<Either<NetworkExceptions, User>> deleteProviderAttatchment(
+    String params,
+  );
+     Future<Either<NetworkExceptions, User>> deleteUserAttatchment(
+    String params,
   );
   Future<Either<NetworkExceptions, User>> uploadUserPhoto(
     UploadUserPhotoParams params,

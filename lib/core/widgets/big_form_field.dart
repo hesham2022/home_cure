@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class BighFormField extends StatelessWidget {
   const BighFormField({
@@ -34,7 +35,7 @@ class BighFormField extends StatelessWidget {
       style: style,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10),
-        hintText: hint??'Descripe What  You Feel',
+        hintText: hint ?? context.l10n.select_what_you_feel, //'Descripe What  You Feel',
         hintStyle: TextStyle(
           fontSize: 12.sp,
           color: const Color(0xff1AA9A0),

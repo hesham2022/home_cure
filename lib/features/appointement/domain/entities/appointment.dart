@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:home_cure/features/appointement/domain/entities/create_appointment_params.dart';
+import 'package:home_cure/features/authentication/data/models/user_model.dart';
+import 'package:home_cure/features/home/domain/entities/timeslot.dart';
 
 class Appointment extends Equatable {
   const Appointment({
@@ -15,28 +17,37 @@ class Appointment extends Equatable {
     required this.user,
     required this.service,
     required this.paymentMethod,
+    required this.rated,
     this.link,
     required this.canceled,
     this.days,
+    this.createdAt,
     this.sessions,
+    this.details,
     this.videoToken,
     required this.isTele,
     this.uid,
     this.price,
     this.providerComment,
+    this.provider,
   });
   final String? providerComment;
+  final String? provider;
+
   final Location? location;
   final List<String> attachments;
   final String status;
   final bool payed;
   final bool isVideo;
   final bool isTele;
+  final Details? details;
 
   final String id;
   final String reason;
   final DateTime date;
-  final String timeslot;
+  final DateTime? createdAt;
+
+  final TimeSlot timeslot;
   final String user;
   final int? price;
   final String service;
@@ -46,21 +57,25 @@ class Appointment extends Equatable {
   final String? videoToken;
   final int? days;
   final int? uid;
+  final bool rated;
   final int? sessions;
   Appointment copyWith({
     Location? location,
     List<String>? attachments,
     String? status,
     bool? payed,
+    Details? details,
     bool? isVideo,
     String? id,
     String? reason,
     DateTime? date,
     bool? isTele,
-    String? timeslot,
+    TimeSlot? timeslot,
     String? user,
     String? service,
     int? uid,
+    bool? rated,
+    DateTime? createdAt,
     String? paymentMethod,
     String? link,
     bool? canceled,
@@ -76,6 +91,9 @@ class Appointment extends Equatable {
       isVideo: isVideo ?? this.isVideo,
       id: id ?? this.id,
       uid: uid ?? this.uid,
+      details: details ?? this.details,
+      createdAt: createdAt ?? this.createdAt,
+      rated: rated ?? this.rated,
       reason: reason ?? this.reason,
       date: date ?? this.date,
       isTele: isTele ?? this.isTele,
@@ -109,6 +127,7 @@ class Appointment extends Equatable {
         payed,
         isVideo,
         id,
+        rated,
         reason,
         date,
         timeslot,
@@ -119,6 +138,7 @@ class Appointment extends Equatable {
         link,
         canceled,
         videoToken,
-        uid
+        uid,
+        createdAt,
       ];
 }

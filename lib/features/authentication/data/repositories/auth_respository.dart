@@ -103,8 +103,8 @@ class AuthenticationRepository extends IAuthenticationRepository {
           final loginResponse =
               (await authRemotDataSource.signUp(signParams.toMap()))!;
           _apiConfig.init(loginResponse.tokens.access.token);
-          await authenticationLocalDataSource
-              .saveToken(loginResponse.tokens.access.token);
+          // await authenticationLocalDataSource
+          //     .saveToken(loginResponse.tokens.access.token);
           await Storage.setIsFirst();
           await Storage.setPassword(signParams.password);
           controller.add(AuthenticationStatus.signUpSucess);
@@ -120,6 +120,18 @@ class AuthenticationRepository extends IAuthenticationRepository {
     return guardFuture<String>(
       () async {
         return authRemotDataSource.forgotPassword(forgetPasswordParam.toMap());
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, String>> forgotPasswordFirebase(
+    ForgetPasswordParam forgetPasswordParam,
+  ) {
+    return guardFuture<String>(
+      () async {
+        return authRemotDataSource
+            .forgotPasswordFirebase(forgetPasswordParam.toMap());
       },
     );
   }
@@ -157,6 +169,15 @@ class AuthenticationRepository extends IAuthenticationRepository {
   }
 
   @override
+  Future<Either<NetworkExceptions, void>> verifyOtpFirebase() {
+    return guardFuture<void>(
+      () async {
+        return authRemotDataSource.verifyOtpFirebase();
+      },
+    );
+  }
+
+  @override
   Future<Either<NetworkExceptions, void>> resetPassword(
     ResetPasswordParams verifyForgetPasswordParam,
   ) {
@@ -168,4 +189,64 @@ class AuthenticationRepository extends IAuthenticationRepository {
     );
   }
 
+  @override
+  Future<Either<NetworkExceptions, void>> resetPasswordFirebase(
+    ResetPasswordParams verifyForgetPasswordParam,
+  ) {
+    return guardFuture<void>(
+      () async {
+        return authRemotDataSource
+            .resetPasswordFirebase(verifyForgetPasswordParam.toMap());
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, String>> changePhoneNumber(
+    ForgetPasswordParam forgetPasswordParam,
+  ) {
+    return guardFuture<String>(
+      () async {
+        return authRemotDataSource
+            .changePhoneNumber(forgetPasswordParam.toMap());
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, void>> resetPhoneNumber(
+    ResetPasswordParams verifyForgetPasswordParam,
+  ) {
+    return guardFuture<void>(
+      () async {
+        return authRemotDataSource
+            .resetPhoneNumber(verifyForgetPasswordParam.toMap());
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, void>> resetPhoneNumberFiebase(
+    ResetPasswordParams verifyForgetPasswordParam,
+  ) {
+    return guardFuture<void>(
+      () async {
+        return authRemotDataSource.resetPhoneNumberFiebase(<String, dynamic>{
+          'password': '+2${verifyForgetPasswordParam.password}'
+        });
+      },
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, String>> verifyChangePhoneNumberOtp(
+    VerifyForgetPasswordParam verifyForgetPasswordParam,
+  ) {
+    return guardFuture<String>(
+      () async {
+        return authRemotDataSource
+            .verifyChangePhoneNumber(verifyForgetPasswordParam.toMap());
+      },
+    );
+  }
 }

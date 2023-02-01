@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/small_text.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class HeightWeightWidget extends StatefulWidget {
   const HeightWeightWidget({
@@ -15,6 +16,7 @@ class HeightWeightWidget extends StatefulWidget {
     required this.heightController,
     required this.weightController,
     required this.bloodTypeController,
+    this.onChanged,
   });
   final int height;
   final int weight;
@@ -22,16 +24,23 @@ class HeightWeightWidget extends StatefulWidget {
   final TextEditingController heightController;
   final TextEditingController weightController;
   final TextEditingController bloodTypeController;
+  final Function(String)? onChanged;
+
   @override
   State<HeightWeightWidget> createState() => _HeightWeightWidgetState();
 }
 
 class _HeightWeightWidgetState extends State<HeightWeightWidget> {
+  String _value = '';
+  final types = ['A', 'A+', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-', ''];
   @override
   void initState() {
     widget.heightController.text = widget.height.toString();
     widget.weightController.text = widget.weight.toString();
     widget.bloodTypeController.text = widget.bloodType;
+    setState(() {
+      _value = widget.bloodType;
+    });
     // heightController.addListener(() {
     //   if (heightController.text.isEmpty) {
     //     heightController.text = '0';
@@ -66,13 +75,14 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Height',
+                    context.l10n.height,
                     style: textStyleWithPrimarySemiBold,
                   ),
                   SizedBox(
                     height: 40.h,
                     width: 90.w,
                     child: SmallTextFiel(
+                      onChanged: widget.onChanged,
                       keyboardType: TextInputType.number,
                       controller: widget.heightController,
                     ),
@@ -85,13 +95,14 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Weight',
+                    context.l10n.weight,
                     style: textStyleWithPrimarySemiBold,
                   ),
                   SizedBox(
                     height: 40.h,
                     width: 90.w,
                     child: SmallTextFiel(
+                      onChanged: widget.onChanged,
                       keyboardType: TextInputType.number,
                       controller: widget.weightController,
                     ),
@@ -104,14 +115,67 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Blood Type',
+                    context.l10n.bloodType,
                     style: textStyleWithPrimarySemiBold,
                   ),
                   SizedBox(
                     height: 40.h,
                     width: 90.w,
-                    child: SmallTextFiel(
-                      controller: widget.bloodTypeController,
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        prefixStyle: Theme.of(context).textTheme.subtitle1,
+                        contentPadding: const EdgeInsets.all(5),
+                        fillColor: const Color(0xff1AA9A0).withOpacity(.1),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color(0xff3636364d),
+                            width: 0,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color(0xff3636364d),
+                            width: 0,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color(0xff3636364d),
+                            width: 0,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color(0xff3636364d),
+                            width: 0,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      key: const Key('bloodTypeKey'),
+                      onChanged: (value) {
+                        widget.bloodTypeController.text = value ?? '';
+                        setState(() {
+                          _value = value!;
+                        });
+                        widget.onChanged!(value ?? '');
+                      },
+                      value: _value,
+                      items: types
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              value: e,
+                              child: e.isEmpty ? const SizedBox() : Text(e),
+                            ),
+                          )
+                          .toList(),
                     ),
                   )
                 ],

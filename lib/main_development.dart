@@ -30,7 +30,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
         channelDescription: 'Notification channel for basic tests',
         defaultColor: const Color(0xFF9D50DD),
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
       )
     ],
   );
@@ -60,7 +60,7 @@ void main() async {
         channelDescription: 'Notification channel for basic tests',
         defaultColor: const Color(0xFF9D50DD),
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
       )
     ],
   );

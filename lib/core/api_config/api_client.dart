@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:home_cure/app/app.dart';
 
 class ApiClient {
   Dio dio = Dio();
   String? token;
   void init(String? newToken) {
+    print('out token $newToken');
     token = newToken;
     if (token != null) {
       dio.interceptors.clear();
@@ -11,6 +13,10 @@ class ApiClient {
         InterceptorsWrapper(
           onRequest: (options, handler) async {
             options.headers['Authorization'] = 'Bearer $token';
+            options.headers['lang'] = appLn10.localeName;
+
+            options.sendTimeout = 20 * 1000;
+
             return handler.next(options); //continue
           },
           onResponse: (response, handler) {
@@ -25,6 +31,7 @@ class ApiClient {
   }
 
   Future<Response> get(String url, {Map<String, dynamic>? queryParams}) async {
+    print(url);
     queryParams ??= <String, String>{'': ''};
     return dio.get<Map<String, dynamic>>(
       url,
@@ -39,6 +46,8 @@ class ApiClient {
   }) async {
     queryParams ??= <String, String>{'': ''};
     print(body);
+    print(url);
+
     final r = await dio.post<dynamic>(
       url,
       data: body,

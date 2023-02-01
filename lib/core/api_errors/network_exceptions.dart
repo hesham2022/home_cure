@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/api_errors/app_error.dart';
 
 // part 'test.freezed.dart';
@@ -121,25 +122,121 @@ abstract class NetworkExceptions extends AppError with _$NetworkExceptions {
 
   factory NetworkExceptions.unexpectedError() = UnexpectedError;
   @override
-  String get errorMessege => when(
-        notImplemented: () => 'Not Implemented',
-        requestCancelled: () => 'Request Cancelled',
-        internalServerError: () => 'Internal Server Error',
-        notFound: (String reason) => reason,
-        serviceUnavailable: () => 'Service unavailable',
-        methodNotAllowed: () => 'Method Allowed',
-        badRequest: () => 'Bad request',
-        unauthorisedRequest: (s) => s,
-        unexpectedError: () => 'Unexpected error occurred',
-        requestTimeout: () => 'Connection request timeout',
-        noInternetConnection: () => 'No internet connection',
-        conflict: () => 'Error due to a conflict',
-        sendTimeout: () => 'Send timeout in connection with API server',
-        unableToProcess: () => 'Unable to process the data',
-        defaultError: (String error) => error,
-        formatExceptionNetWork: (a) => 'Unexpected error occurred',
-        notAcceptable: () => 'Not acceptable',
-      );
+  String get errorMessege {
+    final ar = appLn10.localeName == 'ar';
+    return when(
+      notImplemented: () => 'Not Implemented',
+      requestCancelled: () => 'Request Cancelled',
+      internalServerError: () =>
+          ar ? 'خطأ في الخادم الداخلي' : 'Internal Server Error',
+      notFound: (String reason) {
+        if (appLn10.localeName == 'ar') {
+          switch (reason) {
+            case 'Incorrect email or password':
+              return 'بريد أو كلمة مرورغير صحيحة';
+            case 'Incorrect Phone Number or password':
+              return 'رقم الهاتف أو كلمة مرورغير صحيحة';
+            case 'Please authenticate':
+              return 'يرجى تسجيل الدخول';
+            case 'Email verification failed':
+              return 'فشل التحقق من البريد الإلكتروني';
+            case 'Otp verification failed':
+              return 'فشل التحقق من الكود';
+            case 'Password reset failed':
+              return 'فشل إعادة تعيين كلمة المرور';
+            case 'Phone Number reset failed':
+              return 'فشل إعادة تعيين رقم الهاتف';
+            case 'Not found':
+              return 'غير موجود';
+            case 'Appointment not found':
+              return 'لم يتم العثور على الموعد';
+            case 'Phone Number already taken':
+              return 'رقم الهاتف مأخوذ بالفعل';
+            default:
+          }
+        }
+        return reason;
+      },
+      serviceUnavailable: () =>
+          ar ? 'الخدمة غير متوفرة' : 'Service unavailable',
+      methodNotAllowed: () => 'Method Not Allowed',
+      badRequest: () {
+        return 'Bad request';
+      },
+      unauthorisedRequest: (s) {
+        if (appLn10.localeName == 'ar') {
+          switch (s) {
+            case 'Incorrect email or password':
+              return 'بريد أو كلمة مرورغير صحيحة';
+            case 'Incorrect Phone Number or password':
+              return 'رقم الهاتف أو كلمة مرورغير صحيحة';
+            case 'Please authenticate':
+              return 'يرجى تسجيل الدخول';
+            case 'Email verification failed':
+              return 'فشل التحقق من البريد الإلكتروني';
+            case 'Otp verification failed':
+              return 'فشل التحقق من الكود';
+            case 'Password reset failed':
+              return 'فشل إعادة تعيين كلمة المرور';
+            case 'Phone Number reset failed':
+              return 'فشل إعادة تعيين رقم الهاتف';
+            case 'Phone Number already taken':
+              return 'رقم الهاتف تم التسجيل به مسبقا';
+            case 'Email already taken':
+              return 'البريد تم التسجيل به مسبقا';
+            case 'phone number not valid':
+              return appLn10.invalidPhoneNumber;
+            default:
+          }
+        }
+
+        return s;
+      },
+      unexpectedError: () =>
+          ar ? 'حدث خطأ غير متوقع' : 'Unexpected error occurred',
+      requestTimeout: () =>
+          ar ? 'انتهت مهلة طلب الاتصال' : 'Connection request timeout',
+      noInternetConnection: () =>
+          ar ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection',
+      conflict: () => ar ? 'خطأ بسبب التعارض' : 'Error due to a conflict',
+      sendTimeout: () => ar
+          ? 'انتهت مهلة طلب الاتصال'
+          : 'Send timeout in connection with API server',
+      unableToProcess: () =>
+          ar ? 'غير قادر على معالجة البيانات' : 'Unable to process the data',
+      defaultError: (String error) {
+        if (appLn10.localeName == 'ar') {
+          switch (error) {
+            case 'Incorrect email or password':
+              return 'بريد أو كلمة مرورغير صحيحة';
+            case 'Incorrect Phone Number or password':
+              return 'رقم الهاتف أو كلمة مرورغير صحيحة';
+            case 'Please authenticate':
+              return 'يرجى تسجيل الدخول';
+            case 'Email verification failed':
+              return 'فشل التحقق من البريد الإلكتروني';
+            case 'Otp verification failed':
+              return 'فشل التحقق من الكود';
+            case 'Password reset failed':
+              return 'فشل إعادة تعيين كلمة المرور';
+            case 'Phone Number reset failed':
+              return 'فشل إعادة تعيين رقم الهاتف';
+            case 'Not found':
+              return 'غير موجود';
+            case 'Appointment not found':
+              return 'لم يتم العثور على الموعد';
+            case 'Phone Number already taken':
+              return 'رقم الهاتف مأخوذ بالفعل';
+            default:
+          }
+        }
+        return error;
+      },
+      formatExceptionNetWork: (a) =>
+          ar ? 'حدث خطأ غير متوقع' : 'Unexpected error occurred',
+      notAcceptable: () => 'Not acceptable',
+    );
+  }
   // return errorMessage;
 
 }

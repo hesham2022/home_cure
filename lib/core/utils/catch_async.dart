@@ -19,14 +19,14 @@ Future<Either<NetworkExceptions, T>> guardFuture<T>(
     }
 
     final networkExceptions = NetworkExceptions(e);
-
+    print('@' * 100);
+    print(NetworkExceptions(e));
     return Left(networkExceptions);
-  } catch (e, s) {
+  } catch (e) {
     if (e is DioError) {
       debugPrint(e.response.toString());
     }
-    print(e);
-    print(s);
+
     if (failureCallBack != null) {
       failureCallBack();
     }

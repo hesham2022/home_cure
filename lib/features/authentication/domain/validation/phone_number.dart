@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:formz/formz.dart';
+import 'package:home_cure/app/view/app.dart';
 
 enum PhoneNumberValidationError { empty, inValid }
 
@@ -16,10 +17,10 @@ class PhoneNumber extends FormzInput<String, PhoneNumberValidationError> {
     // ignore: missing_enum_constant_in_switch
     switch (error) {
       case PhoneNumberValidationError.empty:
-        return 'phone number should not be empty';
+        return appLn10.phoneNumberSholdNotBeEmpty;
 
       case PhoneNumberValidationError.inValid:
-        return 'inValid Phone Number';
+        return appLn10.inavlidPhonenumber;
     }
     return null;
   }

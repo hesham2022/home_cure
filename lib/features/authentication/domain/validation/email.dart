@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:formz/formz.dart';
+import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/utils/validation_regx.dart';
 
-enum EmailValidationError { empty, inValid }
+enum EmailValidationError { empty, inValid, homecure, notContainHomecure }
 
 class Email extends FormzInput<String, EmailValidationError> {
   const Email.pure() : super.pure('');
@@ -17,19 +18,26 @@ class Email extends FormzInput<String, EmailValidationError> {
     // ignore: missing_enum_constant_in_switch
     switch (error) {
       case EmailValidationError.empty:
-        return 'email should not be empty';
+        return appLn10.emailSholdNotBeEmpty;
 
       case EmailValidationError.inValid:
-        return 'inValid email';
+        return appLn10.invalidEmail;
+      case EmailValidationError.homecure:
+        return appLn10.homecureEmail;
     }
     return null;
   }
 }
 
 Either<EmailValidationError, void> emailValidator(String value) {
-  if (value.isEmpty) {
-    return const Left(EmailValidationError.empty);
-  } else if (!ValidationsPatterns.emailValidate.hasMatch(value)) {
+  if (value.isEmpty) return const Right(null);
+  print(value);
+
+  if (value.contains('@homecure.com')) {
+    print('email @homecure');
+    return const Left(EmailValidationError.homecure);
+  }
+  if (!ValidationsPatterns.emailValidate.hasMatch(value)) {
     return const Left(EmailValidationError.inValid);
   }
   return const Right(null);
@@ -49,10 +57,12 @@ class EmailOrPhone extends FormzInput<String, EmailValidationError> {
     // ignore: missing_enum_constant_in_switch
     switch (error) {
       case EmailValidationError.empty:
-        return 'email should not be empty';
+        return appLn10.phoneNumberSholdNotBeEmpty;
 
       case EmailValidationError.inValid:
-        return 'inValid value';
+        return appLn10.invalidPhoneNumber;
+      case EmailValidationError.notContainHomecure:
+        return 'your client ! please using phone number';
     }
     return null;
   }
@@ -63,6 +73,15 @@ Either<EmailValidationError, void> emailOrPhoneValidator(String value) {
   final phoneRegx = RegExp(patttern);
   if (value.isEmpty) {
     return const Left(EmailValidationError.empty);
+  }
+  if (value.contains('@')) {
+    // return const Left(EmailValidationError.inValid);
+    final isProviderLogin = value.split('@').last == 'homecure.com';
+    if (isProviderLogin == false) {
+      print(isProviderLogin);
+
+      return const Left(EmailValidationError.notContainHomecure);
+    }
   }
   //  else if (!ValidationsPatterns.emailValidate.hasMatch(value) &&
   //     !phoneRegx.hasMatch(value)) {

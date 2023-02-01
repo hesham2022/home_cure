@@ -19,7 +19,7 @@ class UserModel extends User {
     required super.isOtpVerified,
     required super.name,
     required super.fcm,
-    required super.email,
+    super.email,
     required super.phoneNumber,
     required super.birthOfDate,
     required super.id,
@@ -28,6 +28,8 @@ class UserModel extends User {
     super.active,
     super.qualifications,
     super.specialization,
+    super.experience,
+    super.degree
   });
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         details: (json['role'] as String) != 'user'
@@ -37,7 +39,7 @@ class UserModel extends User {
         isEmailVerified: (json['isEmailVerified'] as bool?) ?? false,
         isOtpVerified: (json['isOtpVerified'] as bool?) ?? false,
         name: json['name'] as String,
-        email: json['email'] as String,
+        email: json['email'] as String?,
         fcm: (json['fcm'] as String?) ?? '',
         photo: json['photo'] as String?,
         phoneNumber: json['phoneNumber'] as String,
@@ -54,6 +56,9 @@ class UserModel extends User {
                 ),
               ),
         specialization: json['specialization'] as String?,
+                experience: json['experience'] as int?,
+        degree: json['degree'] as String?,
+
         //     (json['specialization'] as List<dynamic>?) as List<String>?,
       );
 
@@ -69,6 +74,8 @@ class UserModel extends User {
         'photo': photo,
         'birthOfDate': birthOfDate.toIso8601String(),
         'id': id,
+        'experience':experience,
+        'degree': degree
       };
 }
 
@@ -175,31 +182,35 @@ class Details {
   int weight;
   String bloodType;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'medicines': List<dynamic>.from(
-          medicines.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'allergy': List<dynamic>.from(
-          allergy.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'preSurgeries': List<dynamic>.from(
-          preSurgeries.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'complaintments': List<dynamic>.from(
-          complaintments.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'chDiseases': List<dynamic>.from(
-          chDiseases.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'attachments': List<dynamic>.from(
-          attachments.map<Map<String, dynamic>>((x) => x.toJson()),
-        ),
-        'smoke': smoke,
-        'alcohol': alcohol,
-        'height': height,
-        'weight': weight,
-        'bloodType': bloodType,
-      };
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{
+      'medicines': List<dynamic>.from(
+        medicines.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'allergy': List<dynamic>.from(
+        allergy.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'preSurgeries': List<dynamic>.from(
+        preSurgeries.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'complaintments': List<dynamic>.from(
+        complaintments.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'chDiseases': List<dynamic>.from(
+        chDiseases.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'attachments': List<dynamic>.from(
+        attachments.map<Map<String, dynamic>>((x) => x.toJson()),
+      ),
+      'smoke': smoke,
+      'alcohol': alcohol,
+      'height': height,
+      'weight': weight,
+    };
+    if (bloodType.isNotEmpty) map['bloodType'] = bloodType;
+
+    return map;
+  }
 }
 
 class Allergy {
@@ -286,7 +297,7 @@ class Qualification {
   });
   factory Qualification.fromJson(Map<String, dynamic> json) {
     return Qualification(
-      title: json['title'] as String,
+      title: json['title'] == null ? '' : json['title'] as String,
       id: json['_id'] as String,
       attachment: json['attachment'] as String,
     );

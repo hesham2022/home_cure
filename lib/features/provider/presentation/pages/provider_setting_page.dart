@@ -14,6 +14,7 @@ import 'package:home_cure/features/setting/presentation/widgets/change_dialouge.
 import 'package:home_cure/features/setting/presentation/widgets/setting_tap.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/profile_header.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class ProviderSettingPage extends StatefulWidget {
   const ProviderSettingPage({super.key});
@@ -124,7 +125,7 @@ class _ProviderSettingPageState extends State<ProviderSettingPage> {
                           SettingTap(
                             lastPart: false,
                             icon: Assets.svg.noteSvg.svg(color: Colors.white),
-                            title: 'Usage And Provacy Policy',
+                            title: context.l10n.privacy,
                           ),
                           SizedBox(
                             height: 30.h,

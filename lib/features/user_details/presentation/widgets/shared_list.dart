@@ -7,7 +7,7 @@ import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
 import 'package:home_cure/features/user_details/data/models/medical_model.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/edit_dialouge.dart';
-import 'package:intl/intl.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class SharedList extends StatefulWidget {
   const SharedList({
@@ -17,9 +17,11 @@ class SharedList extends StatefulWidget {
     required this.list,
     required this.onSubmit,
     required this.onEdit,
+    required this.hint,
   });
   final String title;
   final String subTitle;
+  final String hint;
   final List<MediaclModel> list;
   final Function(List<MediaclModel> list) onSubmit;
   final Function(List<MediaclModel> list) onEdit;
@@ -60,7 +62,8 @@ class _SharedListState extends State<SharedList> {
                       height: 40.h,
                     ),
                     Text(
-                      'Descripe What  You Feel',
+                      //   context.l10n.select_what_you_feel,
+                      widget.hint,
                       style: TextStyle(
                         fontSize: 18.sp,
                         color: const Color(0xff1AA9A0),
@@ -73,6 +76,7 @@ class _SharedListState extends State<SharedList> {
                     Expanded(
                       child: BighFormField(
                         controller: controller,
+                        hint: widget.hint,
                       ),
                     )
                   ],
@@ -98,14 +102,14 @@ class _SharedListState extends State<SharedList> {
                       controller.clear();
                     }
                   },
-                  title: 'Done',
+                  title: context.l10n.done,
                 ),
                 const SizedBox(
                   width: 30,
                 ),
                 Button1(
-                  onPressed: () {},
-                  title: 'Cancel',
+                  onPressed: controller.clear,
+                  title: context.l10n.cancel,
                 ),
               ],
             ),
@@ -131,6 +135,7 @@ class _SharedListState extends State<SharedList> {
                       const SizedBox(
                         height: 30,
                       ),
+                      if (widget.list.isEmpty) Text(context.l10n.noData),
                       ...widget.list
                           .map(
                             (e) => Container(
@@ -150,23 +155,23 @@ class _SharedListState extends State<SharedList> {
                                         ),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          DateFormat.yMMMEd().format(e.date),
-                                          style:
-                                              textStyleWithPrimaryBold.copyWith(
-                                            fontSize: 15.sp,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // Expanded(
+                                    //   child: Center(
+                                    //     child: Text(
+                                    //       DateFormat.yMMMEd().format(e.date),
+                                    //       style: textStyleWithPrimaryBold.copyWith(
+                                    //         fontSize: 15.sp,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     IconButton(
                                       onPressed: () async {
                                         final result = await showDialog<String>(
                                           context: context,
-                                          builder: (_) => const EditDialouge(
+                                          builder: (_) => EditDialouge(
                                             title: 'Main Complaint',
+                                            oldString: e.description,
                                           ),
                                         );
                                         if (result != null &&
@@ -190,11 +195,117 @@ class _SharedListState extends State<SharedList> {
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                        widget.list.removeWhere(
-                                          (element) => element.id == e.id,
+                                        // remove action
+
+                                        // widget.list.removeWhere(
+                                        //   (element) => element.id == e.id,
+                                        // );
+
+                                        // widget.onEdit([...widget.list]);
+
+                                        await showDialog<void>(
+                                          useRootNavigator: false,
+                                          context: context,
+                                          builder: (_) => Dialog(
+                                            // backgroundColor: Colors.white.withOpacity(.8),
+                                            insetPadding:
+                                                const EdgeInsets.all(10),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: CommonContainer(
+                                              gradient: LinearGradient(
+                                                begin: FractionalOffset
+                                                    .bottomRight,
+                                                end: FractionalOffset.topLeft,
+                                                colors: [
+                                                  const Color(0xffF8E5E8)
+                                                      .withOpacity(.8),
+                                                  const Color(0xffE6DAF5)
+                                                      .withOpacity(.8),
+                                                  const Color(0xffE4F0FC)
+                                                      .withOpacity(.8),
+                                                  const Color(0xffE8EEF2)
+                                                      .withOpacity(.8),
+                                                ],
+                                              ),
+                                              // height: (widget.appointment.isOnPeocessing && widget.appointment.payed)
+                                              height: 130,
+                                              // width: 300,
+
+                                              child: Form(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        context.l10n.areYouSure,
+                                                        style:
+                                                            textStyleWithPrimaryBold,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Button1(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                            },
+                                                            title: context
+                                                                .l10n.cancel,
+                                                            size: const Size(
+                                                              140,
+                                                              5,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 40,
+                                                          ),
+                                                          Button1(
+                                                            onPressed:
+                                                                () async {
+                                                              widget.list
+                                                                  .removeWhere(
+                                                                (element) =>
+                                                                    element
+                                                                        .id ==
+                                                                    e.id,
+                                                              );
+
+                                                              widget.onEdit(
+                                                                [
+                                                                  ...widget.list
+                                                                ],
+                                                              );
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                            },
+                                                            title: context
+                                                                .l10n.yes,
+                                                            size: const Size(
+                                                              140,
+                                                              5,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         );
 
-                                        widget.onEdit([...widget.list]);
                                         // setState(() {});
                                       },
                                       icon: const Icon(
@@ -236,17 +347,17 @@ class _SharedListState extends State<SharedList> {
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  'Date',
-                                  style: textStyleWithPrimaryBold.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 15.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Center(
+                            //     child: Text(
+                            //       context.l10n.date,
+                            //       style: textStyleWithPrimaryBold.copyWith(
+                            //         color: Colors.white,
+                            //         fontSize: 15.sp,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                             IconButton(
                               onPressed: () {},
                               icon: const Icon(

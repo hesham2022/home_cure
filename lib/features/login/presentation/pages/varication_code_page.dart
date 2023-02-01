@@ -12,6 +12,8 @@ import 'package:home_cure/features/authentication/domain/entities/verify_passwor
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_cubit.dart';
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_state.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class VaricationCodePage extends StatefulWidget {
@@ -54,11 +56,15 @@ class _VaricationCodePageState extends State<VaricationCodePage> {
         listener: (context, state) {
           if (state is ForgetPasswordStateError) {
             Future.delayed(Duration.zero, () {
-              ScaffoldMessenger.of(context)
-                ..clearSnackBars()
-                ..showSnackBar(
-                  SnackBar(content: Text(state.error.errorMessege)),
-                );
+                 showSimpleNotification(
+                Text(state.error.errorMessege),
+                background: Colors.red,
+              );
+              // ScaffoldMessenger.of(context)
+              //   ..clearSnackBars()
+              //   ..showSnackBar(
+              //     SnackBar(content: Text(state.error.errorMessege)),
+              //   );
             });
           }
 
@@ -86,68 +92,71 @@ class _VaricationCodePageState extends State<VaricationCodePage> {
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    PinCodeTextField(
-                      appContext: context,
-
-                      length: 6,
-                      animationType: AnimationType.fade,
-                      pinTheme: PinTheme(
-                        shape: PinCodeFieldShape.box,
-                        borderRadius: BorderRadius.circular(8),
-                        fieldHeight: 60.h,
-                        fieldWidth: 60.h,
-                        activeColor: const Color(0xffE5E5E5),
-                        inactiveColor: const Color(0xffE5E5E5),
-                        activeFillColor: const Color(0xffF5F5F5),
-                        selectedColor: const Color(0xffE5E5E5),
-                        selectedFillColor: Colors.white,
-                        inactiveFillColor: Colors.white,
+                Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: PinCodeTextField(
+                        appContext: context,
+                    
+                        length: 6,
+                        animationType: AnimationType.fade,
+                        pinTheme: PinTheme(
+                          shape: PinCodeFieldShape.box,
+                          borderRadius: BorderRadius.circular(8),
+                          fieldHeight: 60.h,
+                          fieldWidth: 60.h,
+                          activeColor: const Color(0xffE5E5E5),
+                          inactiveColor: const Color(0xffE5E5E5),
+                          activeFillColor: const Color(0xffF5F5F5),
+                          selectedColor: const Color(0xffE5E5E5),
+                          selectedFillColor: Colors.white,
+                          inactiveFillColor: Colors.white,
+                        ),
+                        animationDuration: const Duration(milliseconds: 300),
+                        // backgroundColor: Colors.blue.shade50,
+                        enableActiveFill: true,
+                        // errorAnimationController: errorController,
+                        //    controller: textEditingController,
+                        onCompleted: (v) {
+                          print(v);
+                    
+                          if (state
+                              is ForgetPasswordStateForgetPasswordTokenLoaded) {
+                            successState = state;
+                          }
+                          context
+                              .read<ForgetPasswordCubit>()
+                              .verifyForgetPasswordOtp(
+                                VerifyForgetPasswordParam(
+                                  token: successState.token,
+                                  code: v,
+                                ),
+                              );
+                          // if (v == '1234') {
+                          //   context.router.push(const ReserPasswordPageRouter());
+                          // }
+                        },
+                        onChanged: (value) {
+                          code = value;
+                    
+                          // print(value);
+                          // setState(() {
+                          //   currentText = value;
+                          // });
+                        },
+                        //1234
+                        beforeTextPaste: (text) {
+                          print('Allowing to paste $text');
+                          //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                          //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                          return true;
+                        },
                       ),
-                      animationDuration: const Duration(milliseconds: 300),
-                      // backgroundColor: Colors.blue.shade50,
-                      enableActiveFill: true,
-                      // errorAnimationController: errorController,
-                      //    controller: textEditingController,
-                      onCompleted: (v) {
-                        print(v);
-
-                        if (state
-                            is ForgetPasswordStateForgetPasswordTokenLoaded) {
-                          successState = state;
-                        }
-                        context
-                            .read<ForgetPasswordCubit>()
-                            .verifyForgetPasswordOtp(
-                              VerifyForgetPasswordParam(
-                                token: successState.token,
-                                code: v,
-                              ),
-                            );
-                        // if (v == '1234') {
-                        //   context.router.push(const ReserPasswordPageRouter());
-                        // }
-                      },
-                      onChanged: (value) {
-                        code = value;
-
-                        // print(value);
-                        // setState(() {
-                        //   currentText = value;
-                        // });
-                      },
-                      //1234
-                      beforeTextPaste: (text) {
-                        print('Allowing to paste $text');
-                        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                        //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                        return true;
-                      },
                     ),
                     SizedBox(
                       height: 50.h,
                     ),
                     Button1(
-                      title: 'Send',
+                      title:context.l10n.send,
                       onPressed: () {
                         if (state
                             is ForgetPasswordStateForgetPasswordTokenLoaded) {
@@ -173,7 +182,7 @@ class _VaricationCodePageState extends State<VaricationCodePage> {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: "Didn't receive a message?",
+                            text:context.l10n.dontRecieveMessege,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 if (showResend != true) {

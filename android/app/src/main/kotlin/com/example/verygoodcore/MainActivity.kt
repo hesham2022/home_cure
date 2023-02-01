@@ -1,4 +1,4 @@
-package com.example.verygoodcore.home_cure
+package com.home_cure
 
 import io.flutter.embedding.android.FlutterActivity
 

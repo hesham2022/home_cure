@@ -1,1 +1,1 @@
-r pub run build_runner build --delete-conflicting-outputs
+--flavor production --target lib/main_production.dart

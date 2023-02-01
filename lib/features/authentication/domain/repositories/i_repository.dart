@@ -29,14 +29,34 @@ abstract class IAuthenticationRepository {
   Future<Either<NetworkExceptions, String>> forgotPassword(
     ForgetPasswordParam forgetPasswordParam,
   );
+   Future<Either<NetworkExceptions, String>> forgotPasswordFirebase(
+    ForgetPasswordParam forgetPasswordParam,
+  );
+   Future<Either<NetworkExceptions, String>> changePhoneNumber(
+    ForgetPasswordParam forgetPasswordParam,
+  );
   Future<Either<NetworkExceptions, String>> sendOtp();
   Future<Either<NetworkExceptions, String>> verifyForgetPasswordOtp(
+    VerifyForgetPasswordParam verifyForgetPasswordParam,
+  );
+   Future<Either<NetworkExceptions, String>> verifyChangePhoneNumberOtp(
     VerifyForgetPasswordParam verifyForgetPasswordParam,
   );
   Future<Either<NetworkExceptions, void>> verifyOtp(
     VerifyForgetPasswordParam verifyForgetPasswordParam,
   );
+   Future<Either<NetworkExceptions, void>> verifyOtpFirebase(
+  );
   Future<Either<NetworkExceptions, void>> resetPassword(
+    ResetPasswordParams verifyForgetPasswordParam,
+  );
+  Future<Either<NetworkExceptions, void>> resetPasswordFirebase(
+    ResetPasswordParams verifyForgetPasswordParam,
+  );
+   Future<Either<NetworkExceptions, void>> resetPhoneNumber(
+    ResetPasswordParams verifyForgetPasswordParam,
+  );
+   Future<Either<NetworkExceptions, void>> resetPhoneNumberFiebase(
     ResetPasswordParams verifyForgetPasswordParam,
   );
   // Future<Either<NetworkExceptions, void>> updatePassword(

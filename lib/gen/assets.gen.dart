@@ -14,6 +14,30 @@ import 'package:flutter/services.dart';
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
+  /// File path: assets/fonts/Cairo-Black.ttf
+  String get cairoBlack => 'assets/fonts/Cairo-Black.ttf';
+
+  /// File path: assets/fonts/Cairo-Bold.ttf
+  String get cairoBold => 'assets/fonts/Cairo-Bold.ttf';
+
+  /// File path: assets/fonts/Cairo-ExtraBold.ttf
+  String get cairoExtraBold => 'assets/fonts/Cairo-ExtraBold.ttf';
+
+  /// File path: assets/fonts/Cairo-ExtraLight.ttf
+  String get cairoExtraLight => 'assets/fonts/Cairo-ExtraLight.ttf';
+
+  /// File path: assets/fonts/Cairo-Light.ttf
+  String get cairoLight => 'assets/fonts/Cairo-Light.ttf';
+
+  /// File path: assets/fonts/Cairo-Medium.ttf
+  String get cairoMedium => 'assets/fonts/Cairo-Medium.ttf';
+
+  /// File path: assets/fonts/Cairo-Regular.ttf
+  String get cairoRegular => 'assets/fonts/Cairo-Regular.ttf';
+
+  /// File path: assets/fonts/Cairo-SemiBold.ttf
+  String get cairoSemiBold => 'assets/fonts/Cairo-SemiBold.ttf';
+
   /// File path: assets/fonts/Oswald-Medium.ttf
   String get oswaldMedium => 'assets/fonts/Oswald-Medium.ttf';
 
@@ -23,6 +47,18 @@ class $AssetsFontsGen {
 
 class $AssetsImgGen {
   const $AssetsImgGen();
+
+  /// File path: assets/img/All-logo versions-02.jpg
+  AssetGenImage get allLogoVersions02Jpg =>
+      const AssetGenImage('assets/img/All-logo versions-02.jpg');
+
+  /// File path: assets/img/All-logo versions-02.png
+  AssetGenImage get allLogoVersions02Png =>
+      const AssetGenImage('assets/img/All-logo versions-02.png');
+
+  /// File path: assets/img/All-logo versions-06.jpg
+  AssetGenImage get allLogoVersions06 =>
+      const AssetGenImage('assets/img/All-logo versions-06.jpg');
 
   /// File path: assets/img/BG Imgs.png
   AssetGenImage get bGImgs => const AssetGenImage('assets/img/BG Imgs.png');
@@ -38,8 +74,17 @@ class $AssetsImgGen {
   /// File path: assets/img/Image1.png
   AssetGenImage get image1 => const AssetGenImage('assets/img/Image1.png');
 
+  /// File path: assets/img/Log.png
+  AssetGenImage get log => const AssetGenImage('assets/img/Log.png');
+
   /// File path: assets/img/Logo.png
   AssetGenImage get logo => const AssetGenImage('assets/img/Logo.png');
+
+  /// File path: assets/img/Logo2.png
+  AssetGenImage get logo2 => const AssetGenImage('assets/img/Logo2.png');
+
+  /// File path: assets/img/Logoone.png
+  AssetGenImage get logoone => const AssetGenImage('assets/img/Logoone.png');
 
   /// File path: assets/img/Mask Group 1.png
   AssetGenImage get maskGroup1 =>
@@ -113,6 +158,9 @@ class $AssetsImgGen {
   /// File path: assets/img/file.jpeg
   AssetGenImage get file => const AssetGenImage('assets/img/file.jpeg');
 
+  /// File path: assets/img/gif.gif
+  AssetGenImage get gif => const AssetGenImage('assets/img/gif.gif');
+
   /// File path: assets/img/girl.png
   AssetGenImage get girl => const AssetGenImage('assets/img/girl.png');
 
@@ -124,6 +172,9 @@ class $AssetsImgGen {
 
   /// File path: assets/img/logo_png.png
   AssetGenImage get logoPng => const AssetGenImage('assets/img/logo_png.png');
+
+  /// File path: assets/img/logo_png2.png
+  AssetGenImage get logoPng2 => const AssetGenImage('assets/img/logo_png2.png');
 
   /// File path: assets/img/map.png
   AssetGenImage get map => const AssetGenImage('assets/img/map.png');
@@ -268,6 +319,10 @@ class $AssetsSvgGen {
   SvgGenImage get graiticMediciene =>
       const SvgGenImage('assets/svg/graitic mediciene.svg');
 
+  /// File path: assets/svg/hand-money-icon.svg
+  SvgGenImage get handMoneyIcon =>
+      const SvgGenImage('assets/svg/hand-money-icon.svg');
+
   /// File path: assets/svg/heart.svg
   SvgGenImage get heart => const SvgGenImage('assets/svg/heart.svg');
 
@@ -297,6 +352,9 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/svg/logo.svg');
+
+  /// File path: assets/svg/logo2.svg
+  SvgGenImage get logo2 => const SvgGenImage('assets/svg/logo2.svg');
 
   /// File path: assets/svg/logo_svg.svg
   SvgGenImage get logoSvg => const SvgGenImage('assets/svg/logo_svg.svg');

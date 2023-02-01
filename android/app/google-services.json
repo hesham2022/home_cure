@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:47809000316:android:47cf7b81ff3590d6466af9",
         "android_client_info": {
-          "package_name": "com.example.verygoodcore.home_cure"
+          "package_name": "com.home_cure"
         }
       },
 
@@ -18,7 +18,7 @@
           "client_id": "47809000316-p0anceh2kg9qnnh27jo325ondgqg8nrf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.verygoodcore.home_cure",
+            "package_name": "com.home_cure",
             "certificate_hash": "747ed8a069791515c7e55379944f4e646ae86f8a"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "47809000316-s9inn7os09aoo237c3ovoh4k2gh8folu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.verygoodcore.home_cure",
+            "package_name": "com.home_cure",
             "certificate_hash": "b5f6a232cd3df05748f28d2c6ffc58891bd89b85"
           }
         },

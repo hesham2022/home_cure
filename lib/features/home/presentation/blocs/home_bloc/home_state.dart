@@ -12,10 +12,15 @@ class HomeInitial extends HomeState {}
 class HomeServicesLoading extends HomeState {}
 
 class HomeServicesLoaded extends HomeState {
-  const HomeServicesLoaded({
+  HomeServicesLoaded({
     required this.services,
-  });
+  }) {
+    add();
+  }
   final List<ServiceEntity> services;
+  void add() {
+    // services.addAll(getOurDoctors());
+  }
 }
 
 class HomeServicesError extends HomeState {

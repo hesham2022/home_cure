@@ -14,7 +14,9 @@ class AppointmentsParamsState extends Equatable {
     this.service,
     this.price,
     this.days,
+    this.allergic,
     this.sessions,
+    this.discount,
   });
   final EveningMorning? period;
   final String? reason;
@@ -28,11 +30,15 @@ class AppointmentsParamsState extends Equatable {
   final String? service;
   final int? days;
   final int? price;
+  final int? discount;
+
   final int? sessions;
+  final bool? allergic;
   AppointmentsParamsState copyWith({
     String? reason,
     DateTime? date,
     String? timeslot,
+    int? discount,
     String? user,
     String? service,
     String? paymentMethod,
@@ -41,6 +47,7 @@ class AppointmentsParamsState extends Equatable {
     EveningMorning? period,
     int? price,
     int? sessions,
+    bool? allergic,
     int? days,
   }) {
     return AppointmentsParamsState(
@@ -52,7 +59,9 @@ class AppointmentsParamsState extends Equatable {
       paymentMethod: paymentMethod ?? this.paymentMethod,
       location: location ?? this.location,
       period: period ?? this.period,
+      discount: discount ?? this.discount,
       service: service ?? this.service,
+      allergic: allergic ?? this.allergic,
       price: price ?? this.price,
       sessions: sessions ?? this.sessions,
       days: days ?? this.days,
@@ -75,6 +84,8 @@ class AppointmentsParamsState extends Equatable {
         reason: reason,
         days: days,
         sessions: sessions,
+        priceDiscount: discount,
+        allergic: allergic,
         price: price,
       );
   @override
@@ -85,11 +96,13 @@ class AppointmentsParamsState extends Equatable {
         paymentMethod,
         attachments,
         location,
+        discount,
         period,
         timeslot,
         service,
         days,
         price,
-        sessions
+        sessions,
+        allergic
       ];
 }

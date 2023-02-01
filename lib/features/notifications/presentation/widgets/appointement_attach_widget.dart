@@ -6,17 +6,14 @@ class AppointmentAttachemntsWidget extends StatefulWidget {
   const AppointmentAttachemntsWidget({super.key, required this.urls});
   final List<String> urls;
   @override
-  State<AppointmentAttachemntsWidget> createState() =>
-      _AppointmentAttachemntsWidgetState();
+  State<AppointmentAttachemntsWidget> createState() => _AppointmentAttachemntsWidgetState();
 }
 
-class _AppointmentAttachemntsWidgetState
-    extends State<AppointmentAttachemntsWidget> {
+class _AppointmentAttachemntsWidgetState extends State<AppointmentAttachemntsWidget> {
   late List<AttachmentUrlHelper> attachments;
   @override
   void initState() {
-    attachments =
-        widget.urls.map<AttachmentUrlHelper>(AttachmentUrlHelper.new).toList();
+    attachments = widget.urls.map<AttachmentUrlHelper>(AttachmentUrlHelper.new).toList();
     super.initState();
   }
 

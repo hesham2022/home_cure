@@ -14,6 +14,7 @@ import 'package:home_cure/features/notifications/presentation/widgets/appintment
 import 'package:home_cure/features/notifications/presentation/widgets/notifications_tap.dart';
 import 'package:home_cure/features/provider/presentation/blocs/notifications_cubit/notifications_cubit.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 import 'package:intl/intl.dart';
 
 enum RequestStatus { inProgress, completed, done, cancelled }
@@ -38,7 +39,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
         child: Column(
           children: [
             SizedBox(
-              height: 50.h,
+              height: 25.h,
+            ),
+            Center(child: Assets.img.logo.image(height: 100, width: 100)),
+            SizedBox(
+              height: 25.h,
             ),
             NotificationTapWidget(
               initialValue: ReqestNotificion.request,
@@ -55,17 +60,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
               BlocBuilder<NotificationsCubit, NotificationsCubitState>(
                 builder: (context, state) {
                   if (state is NotificationsCubitStateLoaded) {
-                    return ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.appointments.length,
-                      itemBuilder: (c, i) => Container(
-                        margin: EdgeInsets.only(bottom: 30.h),
-                        child: RequestInfoWidget(
-                          request: state.appointments.reversed.toList()[i],
-                        ),
-                      ),
-                    );
+                    return state.appointments.isEmpty
+                        ? Text(context.l10n.emptyData)
+                        : ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: state.appointments.length,
+                            itemBuilder: (c, i) => Container(
+                              margin: EdgeInsets.only(bottom: 30.h),
+                              child: RequestInfoWidget(
+                                request:
+                                    state.appointments.reversed.toList()[i],
+                              ),
+                            ),
+                          );
                   }
                   return const SizedBox();
                 },
@@ -75,17 +83,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 builder: (context, state) {
                   if (state is MyAppointmentsCubitStateLoaded) {
                     final appointments = state.appointments.reversed.toList();
-                    return ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: appointments.length,
-                      itemBuilder: (c, i) => Container(
-                        margin: EdgeInsets.only(bottom: 30.h),
-                        child: AppointmentInfoWidget(
-                          request: appointments[i],
-                        ),
-                      ),
-                    );
+                    return appointments.isEmpty
+                        ? Text(context.l10n.emptyDate)
+                        : ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: appointments.length,
+                            itemBuilder: (c, i) => Container(
+                              margin: EdgeInsets.only(bottom: 30.h),
+                              child: AppointmentInfoWidget(
+                                request: appointments[i],
+                              ),
+                            ),
+                          );
                   }
                   return const SizedBox();
                 },
@@ -100,55 +110,61 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 }
 
-class RequestInfoWidget extends StatelessWidget {
+class RequestInfoWidget extends StatefulWidget {
   const RequestInfoWidget({
     super.key,
     required this.request,
   });
 
   final NotificationsModel request;
-  // String getStatus() {
-  //   if (request.appointment.isWaiting) {
-  //     return 'Accepted';
-  //   }
-  //   if (request.appointment.isOnPeocessing) {
-  //     return 'On Processing';
-  //   }
-  //   if (request.appointment.isDone) {
-  //     return 'Completed';
-  //   }
-  //   return 'Pending';
-  // }
 
-  String getStatus() {
-    if (request.appointment.isWaiting) {
-      return 'Accepted';
+  @override
+  State<RequestInfoWidget> createState() => _RequestInfoWidgetState();
+}
+
+class _RequestInfoWidgetState extends State<RequestInfoWidget> {
+  // String getStatus() {
+  String? local;
+
+  String getStatus(BuildContext context) {
+    if (widget.request.appointment.isWaiting) {
+      return context.l10n.accepted;
     }
-    if (request.appointment.isOnPeocessing) {
-      return 'On Processing';
+    if (widget.request.appointment.isOnPeocessing) {
+      return context.l10n.onProccessing;
     }
-    if (request.appointment.isDone) {
-      return 'Completed';
+    if (widget.request.appointment.isDone) {
+      return context.l10n.completed;
     }
-    return 'Pending';
+    return context.l10n.pending;
   }
 
   Color getColor() {
-    if (request.appointment.isOpened) return seocondColor;
-    if (request.appointment.isWaiting) return seocondColor;
-    if (request.appointment.isOnPeocessing) return seocondColor;
+    if (widget.request.appointment.isOpened) return seocondColor;
+    if (widget.request.appointment.isWaiting) return seocondColor;
+    if (widget.request.appointment.isOnPeocessing) return seocondColor;
 
     return primaryColor;
   }
 
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        local = Localizations.maybeLocaleOf(context)?.toLanguageTag();
+      });
+    });
+    super.initState();
+  }
+
   Widget getIcon() {
-    if (request.appointment.isVideo) {
+    if (widget.request.appointment.isVideo) {
       return Icon(
         Icons.video_call,
         color: getColor(),
       );
     }
-    if (request.appointment.isTele) {
+    if (widget.request.appointment.isTele) {
       return Assets.svg.phone3.svg(
         color: getColor(),
       );
@@ -159,45 +175,51 @@ class RequestInfoWidget extends StatelessWidget {
     );
   }
 
-  String getAgo() {
-    final duration = DateTime.now().difference(request.sentTime);
+  String getAgo(BuildContext context) {
+    final duration = DateTime.now().difference(widget.request.sentTime);
     if (duration.inDays > 0) {
-      return '${duration.inDays} days';
+      return '${duration.inDays} ${context.l10n.day}';
     }
     if (duration.inHours > 0) {
-      return '${duration.inHours} hours';
+      return '${duration.inHours} ${context.l10n.hours}';
     }
     if (duration.inMinutes > 0) {
-      return '${duration.inMinutes} minutes';
+      return '${duration.inMinutes} ${context.l10n.minutes}';
     }
     return '';
   }
 
-  String getTitleString() {
-    if (request.appointment.isVideo) {
-      return 'Video Request';
+  String getTitleString(BuildContext context) {
+    if (widget.request.appointment.isVideo) {
+      return context.l10n.videoRequest;
     }
-    if (request.appointment.isTele) {
-      return 'Call Request';
+    if (widget.request.appointment.isTele) {
+      return context.l10n.callRequest;
     }
-    return 'Appointment Request';
+    return context.l10n.appointmentRequest;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isAr = context.l10n.localeName == 'ar';
     return InkWell(
       onTap: () {
+        if (context.read<UserCubit>().state is UserCubitStateError) {
+          print((context.read<UserCubit>().state as UserCubitStateError).error);
+        }
         final isUser = (context.read<UserCubit>().state as UserCubitStateLoaded)
             .user
             .isUser;
         if (isUser) {
           context.router.push(
-            AppointmentDetailsPageRoute(appointment: request.appointment),
+            AppointmentDetailsPageRoute(
+              appointment: widget.request.appointment,
+            ),
           );
         } else {
           context.router.push(
             AppointmentDetailsPageAdpterRoute(
-              appointment: request.appointment,
+              appointment: widget.request.appointment,
             ),
           );
         }
@@ -208,16 +230,18 @@ class RequestInfoWidget extends StatelessWidget {
           return Row(
             children: [
               Container(
-                height: 150.h,
+                height: 170.h,
                 width: 6,
-                color: request.appointment.isDone ? primaryColor : seocondColor,
+                color: widget.request.appointment.isDone
+                    ? primaryColor
+                    : seocondColor,
               ),
               const SizedBox(
                 width: 5,
               ),
               Expanded(
                 child: Container(
-                  height: 150.h,
+                  height: 170.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -227,7 +251,7 @@ class RequestInfoWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          request.title,
+                          widget.request.title,
                           style: textStyleWithPrimarySemiBold,
                         ),
                         const SizedBox(
@@ -249,18 +273,20 @@ class RequestInfoWidget extends StatelessWidget {
                                     width: 120.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: request.appointment.status ==
+                                      color: widget
+                                                  .request.appointment.status ==
                                               'waiting'
                                           ? const Color(0xffD74B7F)
                                               .withOpacity(.2)
-                                          : request.appointment.status == 'done'
+                                          : widget.request.appointment.status ==
+                                                  'done'
                                               ? const Color(0xff0A84E1)
                                                   .withOpacity(.2)
                                               : const Color(0xff1AA9A0)
                                                   .withOpacity(.2),
                                     ),
                                     child: Text(
-                                      getStatus(),
+                                      getStatus(context),
                                       style:
                                           textStyleWithSecondSemiBold.copyWith(
                                         fontSize: 12.sp,
@@ -272,7 +298,7 @@ class RequestInfoWidget extends StatelessWidget {
                                     height: 10.h,
                                   ),
                                   Text(
-                                    getTitleString(),
+                                    getTitleString(context),
                                     style:
                                         textStyleWithPrimarySemiBold.copyWith(
                                       fontSize: 14.sp,
@@ -304,21 +330,30 @@ class RequestInfoWidget extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${getAgo()}Ago',
+                                          isAr
+                                              ? '${context.l10n.ago} ${getAgo(context)}'
+                                              : '${getAgo(context)} ${context.l10n.ago}',
                                           //   'Friday',
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(fontSize: 14.sp),
                                         ),
                                         Text(
-                                          DateFormat('EEEE').format(
-                                            request.appointment.date,
+                                          DateFormat(
+                                            'EEEE',
+                                            App.isAr(context) ? 'ar' : 'en',
+                                          ).format(
+                                            widget.request.appointment.date,
                                           ), //   'Friday',
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(fontSize: 14.sp),
                                         ),
                                         Text(
-                                          DateFormat('EEEE, d MMM, yyyy')
-                                              .format(request.appointment.date),
+                                          DateFormat(
+                                            'EEEE, d MMM, yyyy',
+                                            App.isAr(context) ? 'ar' : 'en',
+                                          ).format(
+                                            widget.request.appointment.date,
+                                          ),
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(
                                             fontSize: 12.sp,
@@ -332,16 +367,18 @@ class RequestInfoWidget extends StatelessWidget {
                                                 is TimeSlotCubitStateLoaded) {
                                               final timeSlots = state.timeSlots;
 
-                                              final timeSlot =
-                                                  timeSlots.firstWhere(
-                                                (element) =>
-                                                    element.id ==
-                                                    request
-                                                        .appointment.timeslot,
-                                              );
+                                              final timeSlot = widget
+                                                  .request.appointment.timeslot;
                                               return Text(
-                                                timeSlot
-                                                    .startSting, //   '05:52 PM',
+                                                timeSlot.startSting
+                                                    .replaceAll(
+                                                      'AM',
+                                                      context.l10n.morning,
+                                                    )
+                                                    .replaceAll(
+                                                      'PM',
+                                                      context.l10n.evening,
+                                                    ), //   '0 //   '05:52 PM',
                                                 style:
                                                     textStyleWithPrimarySemiBold
                                                         .copyWith(

@@ -6,6 +6,7 @@ import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cub
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
 import 'package:home_cure/features/user_details/data/models/medical_model.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/shared_list.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class PreviousSurgeriesPage extends StatefulWidget {
   const PreviousSurgeriesPage({super.key});
@@ -45,6 +46,7 @@ class _PreviousSurgeriesPageState extends State<PreviousSurgeriesPage> {
         }
       },
       child: SharedList(
+        hint: context.l10n.enterPreviousSurgeries,
         onEdit: (list) {
           context.read<UserCubit>().updateUserDeatilsFunc(
                 _details.copyWith(
@@ -75,8 +77,8 @@ class _PreviousSurgeriesPageState extends State<PreviousSurgeriesPage> {
                 ),
               );
         },
-        title: 'Previous Surgeries',
-        subTitle: 'Surgeries',
+        title: context.l10n.previousSurgeries,
+        subTitle: context.l10n.sergeries,
         list: _details.preSurgeries
             .map(
               (e) => MediaclModel(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,12 +13,26 @@ class MapHelper extends ChangeNotifier {
         LocationService.position!.longitude,
       );
     }
+    LocationService().addListener(() {
+      if (LocationService.position != null) {
+        addMarker(
+          LatLng(
+            LocationService.position!.latitude,
+            LocationService.position!.longitude,
+          ),
+        );
+        controller.animateCamera(
+          CameraUpdate.newLatLng(LatLng(LocationService.position!.latitude,
+              LocationService.position!.longitude)),
+        );
+      }
+    });
   }
   late GoogleMapController controller;
   LatLng latLong = const LatLng(30, 31);
   CameraPosition initialPosition() => CameraPosition(
         target: latLong,
-        zoom: 10,
+        zoom: 16,
       );
   void init(GoogleMapController ctr) {
     controller = ctr;
@@ -52,12 +67,15 @@ class MapHelper extends ChangeNotifier {
       LocationPermission permission;
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
+        await EasyLoading.showToast('Please enable location service');
         return Future.error('Location services are disabled.');
       }
       permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
+          await EasyLoading.showToast('Please request location permission');
+
           return Future.error('Location permissions are denied');
         }
       }

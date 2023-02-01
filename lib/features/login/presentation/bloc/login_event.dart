@@ -33,6 +33,11 @@ class LoginPasswordChanged extends LoginEvent {
   List<Object> get props => [password];
 }
 
+class Validate extends LoginEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class LoginConfirmPasswordChanged extends LoginEvent {
   const LoginConfirmPasswordChanged(this.password);
 
@@ -95,10 +100,10 @@ class LoginWithEmail extends LoginEvent {
 class LoginBirthChanged extends LoginEvent {
   const LoginBirthChanged(this.name);
 
-  final DateTime name;
+  final DateTime? name;
 
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [name!];
 }
 
 class LoginProviderSubmitted extends LoginEvent {

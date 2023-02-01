@@ -1,4 +1,5 @@
 import 'package:formz/formz.dart';
+import 'package:home_cure/app/app.dart';
 
 enum ConfirmPasswordValidator { notIdentical }
 
@@ -9,7 +10,7 @@ class ConfirmPassword extends FormzInput<String, ConfirmPasswordValidator> {
     // ignore: missing_enum_constant_in_switch
     switch (error) {
       case ConfirmPasswordValidator.notIdentical:
-        return 'not identical';
+        return appLn10.passwordIsNotIdentical;
     }
     return null;
   }

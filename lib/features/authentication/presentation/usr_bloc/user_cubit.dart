@@ -29,6 +29,8 @@ class UserCubit extends Cubit<UserCubitState> {
     required this.uploadUserPhoto,
     required this.updateProvider,
     required this.uploadProviderPhoto,
+    required this.deleteProviderAttachments,
+    required this.deleteUserAttachments,
     required this.getUser,
   }) : super(UserCubitStateInitil());
   final GetMe getMe;
@@ -40,14 +42,18 @@ class UserCubit extends Cubit<UserCubitState> {
   final UploadProviderPhoto uploadProviderPhoto;
   final UpdateProvider updateProvider;
   final UploadProviderAttachments uploadProviderAttachments;
+  final DeleteProviderAttachments deleteProviderAttachments;
+  final DeleteUserAttachments deleteUserAttachments;
+
   void addNewUser(User user) {
+            currentUser = user;
+
     emit(UserCubitStateLoaded(user));
   }
 
+  late User currentUser;
   static UserCubit get(BuildContext context) => context.read<UserCubit>();
   Future<void> updateUserFunc(UpdateUserParams params) async {
-    final currentUser = (state as UserCubitStateLoaded).user;
-
     emit(UserCubitStateLoading());
     final Either<NetworkExceptions, User> user;
     if (currentUser.isUser) {
@@ -57,7 +63,11 @@ class UserCubit extends Cubit<UserCubitState> {
     }
     user.fold(
       (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 
@@ -66,16 +76,25 @@ class UserCubit extends Cubit<UserCubitState> {
     final user = await updateUserDetails(params);
     user.fold(
       (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 
   Future<void> getUserFuc(String params) async {
     emit(UserCubitStateLoading());
     final user = await getUser(params);
+    print('________user $user');
     user.fold(
       (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 
@@ -83,8 +102,14 @@ class UserCubit extends Cubit<UserCubitState> {
     emit(UserCubitStateLoading());
     final user = await uploadUserAttatchment(params);
     user.fold(
-      (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (l) {
+        emit(UserCubitStateError(l));
+      },
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 
@@ -95,12 +120,46 @@ class UserCubit extends Cubit<UserCubitState> {
     final user = await uploadProviderAttachments(params);
     user.fold(
       (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
+    );
+  }
+
+  Future<void> deleteProviderAttatchmentFunc(
+    String params,
+  ) async {
+    emit(UserCubitStateLoading());
+    final user = await deleteProviderAttachments(params);
+    user.fold(
+      (l) => emit(UserCubitStateError(l)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
+    );
+  }
+
+  Future<void> deleteUserAttatchmentFunc(
+    String params,
+  ) async {
+    emit(UserCubitStateLoading());
+    final user = await deleteUserAttachments(params);
+    user.fold(
+      (l) => emit(UserCubitStateError(l)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 
   Future<void> uploadUserPhotoFunc(UploadUserPhotoParams params) async {
-    final currentUser = (state as UserCubitStateLoaded).user;
+    // final currentUser = (state as UserCubitStateLoaded).user;
 
     emit(UserCubitStateLoading());
     final Either<NetworkExceptions, User> user;
@@ -113,7 +172,11 @@ class UserCubit extends Cubit<UserCubitState> {
 
     user.fold(
       (l) => emit(UserCubitStateError(l)),
-      (r) => emit(UserCubitStateLoaded(r)),
+      (r) {
+        currentUser = r;
+
+        emit(UserCubitStateLoaded(r));
+      },
     );
   }
 }

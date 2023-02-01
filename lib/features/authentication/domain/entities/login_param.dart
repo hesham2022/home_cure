@@ -38,7 +38,7 @@ class LoginParam {
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
       'password': password,
-      'fcm': PushNotifications.fcmToken
+      'fcm': PushNotifications.fcmToken ?? ''
     };
     if (email != null) {
       if (email!.isNotEmpty) {

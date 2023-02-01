@@ -13,3 +13,13 @@ class GetUser extends UseCase<User, String> {
     return repository.getUser(params);
   }
 }
+
+class GetProvider extends UseCase<User, String> {
+  GetProvider(this.repository);
+  final IUserRepository repository;
+
+  @override
+  Future<Either<NetworkExceptions, User>> call(String params) async {
+    return repository.getProvider(params);
+  }
+}

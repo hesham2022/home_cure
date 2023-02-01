@@ -14,10 +14,12 @@ class CreateAppointmentParams extends Equatable {
     this.location,
     this.days,
     this.sessions,
+    this.allergic,
+    this.priceDiscount,
     this.price,
     required this.service,
   });
-
+  final bool? allergic;
   final String? reason;
   final DateTime? date;
   final String? timeslot;
@@ -27,9 +29,10 @@ class CreateAppointmentParams extends Equatable {
   final String service;
   final Location? location;
   final int? price;
+  final int? priceDiscount;
+
   final int? days;
   final int? sessions;
-
   CreateAppointmentParams copyWith({
     String? reason,
     DateTime? date,
@@ -41,6 +44,8 @@ class CreateAppointmentParams extends Equatable {
     int? price,
     int? days,
     int? sessions,
+    int? priceDiscount,
+    bool? allergic,
   }) {
     return CreateAppointmentParams(
       reason: reason ?? this.reason,
@@ -52,7 +57,9 @@ class CreateAppointmentParams extends Equatable {
       service: service ?? this.service,
       price: price ?? this.price,
       sessions: sessions ?? this.sessions,
+      priceDiscount: priceDiscount ?? this.priceDiscount,
       days: days ?? this.days,
+      allergic: allergic ?? this.allergic,
     );
   }
 
@@ -65,8 +72,10 @@ class CreateAppointmentParams extends Equatable {
       'timeslot': timeslot,
       'paymentMethod': paymentMethod,
       'attachments': await multiparts,
+      'priceDiscount':priceDiscount,
       'location': location?.toMap(),
-      'service': service
+      'service': service,
+      'allergic': allergic
     };
     if (days != null) {
       map['days'] = days;

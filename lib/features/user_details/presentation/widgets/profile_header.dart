@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/app.dart';
+import 'package:home_cure/app/view/git_loading.dart';
 import 'package:home_cure/core/api_config/api_constants.dart';
 import 'package:home_cure/features/authentication/domain/entities/entities.dart';
 import 'package:home_cure/features/authentication/domain/entities/upload_user_photo_params.dart';
@@ -44,14 +45,16 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       child: BlocListener<UserCubit, UserCubitState>(
         listener: (context, state) {
           if (state is UserCubitStateLoaded) {
+            EasyLoading.dismiss();
+           // Navigator.pop(context);
             setState(() {
               user = state.user;
             });
-            EasyLoading.dismiss();
           }
-          if (state is UserCubitStateLoading) {
-            EasyLoading.show();
-          }
+          // if (state is UserCubitStateLoading) {
+          //    EasyLoading.show();
+          //   // showGifLoading(context);
+          // }
           if (state is UserCubitStateError) {
             EasyLoading.showError(state.error.errorMessege);
           }

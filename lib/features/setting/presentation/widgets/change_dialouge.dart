@@ -4,6 +4,7 @@ import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/small_text.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class ChangeDialouge extends StatefulWidget {
   const ChangeDialouge({
@@ -65,7 +66,14 @@ class _ChangeDialougeState extends State<ChangeDialouge> {
                 height: 48,
                 width: 380,
                 child: Text(
-                  'Change ${widget.title}',
+                  widget.current.isEmpty
+                      ? (App.isAr(context)
+                          ? ' اضافه ${widget.title}'
+                          : 'Add ${widget.title}')
+                      // 'Add ${widget.title}'
+                      : (App.isAr(context)
+                          ? 'تغيير ${widget.title}'
+                          : 'Change ${widget.title}'),
                   style: textStyleWithPrimaryBold.copyWith(
                     color: Colors.white,
                   ),
@@ -78,24 +86,33 @@ class _ChangeDialougeState extends State<ChangeDialouge> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Current ${widget.title}',
-                      style: textStyleWithSecondSemiBold,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    SmallTextFiel(
-                      color: Colors.white,
-                      enabled: false,
-                      controller: TextEditingController()
-                        ..text = widget.current,
-                    ),
+                    if (widget.current.isNotEmpty)
+                      Column(
+                        children: [
+                          Text(
+                            App.isAr(context)
+                                ? ' ${widget.title} الحالي  '
+                                : 'Current ${widget.title}',
+                            style: textStyleWithSecondSemiBold,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          SmallTextFiel(
+                            color: Colors.white,
+                            enabled: false,
+                            controller: TextEditingController()
+                              ..text = widget.current,
+                          ),
+                        ],
+                      ),
                     const SizedBox(
                       height: 20,
                     ),
                     Text(
-                      'New ${widget.title}',
+                      App.isAr(context)
+                          ? ' ${widget.title} الجديد  '
+                          : 'New ${widget.title}',
                       style: textStyleWithSecondSemiBold,
                     ),
                     const SizedBox(
@@ -133,7 +150,7 @@ class _ChangeDialougeState extends State<ChangeDialouge> {
 
                           //     }
                         },
-                        title: 'Done',
+                        title: context.l10n.done,
                         size: const Size(170, 5),
                       ),
                     )

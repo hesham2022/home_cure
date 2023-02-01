@@ -150,6 +150,15 @@ class _ProviderQualificationsPageState
                       return Column(
                         children: [
                           ListTile(
+                            leading: IconButton(
+                              onPressed: () async {
+                                print(e.id);
+                                await context
+                                    .read<UserCubit>()
+                                    .deleteProviderAttatchmentFunc(e.id);
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
                             onTap: () async {
                               if (extension == 'png' ||
                                   extension == 'jpeg' ||

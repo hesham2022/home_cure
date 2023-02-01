@@ -12,24 +12,28 @@ dependencies:
   awesome_notifications: ^0.6.21
   bloc: ^8.0.3
   carousel_slider: ^4.1.1
+  connectivity_plus: ^3.0.2
   dartz: ^0.10.1
   dio: ^4.0.6
   equatable: ^2.0.3
   file_picker: ^5.0.1
+  firebase_auth: ^3.11.2
   firebase_core: ^1.22.0
   firebase_messaging: ^13.0.1
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
+  flutter_countdown_timer: ^4.1.0
   flutter_easyloading: ^3.0.5
   flutter_facebook_auth: ^4.4.1+1
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.2.7
+  flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.5.3+2
   flutter_secure_storage: ^5.1.0
   flutter_svg: ^1.1.1+1
-  flutter_webview_plugin: ^0.4.0
+  flutter_webview_plugin:
   formz: ^0.4.1
   freezed_annotation: ^2.1.0
   geolocator: ^9.0.1
@@ -38,6 +42,7 @@ dependencies:
   google_sign_in: ^5.4.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  internet_connection_checker: ^1.0.0+1
   intl: ^0.17.0
   overlay_support: ^2.0.1
   path_provider: ^2.0.11
@@ -62,10 +67,13 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/img/Logo.png"
+  image_path: "assets/img/Avatar-02.png"
+
+  # image_path: "assets/img/Logo.png"
+
 flutter_native_splash:
   color: "#FFFFFF"
-  image: "assets/img/logo_png.png"
+  image: "assets/img/All-logo versions-02.png"
 flutter:
   uses-material-design: true
   generate: true
@@ -82,6 +90,15 @@ flutter:
     - family: "Oswald"
       fonts:
         - asset: "assets/fonts/Oswald-Medium.ttf"
+    - family: "Cairo"
+      fonts:
+        - asset: "assets/fonts/Cairo-Medium.ttf"
+        - asset: "assets/fonts/Cairo-Black.ttf"
+        - asset: "assets/fonts/Cairo-Bold.ttf"
+        - asset: "assets/fonts/Cairo-ExtraBold.ttf"
+        - asset: "assets/fonts/Cairo-ExtraLight.ttf"
+        - asset: "assets/fonts/Cairo-Regular.ttf"
+        - asset: "assets/fonts/Cairo-SemiBold.ttf"
 
 flutter_gen:
   colors:

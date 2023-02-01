@@ -1,6 +1,7 @@
 // ignore_for_file: use_full_hex_values_for_flutter_colors
 
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -15,7 +16,9 @@ import 'package:home_cure/features/appointement/presentation/blocs/get_appointme
 import 'package:home_cure/features/appointement/presentation/widgets/fees_widget.dart';
 import 'package:home_cure/features/appointement/presentation/widgets/payment_stipper.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
+import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class CreateAppointmentPayment extends StatefulWidget {
   const CreateAppointmentPayment({
@@ -59,7 +62,9 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                         .userPayFunc(state.appointment.id);
                     // context.router.push(const DoneRoute());
                   } else {
-                    EasyLoading.showInfo('Payment Failed');
+                    EasyLoading.showInfo(
+                      App.isAr(context) ? 'عملية الدفع فشلت' : 'Payment Failed',
+                    );
                   }
                 },
                 url: state.appointment.link!,
@@ -74,6 +79,40 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
               const DoneRoute(),
               predicate: (router) => false,
             );
+            if (context.read<TimeSlotCubit>().state
+                is TimeSlotCubitStateLoaded) {
+              final timeSlot = (context.read<TimeSlotCubit>().state
+                      as TimeSlotCubitStateLoaded)
+                  .timeSlots
+                  .firstWhere(
+                    (element) => element.id == state.appointment.timeslot,
+                  );
+
+              AwesomeNotifications().createNotification(
+                content: NotificationContent(
+                  channelKey: 'basic_channel',
+                  id: DateTime(
+                    state.appointment.date.year,
+                    state.appointment.date.month,
+                    state.appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).millisecond,
+                  title: App.isAr(context)
+                      ? 'يجب أن تبدأ الموعد بعد 15 دقيقة'
+                      : 'You Should Start Appointment After 15 Minutes',
+                ),
+                schedule: NotificationCalendar.fromDate(
+                  date: DateTime(
+                    state.appointment.date.year,
+                    state.appointment.date.month,
+                    state.appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).subtract(const Duration(minutes: 15)),
+                ),
+              );
+            }
           }
           if (state is AppointmentsCubitStateCancelled) {
             EasyLoading.dismiss();
@@ -91,6 +130,40 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
               const DoneRoute(),
               predicate: (router) => false,
             );
+            if (context.read<TimeSlotCubit>().state
+                is TimeSlotCubitStateLoaded) {
+              final timeSlot = (context.read<TimeSlotCubit>().state
+                      as TimeSlotCubitStateLoaded)
+                  .timeSlots
+                  .firstWhere(
+                    (element) => element.id == state.appointment.timeslot,
+                  );
+
+              AwesomeNotifications().createNotification(
+                content: NotificationContent(
+                  channelKey: 'basic_channel',
+                  id: DateTime(
+                    state.appointment.date.year,
+                    state.appointment.date.month,
+                    state.appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).millisecond,
+                  title: App.isAr(context)
+                      ? 'يجب أن تبدأ الموعد بعد 15 دقيقة'
+                      : 'You Should Start Appointment After 15 Minutes',
+                ),
+                schedule: NotificationCalendar.fromDate(
+                  date: DateTime(
+                    state.appointment.date.year,
+                    state.appointment.date.month,
+                    state.appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).subtract(const Duration(minutes: 15)),
+                ),
+              );
+            }
           }
         },
         child: Column(
@@ -100,15 +173,25 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
               padding: const EdgeInsets.all(40),
               child: Column(
                 children: [
-                  if (widget.service.price != null)
-                    FessContainer(
+                  if (widget.service.hasRangOfDays())
+                    FessContainerForDays(
                       price: widget.service.price.toDouble(),
+                      days: AppointmentsParamsCubit.get(context).state.days!,
+                    )
+                  else
+                    FessContainer(
+                      price:
+                          (AppointmentsParamsCubit.get(context).state.price ??
+                                  widget.service.price)
+                              .toDouble(),
+                      discount:
+                          AppointmentsParamsCubit.get(context).state.discount,
                     ),
                   SizedBox(
                     height: 30.h,
                   ),
                   Container(
-                    height: 135.h,
+                    height: 160.h,
                     decoration: BoxDecoration(
                       color: const Color(0xffFFFFFF),
                       borderRadius: BorderRadius.circular(16),
@@ -119,7 +202,8 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Payment method',
+                            context.l10n.paymentMethod,
+                            // 'Payment method',
                             style: textStyleWithPrimarySemiBold.copyWith(
                               color: const Color(0xff1AA9A0),
                             ),
@@ -152,7 +236,18 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Assets.img.currency.image(),
+                                            Column(
+                                              children: [
+                                                Assets.img.currency
+                                                    .image(height: 30),
+                                                Text(
+                                                  context.l10n.cash,
+                                                  style:
+                                                      textStyleWithSecondBold()
+                                                          .copyWith(),
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -186,7 +281,16 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Assets.img.visa.image(),
+                                          Column(
+                                            children: [
+                                              Assets.img.visa.image(height: 30),
+                                              Text(
+                                                context.l10n.visa,
+                                                style:
+                                                    textStyleWithSecondBold(),
+                                              )
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -232,7 +336,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                                   width: 15,
                                 ),
                                 Text(
-                                  'Add PromoCode',
+                                  context.l10n.addPromoCode,
                                   style: textStyleWithPrimarySemiBold.copyWith(
                                     color: const Color(0xff1AA9A0),
                                   ),
@@ -248,7 +352,18 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40, top: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          context.l10n.transportaions,
+                          style: textStyleWithPrimarySemiBold,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -270,12 +385,18 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                         context.router.popUntil((route) => route.isFirst);
                       }
                     },
-                    title: 'Cancel',
+                    title: context.l10n.cancel,
                     color: const Color(0xff1AA9A0),
                   ),
                   if (_appointment == null)
                     Button1(
                       onPressed: () {
+                        if (paymentMethod.isEmpty) {
+                          EasyLoading.showInfo(
+                            context.l10n.pleaseselecpaymentMethin,
+                          );
+                          return;
+                        }
                         final appointmentParamsSatet =
                             context.read<AppointmentsParamsCubit>().state;
                         context
@@ -286,7 +407,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                             );
                         // context.router.push(const DoneRoute());
                       },
-                      title: 'Done',
+                      title: context.l10n.done,
                     )
                   else
                     Button1(
@@ -306,7 +427,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                         //   predicate: (r) => false,
                         // );
                       },
-                      title: 'Complete Pyament',
+                      title: context.l10n.completePayment,
                     )
                 ],
               ),
@@ -337,7 +458,7 @@ class AddCopunWidget extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'PromoCode',
+                context.l10n.promoCode,
                 style: textStyleWithSecondSemiBold,
               ),
             ),
@@ -391,7 +512,7 @@ class AddCopunWidget extends StatelessWidget {
               height: 30,
             ),
             Button1(
-              title: 'oK',
+              title: context.l10n.ok,
               br: 16,
               onPressed: () {
                 context.router.pop();

@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:home_cure/app/app.dart';
@@ -14,6 +15,7 @@ import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/di/get_it.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
+import 'package:home_cure/features/appointement/domain/entities/rate_params.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/agora_token_cubit/agora_token_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/appointments_creating_bloc/appointments_cubit.dart';
 import 'package:home_cure/features/appointement/presentation/blocs/get_appointments_cubit/my_appointments_cubit..dart';
@@ -21,10 +23,13 @@ import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cub
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
+import 'package:home_cure/features/home/presentation/blocs/our_doctors_cubit/our_doctors_cubit.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/appointement_attach_widget.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/appointment_action_dialouge.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/map_widget.dart';
+import 'package:home_cure/l10n/l10n.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,6 +45,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   late Appointment _appointment;
 
   bool inProviderApp = false;
+  String? tag;
+
   @override
   void initState() {
     if (context.read<MyAppointmentsCubit>().state
@@ -74,14 +81,27 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         }
       }
     });
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        tag = Localizations.maybeLocaleOf(context)?.toLanguageTag();
+      });
+    });
+
+    initializeDateFormatting();
+
     super.initState();
   }
 
-  String getButtonTitle() {
-    if (_appointment.isWaiting) return 'Start';
-    if (_appointment.isOnPeocessing) return 'Done';
+  String getButtonTitle(BuildContext context) {
+    if (_appointment.isWaiting) return context.l10n.start;
+    // if (_appointment.isOnPeocessing &&
+    //     inProviderApp &&
+    //     !_appointment.payed &&
+    //     _appointment.isCash) return context.l10n.payNow;
 
-    return 'Accept';
+    if (_appointment.isOnPeocessing) return context.l10n.done;
+
+    return context.l10n.accept;
   }
 
   void getAcction(BuildContext context) {
@@ -89,13 +109,13 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       context: context,
       builder: (_) => ApppointmentActionDiaouge(
         appointment: _appointment,
-        title: 'Are You Sure  ',
+        title: context.l10n.areYouSure,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'feddback is empty';
+            return context.l10n.feddbackistooshor;
           }
           if (value.length < 2) {
-            return 'feddback is too short';
+            return context.l10n.feddbackistooshor;
           }
           return null;
         },
@@ -103,10 +123,49 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           final cubit = context.read<AppointmentsCubit>();
           if (_appointment.isOpened) {
             cubit.acceptFunc(_appointment.id);
+            if (context.read<TimeSlotCubit>().state
+                is TimeSlotCubitStateLoaded) {
+              final timeSlot = (context.read<TimeSlotCubit>().state
+                      as TimeSlotCubitStateLoaded)
+                  .timeSlots
+                  .firstWhere(
+                    (element) => element.id == _appointment.timeslot,
+                  );
+
+              AwesomeNotifications().createNotification(
+                content: NotificationContent(
+                  channelKey: 'basic_channel',
+                  id: DateTime(
+                    _appointment.date.year,
+                    _appointment.date.month,
+                    _appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).millisecond,
+                  title: 'You Should Start Appointment After 15 Minutes',
+                ),
+                schedule: NotificationCalendar.fromDate(
+                  date: DateTime(
+                    _appointment.date.year,
+                    _appointment.date.month,
+                    _appointment.date.day,
+                    timeSlot.startHour,
+                    timeSlot.startMinute,
+                  ).subtract(const Duration(minutes: 15)),
+                ),
+              );
+            }
           }
           if (_appointment.isWaiting) {
             cubit.onProgressFunc(_appointment.id);
           }
+          // if (_appointment.isOnPeocessing &&
+          //     inProviderApp &&
+          //     !_appointment.payed &&
+          //     _appointment.isCash) {
+          //   context.read<AppointmentsCubit>().providerPayFunc(_appointment.id);
+          //   return;
+          // }
           if (_appointment.isOnPeocessing) {
             cubit.doneFunc(
               DoneParams(id: _appointment.id, providerComment: value),
@@ -149,7 +208,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                             .userPayFunc(state.appointment.id);
                         // context.router.push(const DoneRoute());
                       } else {
-                        EasyLoading.showInfo('Payment Failed');
+                        EasyLoading.showInfo(context.l10n.paymentFailed);
                       }
                     },
                     url: state.appointment.link!,
@@ -159,6 +218,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 // EasyLoading.showSuccess('success');
               }
               if (state is AppointmentsCubitStatePayed) {
+                print(_appointment.payed);
+                EasyLoading.dismiss();
+                setState(() {
+                  _appointment = state.appointment;
+                });
+                listenToChange(context, state.appointment);
+              }
+              if (state is AppointmentsCubitStateRated) {
                 print(_appointment.payed);
                 EasyLoading.dismiss();
                 setState(() {
@@ -233,27 +300,27 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Clipboard.setData(
-                                    ClipboardData(text: _appointment.id),
-                                  ).then((_) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Id copied to clipboard',
-                                        ),
-                                      ),
-                                    );
-                                  });
-                                },
-                                icon: const Icon(Icons.copy_all),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: [
+                          //     IconButton(
+                          //       onPressed: () {
+                          //         Clipboard.setData(
+                          //           ClipboardData(text: _appointment.id),
+                          //         ).then((_) {
+                          //           ScaffoldMessenger.of(context).showSnackBar(
+                          //             const SnackBar(
+                          //               content: Text(
+                          //                 'Id copied to clipboard',
+                          //               ),
+                          //             ),
+                          //           );
+                          //         });
+                          //       },
+                          //       icon: const Icon(Icons.copy_all),
+                          //     ),
+                          //   ],
+                          // ),
 
                           const SizedBox(
                             height: 30,
@@ -267,7 +334,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                               child: Column(
                                 children: [
-                                  const Text('Appointmnet'),
+                                  Text(context.l10n.appointment),
                                   const SizedBox(
                                     height: 15,
                                   ),
@@ -276,7 +343,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Status',
+                                        context.l10n.status,
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(color: Colors.black),
                                       ),
@@ -284,12 +351,13 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         backgroundColor: primaryColor,
                                         label: Text(
                                           _appointment.isOpened
-                                              ? 'Requested'
+                                              ? context.l10n.requested
                                               : _appointment.isWaiting
-                                                  ? 'Pending'
+                                                  ? context.l10n.pending
                                                   : _appointment.isOnPeocessing
-                                                      ? 'On Proccesing'
-                                                      : 'Done',
+                                                      ? context
+                                                          .l10n.onProccessing
+                                                      : context.l10n.done,
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(color: Colors.white),
                                         ),
@@ -304,7 +372,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          'Service',
+                                          context.l10n.service,
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(color: Colors.black),
                                         ),
@@ -317,7 +385,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                   Text(
                                     ancestors
                                         .sublist(1)
-                                        .map((e) => e.title)
+                                        .map((e) => e.getTitle(context))
                                         .toList()
                                         .join('/'),
                                     style:
@@ -337,7 +405,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                               child: Column(
                                 children: [
-                                  const Text('Payment Info'),
+                                  Text(context.l10n.paymentInfo),
                                   const SizedBox(
                                     height: 15,
                                   ),
@@ -346,7 +414,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Price ',
+                                        '${context.l10n.price} ',
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(
                                           fontSize: 20,
@@ -354,7 +422,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         ),
                                       ),
                                       Text(
-                                        '${_appointment.price ?? leafService.price} LE',
+                                        '${_appointment.price ?? leafService.price} ${context.l10n.egp}',
                                         style: textStyleWithSecondBold(),
                                       )
                                     ],
@@ -367,18 +435,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Payment Method',
+                                        context.l10n.paymentMethod,
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(color: Colors.black),
                                       ),
                                       Text(
-                                        _appointment.paymentMethod.replaceRange(
-                                          0,
-                                          1,
-                                          _appointment
-                                              .paymentMethod.characters.first
-                                              .toUpperCase(),
-                                        ),
+                                        _appointment.isCredifCard
+                                            ? context.l10n.creditCard
+                                            : context.l10n.cash,
                                         style: textStyleWithSecondBold(),
                                       ),
                                     ],
@@ -391,7 +455,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Payed',
+                                        context.l10n.payed,
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(color: Colors.black),
                                       ),
@@ -406,7 +470,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     ],
                                   ),
                                   if (!_appointment.payed &&
-                                      _appointment.isCredifCard)
+                                      _appointment.isCredifCard &&
+                                      !inProviderApp)
                                     Column(
                                       children: [
                                         const SizedBox(
@@ -416,13 +481,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
-                                              'Please try to pay your appointment',
+                                            Text(
+                                              context.l10n
+                                                  .pleasetrytopayyourappointment,
                                             ),
                                             InkWell(
-                                              child: const Text(
-                                                'Pay Now',
-                                                style: TextStyle(
+                                              child: Text(
+                                                context.l10n.payNow,
+                                                style: const TextStyle(
                                                   color: Colors.blueAccent,
                                                   fontWeight: FontWeight.bold,
                                                   fontStyle: FontStyle.italic,
@@ -460,7 +526,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                               child: Column(
                                 children: [
-                                  const Text('Date'),
+                                  Text(context.l10n.date),
                                   const SizedBox(
                                     height: 15,
                                   ),
@@ -469,7 +535,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Date ',
+                                        '${context.l10n.date} ',
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(
                                           fontSize: 20,
@@ -477,8 +543,10 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         ),
                                       ),
                                       Text(
-                                        DateFormat.yMMMMd()
-                                            .format(_appointment.date),
+                                        DateFormat.yMMMMd(appLn10.localeName)
+                                            .format(
+                                          _appointment.date,
+                                        ),
                                         style: textStyleWithSecondBold(),
                                       )
                                     ],
@@ -491,7 +559,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'From',
+                                        context.l10n.from,
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(color: Colors.black),
                                       ),
@@ -501,13 +569,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                           if (state
                                               is TimeSlotCubitStateLoaded) {
                                             final timeSlot =
-                                                state.timeSlots.firstWhere(
-                                              (element) =>
-                                                  element.id ==
-                                                  _appointment.timeslot,
-                                            );
+                                                _appointment.timeslot;
                                             return Text(
-                                              timeSlot.startSting,
+                                              timeSlot.startSting.replaceAll(
+                                                'AM',
+                                                context.l10n.morning,
+                                              )..replaceAll(
+                                                  'PM',
+                                                  context.l10n.evening,
+                                                ), //   '0
                                               style: textStyleWithSecondBold(),
                                             );
                                           }
@@ -528,7 +598,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'To',
+                                        context.l10n.to,
                                         style: textStyleWithPrimarySemiBold
                                             .copyWith(color: Colors.black),
                                       ),
@@ -538,13 +608,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                           if (state
                                               is TimeSlotCubitStateLoaded) {
                                             final timeSlot =
-                                                state.timeSlots.firstWhere(
-                                              (element) =>
-                                                  element.id ==
-                                                  _appointment.timeslot,
-                                            );
+                                                _appointment.timeslot;
                                             return Text(
-                                              timeSlot.endSting,
+                                              timeSlot.endSting.replaceAll(
+                                                'AM',
+                                                context.l10n.morning,
+                                              )..replaceAll(
+                                                  'PM',
+                                                  context.l10n.evening,
+                                                ), //   '0
                                               style: textStyleWithSecondBold(),
                                             );
                                           }
@@ -568,7 +640,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Days',
+                                              context.l10n.days,
                                               style:
                                                   textStyleWithPrimarySemiBold
                                                       .copyWith(
@@ -634,6 +706,17 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                           if (inProviderApp)
                             const SizedBox(
                               height: 20,
+                            ),
+                          if (!inProviderApp && _appointment.provider != null)
+                            Column(
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ProviderInfo(
+                                  providerId: _appointment.provider!,
+                                ),
+                              ],
                             ),
                           if (inProviderApp)
                             CommonContainer(
@@ -706,7 +789,9 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       onPressed: () {
                                         context.router.push(
                                           UserInformationPageRoute(
-                                            user: user,
+                                            user: user.copyWith(
+                                              details: _appointment.details,
+                                            ),
                                           ),
                                         );
                                       },
@@ -814,6 +899,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                           //       ),
                           //   ],
                           // ),
+                          //  if(_appointment.prop)   Column(
+                          //       children: const [
+                          //         SizedBox(
+                          //           height: 30,
+                          //         ),
+                          //         Text('provider'),
+                          //       ],
+                          //     ),
 
                           if (_appointment.hasSessions)
                             Column(
@@ -824,7 +917,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Sessions :',
+                                      '${context.l10n.sessions} :',
                                       style: textStyleWithPrimarySemiBold,
                                     ),
                                     Text(
@@ -836,66 +929,52 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ],
                             ),
 
-                          // Row(
-                          //   children: [
-                          //     Text(
-                          //       'Date :',
-                          //       style: textStyleWithPrimarySemiBold,
-                          //     ),
-                          //     Text(
-                          //       DateFormat.yMMMMd().format(_appointment.date),
-                          //       style: textStyleWithSecondBold(),
-                          //     )
-                          //   ],
-                          // ),
-
-                          // const SizedBox(
-                          //   height: 30,
-                          // ),
-                          // Row(
-                          //   children: [
-                          //     Text(
-                          //       'Time :',
-                          //       style: textStyleWithPrimarySemiBold,
-                          //     ),
-                          //     BlocBuilder<TimeSlotCubit, TimeSlotCubitState>(
-                          //       builder: (context, state) {
-                          //         if (state is TimeSlotCubitStateLoaded) {
-                          //           final timeSlot = state.timeSlots.firstWhere(
-                          //             (element) =>
-                          //                 element.id == _appointment.timeslot,
-                          //           );
-                          //           return Text(
-                          //             '''${timeSlot.startSting} To ${timeSlot.endSting}''',
-                          //             style: textStyleWithSecondBold(),
-                          //           );
-                          //         }
-                          //         if (state is TimeSlotCubitStateLoading) {
-                          //           return const Text('Loading...');
-                          //         }
-                          //         return const SizedBox();
-                          //       },
-                          //     )
-                          //   ],
-                          // ),
                           const SizedBox(
                             height: 30,
                           ),
-
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    context.l10n.patientFeeling,
+                                    style: textStyleWithPrimarySemiBold,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              BighFormField(
+                                enabled: false,
+                                fillColor: Colors.white,
+                                controller: TextEditingController()
+                                  ..text = _appointment.reason,
+                                style: textStyleWithSecondBold(),
+                              ),
+                            ],
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
 
-                          if (_appointment.isVideo && !_appointment.isDone)
+                          if (_appointment.isVideo &&
+                              !_appointment.isOpened &&
+                              !_appointment.isWaiting &&
+                              !_appointment.isDone &&
+                              _appointment.payed == true)
                             StartVideoButton(appointment: _appointment),
-                          if (widget.appointment.attachments.isNotEmpty)
+
+                          if (widget.appointment.attachments.isNotEmpty &&
+                              inProviderApp)
                             Column(
                               children: [
                                 const SizedBox(height: 30),
                                 Row(
                                   children: [
                                     Text(
-                                      'Attcahments:',
+                                      '${context.l10n.attachments}:',
                                       style: textStyleWithPrimarySemiBold,
                                       textAlign: TextAlign.start,
                                     ),
@@ -921,7 +1000,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 ),
                                 child: Column(
                                   children: [
-                                    const Text('Address'),
+                                    Text(context.l10n.address),
                                     const SizedBox(
                                       height: 15,
                                     ),
@@ -930,7 +1009,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Address',
+                                          context.l10n.address,
                                           style: textStyleWithPrimarySemiBold
                                               .copyWith(color: Colors.black),
                                         ),
@@ -945,15 +1024,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 ),
                               ),
                             ),
-                          // Row(
-                          //   children: [
-                          //     Text(
-                          //       'Adress :',
-                          //       style: textStyleWithPrimarySemiBold,
-                          //     ),
-                          //     Text(_appointment.location!.address)
-                          //   ],
-                          // ),
+
                           const SizedBox(height: 30),
                           if (_appointment.location != null &&
                               _appointment.location!.coordinates.isNotEmpty &&
@@ -975,7 +1046,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Your Note:',
+                                      context.l10n.yourNote,
                                       style: textStyleWithPrimarySemiBold,
                                       textAlign: TextAlign.start,
                                     ),
@@ -995,26 +1066,134 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                             ),
                           if (!_appointment.isDone && inProviderApp)
                             Button1(
-                              title: getButtonTitle(),
+                              title: getButtonTitle(context),
                               size: const Size(330, 40),
                               onPressed: () {
                                 getAcction(context);
                               },
                             ),
-                          const SizedBox(height: 30),
-                          if (_appointment.isDone &&
-                              inProviderApp &&
-                              !_appointment.payed &&
-                              _appointment.isCash)
+                          if ((!_appointment.rated && _appointment.isDone) &&
+                              !inProviderApp)
                             Button1(
-                              title: 'Pay',
                               size: const Size(330, 40),
+                              title: context.l10n.addReview,
                               onPressed: () {
-                                context
-                                    .read<AppointmentsCubit>()
-                                    .providerPayFunc(_appointment.id);
+                                var rating = 3.0;
+                                var review = '';
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: SizedBox(
+                                      height: ScreenUtil().setHeight(330),
+                                      width: ScreenUtil().setWidth(350),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  context.l10n.addReview,
+                                                  style:
+                                                      textStyleWithPrimaryBold,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  height: 20.h,
+                                                  child: RatingBar.builder(
+                                                    itemSize: 30,
+                                                    initialRating: 3,
+                                                    minRating: 1,
+                                                    allowHalfRating: true,
+                                                    itemBuilder: (context, _) =>
+                                                        const Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                      size: 10,
+                                                    ),
+                                                    onRatingUpdate: (v) {
+                                                      rating = v;
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            TextFormField(
+                                              onChanged: (value) {
+                                                review = value;
+                                              },
+                                              minLines: 4,
+                                              maxLines: 5,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    context.l10n.writeReview,
+                                                contentPadding:
+                                                    const EdgeInsets.all(8),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10.h),
+                                            Button1(
+                                              title: context.l10n.addReview,
+                                              onPressed: () async {
+                                                await context.router.pop();
+                                                await Future.delayed(
+                                                    Duration.zero, () async {
+                                                  await context
+                                                      .read<AppointmentsCubit>()
+                                                      .rateFunc(
+                                                        RatingParams(
+                                                          service: _appointment
+                                                              .service,
+                                                          rating: rating,
+                                                          review: review,
+                                                          appointmentId:
+                                                              _appointment.id,
+                                                        ),
+                                                      );
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
                               },
-                            )
+                            ),
+                          const SizedBox(height: 30),
+                          // if (
+                          //   _appointment.isOnPeocessing &&
+                          //     inProviderApp &&
+                          //     !_appointment.payed &&
+                          //     _appointment.isCash
+                          //     )
+                          //   Button1(
+                          //     title: context.l10n.payNow,
+                          //     size: const Size(330, 40),
+                          //     onPressed: () {
+                          //       context
+                          //           .read<AppointmentsCubit>()
+                          //           .providerPayFunc(_appointment.id);
+                          //     },
+                          //   ),
                         ],
                       ),
                     ),
@@ -1074,7 +1253,7 @@ class StartVideoButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Start Vedio Now',
+                    context.l10n.startvideoNow,
                     style: TextStyle(
                       fontSize: 16.sp,
                       height: 1,
@@ -1095,6 +1274,113 @@ class StartVideoButton extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class ProviderInfo extends StatelessWidget {
+  const ProviderInfo({super.key, required this.providerId});
+  final String providerId;
+  String getRoleTitle(BuildContext context, String role) {
+    if (role == 'nurse') return context.l10n.nurseInformation;
+    if (role == 'laboratory') return context.l10n.laboratoryInformation;
+
+    return context.l10n.doctorInformation;
+  }
+
+  String getRoleName(BuildContext context, String role) {
+    if (role == 'nurse') return context.l10n.nurseName;
+    if (role == 'laboratory') return context.l10n.laboratopryName;
+
+    return context.l10n.doctorName;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OurDoctorsCubit, OurDoctorsCubitState>(
+      builder: (context, state) {
+        if (state is OurDoctorsCubitStateLoaded) {
+          final provider = state.ourDoctors.firstWhere(
+            (element) => element.id == providerId,
+          );
+
+          return CommonContainer(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 20,
+              ),
+              child: Column(
+                children: [
+                  Text(getRoleTitle(context, provider.role)),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getRoleName(context, provider.role),
+                        style: textStyleWithPrimarySemiBold.copyWith(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        provider.name,
+                        style: textStyleWithSecondBold(),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.l10n.specialty,
+                        style: textStyleWithPrimarySemiBold.copyWith(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        provider.specialization ?? provider.role,
+                        style: textStyleWithSecondBold(),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  // Button1(
+                  //   size: const Size(200, 15),
+                  //   title: 'More ',
+                  //   onPressed: () {
+                  //     context.router.push(
+                  //       UserInformationPageRoute(
+                  //         user: user,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                ],
+              ),
+            ),
+          );
+        }
+        if (state is OurDoctorsCubitStateLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (state is OurDoctorsCubitStateError) {
+          return Center(child: Text(state.error.errorMessege));
+        }
+        return const SizedBox();
+      },
     );
   }
 }

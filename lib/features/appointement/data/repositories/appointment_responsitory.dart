@@ -6,6 +6,7 @@ import 'package:home_cure/features/appointement/domain/entities/agora_token.dart
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/create_appointment_params.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
+import 'package:home_cure/features/appointement/domain/entities/rate_params.dart';
 import 'package:home_cure/features/appointement/domain/repositories/i_appointemnts.dart';
 
 class AppointmentsRepository extends IAppointmentRepository {
@@ -96,6 +97,15 @@ class AppointmentsRepository extends IAppointmentRepository {
   ) async {
     return guardFuture<Appointment>(
       () => appointementRemote.doneAppointment(params),
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, Appointment>> rate(
+    RatingParams params,
+  ) async {
+    return guardFuture<Appointment>(
+      () => appointementRemote.rate(params),
     );
   }
 }

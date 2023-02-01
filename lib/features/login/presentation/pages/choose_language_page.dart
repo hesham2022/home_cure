@@ -7,6 +7,7 @@ import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class ChooseLanguagePage extends StatefulWidget {
   const ChooseLanguagePage({super.key});
@@ -40,7 +41,7 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
             //   height: 100,
             // ),
             Center(
-              child: Assets.svg.logo.svg(),
+              child: Assets.img.logoone.image(),
             ),
             // const SizedBox(
             //   height: 100,
@@ -48,9 +49,12 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
             Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'please choose your language',
+                      english
+                          ? 'please choose your language'
+                          : 'برجاء اختيار اللغه',
                       style: textStyleWithSecondBold(),
                     ),
                   ],
@@ -133,7 +137,7 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
             ),
 
             Button1(
-              title: 'Done',
+              title: context.l10n.done,
               size: const Size(380, 40),
               onPressed: () => context.router.pushAndPopUntil(
                 const LoginPagePageRouter(),

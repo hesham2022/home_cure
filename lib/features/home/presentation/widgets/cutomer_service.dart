@@ -9,6 +9,8 @@ class CustomerServiceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isAr = context.l10n.localeName == 'ar';
+    print(isAr);
     return Container(
       height: 160,
       decoration: BoxDecoration(
@@ -21,7 +23,8 @@ class CustomerServiceHeader extends StatelessWidget {
         children: [
           Positioned(
             bottom: 0,
-            right: 0,
+            right: !isAr ? 0 : null,
+            left: isAr ? 0 : null,
             child: Column(
               children: [
                 Row(
@@ -37,6 +40,7 @@ class CustomerServiceHeader extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               left: 15,
+              right: 15,
             ),
             child: Row(
               children: [

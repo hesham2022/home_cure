@@ -14,6 +14,10 @@ class NotificationsModel extends Equatable {
   //     NotificationsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   factory NotificationsModel.fromMap(Map<dynamic, dynamic> map, String title) {
+    print('*' * 100);
+    print(map['appointment']);
+
+    print('*' * 100);
     return NotificationsModel(
       title: title,
       appointment:

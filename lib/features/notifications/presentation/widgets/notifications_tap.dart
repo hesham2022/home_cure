@@ -1,5 +1,5 @@
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 enum ReqestNotificion { request, notification }
 
@@ -56,7 +56,7 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      widget.firstTitle ?? 'Request Status',
+                      widget.firstTitle ?? context.l10n.requestStatus,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
@@ -86,7 +86,7 @@ class _NotificationTapWidgetState extends State<NotificationTapWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      widget.secondTitle ?? 'Notifications',
+                      widget.secondTitle ?? context.l10n.notifications,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,

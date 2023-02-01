@@ -47,7 +47,8 @@ class _ApppointmentActionDiaougeState extends State<ApppointmentActionDiaouge> {
             const Color(0xffE8EEF2).withOpacity(.8),
           ],
         ),
-        height: widget.appointment.isOnPeocessing ? 450 : 150,
+        // height: (widget.appointment.isOnPeocessing && widget.appointment.payed)
+        height: (widget.appointment.isOnPeocessing) ? 450 : 150,
         // width: 300,
         child: Form(
           key: _key,
@@ -70,6 +71,8 @@ class _ApppointmentActionDiaougeState extends State<ApppointmentActionDiaouge> {
                     ),
                   ],
                 ),
+                // if (widget.appointment.isOnPeocessing &&
+                //     widget.appointment.payed)
                 if (widget.appointment.isOnPeocessing)
                   Column(
                     children: [

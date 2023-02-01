@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:home_cure/app/app.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class SmookingAlchol extends StatefulWidget {
   const SmookingAlchol({
@@ -39,7 +40,7 @@ class _SmookingAlcholState extends State<SmookingAlchol> {
           children: [
             Row(
               children: [
-                Text('Smooking', style: textStyleWithPrimarySemiBold),
+                Text(context.l10n.smoking, style: textStyleWithPrimarySemiBold),
                 Transform.scale(
                   scale: 1.5,
                   child: Checkbox(
@@ -64,7 +65,7 @@ class _SmookingAlcholState extends State<SmookingAlchol> {
             ),
             Row(
               children: [
-                Text('Alcoholics', style: textStyleWithPrimarySemiBold),
+                Text(context.l10n.alcoholics, style: textStyleWithPrimarySemiBold),
                 Transform.scale(
                   scale: 1.5,
                   child: Checkbox(

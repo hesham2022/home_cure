@@ -74,6 +74,7 @@ class PushNotifications {
             appointment: appointment,
           );
           context.read<NotificationsCubit>().add(notificationModel);
+
           context
               .read<MyAppointmentsCubit>()
               .addFromFcm(notificationModel.appointment);

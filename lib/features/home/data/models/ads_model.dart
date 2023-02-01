@@ -51,6 +51,8 @@ class Ad {
     required this.id,
     required this.title,
     required this.image,
+    required this.arTitle,
+    required this.arDescription,
   });
   factory Ad.fromJson(String source) =>
       Ad.fromMap(json.decode(source) as Map<String, dynamic>);
@@ -62,12 +64,18 @@ class Ad {
       id: map['id'] as String,
       title: map['title'] as String,
       image: map['image'] as String,
+      arTitle: map['arTitle'] as String?,
+      arDescription: map['arDescription'] as String?,
     );
   }
   final String url;
   final String description;
+  final String? arDescription;
+
   final String id;
   final String title;
+  final String? arTitle;
+
   final String image;
   Ad copyWith({
     String? url,
@@ -75,6 +83,8 @@ class Ad {
     String? id,
     String? title,
     String? image,
+    String? arTitle,
+    String? arDescription,
   }) {
     return Ad(
       url: url ?? this.url,
@@ -82,6 +92,8 @@ class Ad {
       id: id ?? this.id,
       title: title ?? this.title,
       image: image ?? this.image,
+      arTitle: arTitle ?? this.arTitle,
+      arDescription: arDescription ?? this.arDescription,
     );
   }
 

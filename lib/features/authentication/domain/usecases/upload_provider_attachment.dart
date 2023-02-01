@@ -17,3 +17,30 @@ class UploadProviderAttachments
     return repository.uploadProviderAttatchment(params);
   }
 }
+
+class DeleteProviderAttachments extends UseCase<User, String> {
+  DeleteProviderAttachments(this.repository);
+  final IUserRepository repository;
+
+  @override
+  Future<Either<NetworkExceptions, User>> call(
+    String params,
+  ) async {
+    print('id');
+    print(params);
+    return repository.deleteProviderAttatchment(params);
+  }
+}
+class DeleteUserAttachments extends UseCase<User, String> {
+  DeleteUserAttachments(this.repository);
+  final IUserRepository repository;
+
+  @override
+  Future<Either<NetworkExceptions, User>> call(
+    String params,
+  ) async {
+    print('id');
+    print(params);
+    return repository.deleteUserAttatchment(params);
+  }
+}

@@ -4,6 +4,7 @@ import 'package:home_cure/core/api_errors/network_exceptions.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/create_appointment_params.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
+import 'package:home_cure/features/appointement/domain/entities/rate_params.dart';
 import 'package:home_cure/features/appointement/domain/usecases/accept_appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/create_appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/create_payment_link.dart';
@@ -22,6 +23,7 @@ class AppointmentsCubit extends Cubit<AppointmentsCubitState> {
     required this.doneAppointment,
     required this.startVideo,
     required this.cancel,
+    required this.rateAppointment,
     required this.providerPay,
   }) : super(AppointmentsCubitStateIntial());
   final CreateAppointment createAppointement;
@@ -30,6 +32,8 @@ class AppointmentsCubit extends Cubit<AppointmentsCubitState> {
 
   final CreatePaymentLink createPaymentLink;
   final AcceptAppointment acceptAppointment;
+  final RateAppointment rateAppointment;
+
   final OnPorogressAppointment onPorogressAppointment;
   final DoneAppointment doneAppointment;
   final StartVideo startVideo;
@@ -86,6 +90,16 @@ class AppointmentsCubit extends Cubit<AppointmentsCubitState> {
     final response = await acceptAppointment(params);
     response.fold((l) => emit(AppointmentsCubitStateError(l)), (r) {
       emit(AppointmentsCubitStateAccepted(r));
+    });
+  }
+
+  Future<void> rateFunc(
+    RatingParams params,
+  ) async {
+    emit(AppointmentsCubitStateLoading());
+    final response = await rateAppointment(params);
+    response.fold((l) => emit(AppointmentsCubitStateError(l)), (r) {
+      emit(AppointmentsCubitStateRated(r));
     });
   }
 

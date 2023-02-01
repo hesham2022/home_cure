@@ -11,6 +11,8 @@ import 'package:home_cure/features/login/presentation/forget_password_bloc/forge
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_state.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class ReserPasswordPage extends StatefulWidget {
   const ReserPasswordPage({super.key});
@@ -44,9 +46,13 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
         body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
           listener: (context, state) {
             if (state is ForgetPasswordStateError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error.errorMessege)),
+              showSimpleNotification(
+                Text(state.error.errorMessege),
+                background: Colors.red,
               );
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(content: Text(state.error.errorMessege)),
+              // );
             }
             if (state is ForgetPasswordStateResetPasswordSuccess) {
               context.router.pushAndPopUntil(
@@ -72,7 +78,7 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
                           height: 50.h,
                         ),
                         Text(
-                          'PASSWORD RESET',
+                          context.l10n.passwordReset,
                           style: textStyleWithPrimaryBold,
                           textAlign: TextAlign.center,
                         ),
@@ -85,7 +91,7 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
                           hint: 'password',
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'please enter a new password';
+                              return context.l10n.pleaseEnetrAnewPassword;
                             }
                             if (value.length < 8) {
                               return 'pasword should be at least 8 characters';
@@ -106,7 +112,7 @@ class _ReserPasswordPageState extends State<ReserPasswordPage>
                         ),
                         RegisterField(
                           isPassword: true,
-                          hint: 'confirm password',
+                          hint: context.l10n.confirmPassword,
                           controller: confirmCasswordController,
                           validator: (value) {
                             if (value != passwordController.text) {

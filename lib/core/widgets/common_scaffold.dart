@@ -68,6 +68,7 @@ class CommonScaffold extends StatelessWidget {
                   ),
                   customScaffold ??
                       Scaffold(
+                        // resizeToAvoidBottomInset: false,
                         backgroundColor: Colors.transparent,
                         body: body,
                         bottomNavigationBar: bottomNavigationBar,

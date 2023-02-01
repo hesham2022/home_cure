@@ -21,6 +21,9 @@ class UserRepository extends IUserRepository {
   Future<Either<NetworkExceptions, User>> getUser(String id) =>
       guardFuture<User>(() => userRemote.getUser(id));
   @override
+  Future<Either<NetworkExceptions, User>> getProvider(String id) =>
+      guardFuture<User>(() => userRemote.getProvider(id));
+  @override
   Future<Either<NetworkExceptions, User>> updateUser(UpdateUserParams params) {
     return guardFuture<User>(() => userRemote.updateUser(params.toMap()));
   }
@@ -67,11 +70,36 @@ class UserRepository extends IUserRepository {
   }
 
   @override
+  Future<Either<NetworkExceptions, User>> deleteProviderAttatchment(
+    String params,
+  ) {
+    return guardFuture<User>(
+      () async => userRemote.deleteProviderAttachment(params),
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, User>> deleteUserAttatchment(
+    String params,
+  ) {
+    return guardFuture<User>(
+      () async => userRemote.deleteUserAttachment(params),
+    );
+  }
+
+  @override
   Future<Either<NetworkExceptions, User>> uploadProviderAttatchment(
     UploadPorviderAttachmentParams params,
   ) async {
     return guardFuture<User>(
       () async => userRemote.uploadProviderAttachment(await params.toMap()),
+    );
+  }
+
+  @override
+  Future<Either<NetworkExceptions, List<User>>> getOurDoctors() async {
+    return guardFuture<List<User>>(
+      () async => userRemote.getOurDoctors(),
     );
   }
 }

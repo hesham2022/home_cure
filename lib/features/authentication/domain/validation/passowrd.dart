@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:formz/formz.dart';
+import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/utils/validation_regx.dart';
 
 enum PasswordValidationError {
@@ -19,24 +20,32 @@ class Password extends FormzInput<String, PasswordValidationError> {
   String? errorText(PasswordValidationError? error) {
     print(error);
     // ignore: missing_enum_constant_in_switch
-    switch (error) {
-      case PasswordValidationError.empty:
-        return 'password should not be empty';
+    if (isLogin == true) {
+      if (error == PasswordValidationError.empty) {
+        return appLn10.passwordShouldNotBeEmpty;
+      } else {
+        return appLn10.invalidPasword;
+      }
+    } else {
+      switch (error) {
+        case PasswordValidationError.empty:
+          return appLn10.passwordShouldNotBeEmpty;
 
-      case PasswordValidationError.short:
-        return 'password too short';
+        case PasswordValidationError.short:
+          return appLn10.passwordTooShort;
 
-      case PasswordValidationError.contUpper:
-        return 'password should contain UpperCase ';
+        case PasswordValidationError.contUpper:
+          return appLn10.passwordSholdContainUpperCase;
 
-      case PasswordValidationError.contLetter:
-        return 'password should contain at least one letter';
-      case PasswordValidationError.contDigit:
-        return 'password should contain at least one number';
-      case PasswordValidationError.contLower:
-        return 'password should contain LowerCase';
-      case PasswordValidationError.contSpecial:
-        return 'password should contain special characters';
+        case PasswordValidationError.contLetter:
+          return appLn10.passwordSholdContainAtLeastOneLetter;
+        case PasswordValidationError.contDigit:
+          return appLn10.passwordSholdContainOneNumber;
+        case PasswordValidationError.contLower:
+          return appLn10.passwordSholdContainLowerCase;
+        case PasswordValidationError.contSpecial:
+          return appLn10.passwordSholdContainSpecialCharacters;
+      }
     }
     return null;
   }

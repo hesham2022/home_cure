@@ -6,6 +6,7 @@ import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cub
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
 import 'package:home_cure/features/user_details/data/models/medical_model.dart';
 import 'package:home_cure/features/user_details/presentation/widgets/shared_list.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class CurrentMedicationsPage extends StatefulWidget {
   const CurrentMedicationsPage({super.key});
@@ -45,7 +46,9 @@ class _CurrentMedicationsPageState extends State<CurrentMedicationsPage> {
         }
       },
       child: SharedList(
-            onEdit: (list) {
+                        hint: context.l10n.enterCurrentMedications,
+
+        onEdit: (list) {
           context.read<UserCubit>().updateUserDeatilsFunc(
                 _details.copyWith(
                   medicines: list
@@ -75,8 +78,8 @@ class _CurrentMedicationsPageState extends State<CurrentMedicationsPage> {
                 ),
               );
         },
-        title: 'Current medications',
-        subTitle: 'Medications',
+        title: context.l10n.currentMedications,
+        subTitle: context.l10n.medications,
         list: _details.medicines
             .map(
               (e) => MediaclModel(

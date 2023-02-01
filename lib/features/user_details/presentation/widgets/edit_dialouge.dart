@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:home_cure/core/widgets/big_form_field.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class EditDialouge extends StatefulWidget {
   const EditDialouge({
     super.key,
     required this.title,
+    this.oldString
   });
   final String title;
+  final String? oldString;
 
   @override
   State<EditDialouge> createState() => _EditDialougeState();
@@ -18,7 +21,13 @@ class EditDialouge extends StatefulWidget {
 class _EditDialougeState extends State<EditDialouge> {
   final TextEditingController controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-
+@override
+  void initState() {
+    if(widget.oldString!=null){
+      controller.text=widget.oldString!;
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -72,7 +81,7 @@ class _EditDialougeState extends State<EditDialouge> {
                           currentFocus.unfocus();
                         }
                       },
-                      title: 'Done',
+                      title: context.l10n.done,
                       size: const Size(170, 5),
                     ),
                   )

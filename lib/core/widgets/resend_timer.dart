@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class ResendTime extends StatefulWidget {
   const ResendTime({super.key, required this.controller});
@@ -38,7 +39,7 @@ class _ResendTimeState extends State<ResendTime> {
     }
 
     return Text(
-      'Resend after (${formattedTime(widget.controller.secondsRemaining)})',
+      '${context.l10n.resendAfter} (${formattedTime(widget.controller.secondsRemaining)})',
       style: textStyleWithPrimaryBold.copyWith(
           fontSize: 14.sp, color: Colors.black),
     );

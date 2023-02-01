@@ -1,0 +1,92 @@
+Alcoholics
+Smooking
+Done
+Cancel
+Main Complaint
+Date
+Descripe What  You Feel
+Blood Type
+Weight
+Height
+Previous Surgeries'
+Allergy
+Attatchments
+Main Complaint
+Save
+please add valid weight
+please add valid blood type
+please add valid height
+Surgeries
+Previous Surgeries
+Current medications
+Medications
+Chronic Diseases
+Change
+Log out
+'E-mail is empt
+Phone Number is empty
+Inavlid Phone Number
+Medical Details
+Usage And Provacy Policy
+Name is too short
+Qualifications
+Notifications
+No Appointments found
+Pending
+Completed
+Contact Us
+Speciality
+Degree
+Experience
+Start Vedio Now
+Your Note
+Address
+Days
+To
+Payment Method
+Payed
+Please try to pay your appointment'
+Pay Now
+Price
+Loading
+Status
+On Proccesing
+Service
+Payment Info
+Are You Sure 
+feddback is too shor
+start
+accept
+E-mail or Phone Number
+Send
+Didn't receive a message?
+Log out
+Send OTP
+confirm password
+not identical password
+Confirm
+PASSWORD RESET
+please enter a new password
+pasword should be at least 8 characters
+password should contain at least one letter
+password should contain at least one number
+male
+female
+Login with Facebook
+Login with Gmail
+Login with Apple
+Date Of Birth
+Re-Password
+Cooming
+
+Soon
+photo
+description
+invalid code
+Morning
+Evening
+Select Time
+please select the period'
+please select range of date
+Next
+Get Your Current Location

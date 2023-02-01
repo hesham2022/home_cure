@@ -24,6 +24,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<ChangeErrorMessage>(_onChangeErrorMessage);
     on<ResetFields>(_onResetFields);
     on<LoginPhoneNumberChanged>(_onPhoneNumberChanged);
+    on<Validate>(_onValidate);
 
     on<LoginWithEmail>(_onLoginWithEmail);
     on<LoginEmailOrPhoneChanged>(
@@ -145,6 +146,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // }
   }
 
+  void _onValidate(
+    Validate event,
+    Emitter<LoginState> emit,
+  ) {
+    // if (state.username.pure) {
+    //   add(const LoginUsernameChanged(null));
+    // }
+    if (state.emailOrPhone.pure) {
+      add(const LoginEmailOrPhoneChanged(''));
+    }
+    if (state.password.pure) {
+      add(const LoginPasswordChanged(''));
+    }
+  }
+
   String phoneNumberFormatter(String value) {
     if (!value.startsWith('+') && value.startsWith('2')) return '+$value';
     if (!value.startsWith('+2')) return '+2$value';
@@ -160,7 +176,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
       final isProvideLogin = state.emailOrPhone.isEmail &&
           state.emailOrPhone.value.split('@').last == 'homecure.com';
-      print(state.emailOrPhone.value.split('@').last);
       // try {
       final result = isProvideLogin
           ? await _authenticationRepository.logibProvider(
@@ -224,6 +239,7 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onSubmitted);
     on<ChangeErrorMessage>(_onChangeErrorMessage);
     on<ResetFields>(_onResetFields);
+    on<Validate>(_onValidate);
   }
 
   final IAuthenticationRepository _authenticationRepository;
@@ -336,6 +352,26 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
+  void _onValidate(
+    Validate event,
+    Emitter<LoginState> emit,
+  ) {
+    if (state.name.pure) {
+      add(const LoginNameChanged(''));
+    }
+    // if (state.username.pure) {
+    //   add(const LoginUsernameChanged(null));
+    // }
+    if (state.phoneNumber.pure) {
+      add(const LoginPhoneNumberChanged(''));
+    }
+    if (state.password.pure) {
+      add(const LoginPasswordChanged(''));
+    }
+    if (state.confirmPassword.pure) add(const LoginConfirmPasswordChanged(''));
+    if (state.birth.pure) add(const LoginBirthChanged(null));
+  }
+
   void _onPhoneNumberChanged(
     LoginPhoneNumberChanged event,
     Emitter<LoginState> emit,
@@ -350,6 +386,7 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
           state.gender,
           state.name,
           state.birth,
+          state.confirmPassword,
           phoneNumber
         ]),
       ),
@@ -361,6 +398,7 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     final gender = Gender.dirty(event.gender);
+
     emit(
       state.copyWith(
         gender: gender,
@@ -370,7 +408,8 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
           gender,
           state.name,
           state.birth,
-          state.phoneNumber
+          state.phoneNumber,
+          state.confirmPassword
         ]),
       ),
     );
@@ -381,16 +420,25 @@ class SingUpBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     final password = Password.dirty(event.password);
+
+    final confirm = ConfirmPassword.dirty(
+      state.confirmPassword.password,
+      event.password,
+    );
+    print(confirm.error);
+
     emit(
       state.copyWith(
         password: password,
+        confirmPassword: confirm,
         status: Formz.validate([
           password,
           state.username,
           state.gender,
           state.name,
           state.birth,
-          state.phoneNumber
+          state.phoneNumber,
+          confirm
         ]),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,11 +15,12 @@ import 'package:home_cure/features/login/domain/entities/fb_response.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_bloc.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_event.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_state.dart';
-import 'package:home_cure/features/login/presentation/verify_otp/verify_otp_cubit.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
-import 'package:home_cure/features/login/presentation/widgets/social_media_button.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -33,6 +35,8 @@ class _RegisterPageState extends State<RegisterPage> {
   late SingUpBloc _bloc;
   @override
   void initState() {
+    isLogin = false;
+
     _bloc = getIt();
     _bloc.add(const LoginGenderhanged('male'));
     super.initState();
@@ -44,6 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final rePasswordController = TextEditingController();
   bool enableFields = true;
+
   Future<void> _handleSignIn(BuildContext context) async {
     try {
       final _googleSignIn = GoogleSignIn();
@@ -132,8 +137,10 @@ class _RegisterPageState extends State<RegisterPage> {
         );
   }
 
+  bool agrreError = false;
   @override
   Widget build(BuildContext context) {
+    final tr = context.l10n;
     return BlocProvider<SingUpBloc>(
       create: (context) => _bloc,
       child: CommonScaffold(
@@ -142,11 +149,15 @@ class _RegisterPageState extends State<RegisterPage> {
           child: SingleChildScrollView(
             child: BlocListener<SingUpBloc, LoginState>(
               listener: (context, state) {
-                if (state.status.isSubmissionSuccess) {
-                  context.read<VerifyOtpCubit>().sendOtp();
-                }
+                // if (state.status.isSubmissionSuccess) {
+                //   context.read<VerifyOtpCubit>().sendOtp();
+                // }
                 if (state.status.isSubmissionFailure) {
-                  EasyLoading.showError(state.failureMessege);
+                  showSimpleNotification(
+                    Text(state.failureMessege),
+                    background: Colors.red,
+                  );
+                  // EasyLoading.showError(state.failureMessege);
                   // ScaffoldMessenger.of(context)
                   //   ..hideCurrentSnackBar()
                   //   ..showSnackBar(
@@ -161,13 +172,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 50,
                   ),
 
-                  Center(child: Assets.img.logo.image()),
+                  Center(child: Assets.img.logoPng.image()),
                   const SizedBox(
                     height: 50,
                   ),
                   BlocBuilder<SingUpBloc, LoginState>(
                     builder: (context, state) {
                       return RegisterField(
+                        hint: context.l10n.name,
                         enabled: enableFields,
                         controller: nameController,
                         errorText: state.name.invalid
@@ -187,7 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     builder: (context, state) {
                       return RegisterField(
                         enabled: enableFields,
-                        hint: 'E-mail',
+                        hint: context.l10n.email,
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         errorText: state.username.invalid
@@ -207,7 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     builder: (context, state) {
                       return RegisterField(
                         isPhoneNumber: true,
-                        hint: 'Mobile Number',
+                        hint: tr.mobileNumber,
                         keyboardType: TextInputType.phone,
                         errorText: state.phoneNumber.invalid
                             ? state.phoneNumber
@@ -231,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               enabled: enableFields,
                               isPassword: true,
                               controller: passwordController,
-                              hint: 'Password',
+                              hint: tr.password,
                               icon: Icon(
                                 Icons.lock_outlined,
                                 color: primaryColor.withOpacity(.5),
@@ -251,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Center(
                           child: Text(
-                            'Password should contain letters & numbers',
+                            tr.passwordShouldContain1Letter1Chatacter,
                             style: TextStyle(
                               color: const Color(0xffD74B7F),
                               fontSize: 16.sp,
@@ -267,7 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               enabled: enableFields,
                               controller: rePasswordController,
                               isPassword: true,
-                              hint: 'Re-Password',
+                              hint: tr.rePassword,
                               icon: Icon(
                                 Icons.lock_outlined,
                                 color: primaryColor.withOpacity(.5),
@@ -290,7 +302,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   BlocBuilder<SingUpBloc, LoginState>(
                     builder: (context, state) {
                       return RegisterField(
-                        hint: 'Date Of Birth',
+                        hint: tr.dateOfBirth,
                         errorText: state.birth.invalid
                             ? state.birth.errorText(state.birth.error)
                             : null,
@@ -342,24 +354,135 @@ class _RegisterPageState extends State<RegisterPage> {
                       vertical: 10,
                       horizontal: 20,
                     ),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Checkbox(
-                          value: agreed,
-                          onChanged: (v) {
-                            setState(() {
-                              agreed = v!;
-                            });
-                          },
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: agreed,
+                              onChanged: (v) {
+                                setState(() {
+                                  agreed = v!;
+                                });
+                              },
+                            ),
+                            InkWell(
+                              onTap: () {
+                                launchUrl(
+                                  Uri.parse(
+                                    'https://homecure.vercel.app/privacy',
+                                  ),
+                                );
+                              },
+                              child: App.isAr(context)
+                                  ? RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: ' اوافق علي',
+                                            style: agrreError
+                                                ? TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w700,
+                                                  )
+                                                : TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color:
+                                                        const Color(0xffD74B7F),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                ' سياسه الاستخدام والخصوصيه  ',
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                launchUrl(
+                                                  Uri.parse(
+                                                    'https://homecure.vercel.app/privacy',
+                                                  ),
+                                                );
+                                              },
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'I agree to ',
+                                            style: agrreError
+                                                ? TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w700,
+                                                  )
+                                                : TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color:
+                                                        const Color(0xffD74B7F),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                          ),
+                                          TextSpan(
+                                            text: 'terms and conditions',
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                launchUrl(
+                                                  Uri.parse(
+                                                    'https://homecure.vercel.app/privacy',
+                                                  ),
+                                                );
+                                              },
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                              // Text(
+                              //   tr.iAgreeToTermsCondtions,
+                              //   style: agrreError
+                              //       ? TextStyle(
+                              //           fontSize: 15.sp,
+                              //           color: Colors.red,
+                              //           fontWeight: FontWeight.w700,
+                              //         )
+                              //       : TextStyle(
+                              //           fontSize: 15.sp,
+                              //           color: const Color(0xffD74B7F),
+                              //           fontWeight: FontWeight.w400,
+                              //         ),
+                              // ),
+                            ),
+                            // Text(
+                            //   tr.iAgreeToTermsCondtions2,
+                            //   style: agrreError
+                            //       ? TextStyle(
+                            //           fontSize: 15.sp,
+                            //           color: Colors.red,
+                            //           fontWeight: FontWeight.w700,
+                            //         )
+                            //       : TextStyle(
+                            //           fontSize: 15.sp,
+                            //           color: const Color(0xffD74B7F),
+                            //           fontWeight: FontWeight.w400,
+                            //         ),
+                            // )
+                          ],
                         ),
-                        Text(
-                          'I agree to terms and conditions',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: const Color(0xffD74B7F),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+
+                        // if(agrreError)Text('you nee')
                       ],
                     ),
                   ),
@@ -371,20 +494,44 @@ class _RegisterPageState extends State<RegisterPage> {
                         return state.status == FormzStatus.submissionInProgress
                             ? const Center(child: CircularProgressIndicator())
                             : Button1(
-                                onPressed: state.status == FormzStatus.invalid
-                                    ? null
-                                    : () {
-                                        context.read<SingUpBloc>().add(
-                                              const LoginRegisterSubmitted(),
-                                            );
-                                      },
+                                onPressed: () {
+                                  context.read<SingUpBloc>().add(
+                                        Validate(),
+                                      );
+                                  if (agreed == false) {
+                                    setState(() {
+                                      agrreError = true;
+                                      context.read<SingUpBloc>().add(
+                                            Validate(),
+                                          );
+                                    });
+                                    if (state.status == FormzStatus.invalid) {
+                                      context.read<SingUpBloc>().add(
+                                            Validate(),
+                                          );
+
+                                      return;
+                                    }
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      agrreError = false;
+                                    });
+                                  }
+
+                                  // ? null
+                                  // :
+                                  context.read<SingUpBloc>().add(
+                                        const LoginRegisterSubmitted(),
+                                      );
+                                },
                                 titelStyle: TextStyle(
                                   fontSize: 19.sp,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 size: const Size(200, 50),
-                                title: 'Create new account',
+                                title: tr.createNewAccount,
                               );
                       },
                     ),
@@ -397,7 +544,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: InkWell(
                       onTap: context.router.pop,
                       child: Text(
-                        'you have an account',
+                        tr.youHaveAccount,
                         style: TextStyle(
                           fontSize: 19.sp,
                           color: primaryColor,
@@ -409,63 +556,63 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(
                     height: 30,
                   ),
-                  if (enableFields)
-                    Column(
-                      children: [
-                        Builder(
-                          builder: (context) {
-                            return InkWell(
-                              onTap: () => _handlleFb(context),
-                              child: const SocialMediaButton(
-                                title: 'Login with Facebook',
-                                child: Icon(
-                                  Icons.facebook,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Builder(
-                          builder: (context) {
-                            return InkWell(
-                              onTap: () => _handleSignIn(context),
-                              child: SocialMediaButton(
-                                color: Colors.white,
-                                titleColor: primaryColor,
-                                title: 'Login with Google',
-                                child: Assets.svg.gogle.svg(
-                                  height: 40,
-                                  width: 40,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    )
-                  else
-                    Builder(
-                      builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            resret(context);
-                          },
-                          child: const SocialMediaButton(
-                            color: Colors.white,
-                            titleColor: primaryColor,
-                            title: 'Sign  with Email And Password ',
-                            child: SizedBox(
-                              height: 40,
-                            ),
-                          ),
-                        );
-                      },
-                    )
+                  // if (enableFields)
+                  //   Column(
+                  //     children: [
+                  //       Builder(
+                  //         builder: (context) {
+                  //           return InkWell(
+                  //             onTap: () => _handlleFb(context),
+                  //             child: SocialMediaButton(
+                  //               title: tr.loginwithfacebookaccount,
+                  //               child: const Icon(
+                  //                 Icons.facebook,
+                  //                 color: Colors.white,
+                  //                 size: 40,
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //       SizedBox(
+                  //         height: 20.h,
+                  //       ),
+                  //       Builder(
+                  //         builder: (context) {
+                  //           return InkWell(
+                  //             onTap: () => _handleSignIn(context),
+                  //             child: SocialMediaButton(
+                  //               color: Colors.white,
+                  //               titleColor: primaryColor,
+                  //               title: tr.loginwithgoogleaccount,
+                  //               child: Assets.svg.gogle.svg(
+                  //                 height: 40,
+                  //                 width: 40,
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //     ],
+                  //   )
+                  // else
+                  //   Builder(
+                  //     builder: (context) {
+                  //       return InkWell(
+                  //         onTap: () {
+                  //           resret(context);
+                  //         },
+                  //         child: SocialMediaButton(
+                  //           color: Colors.white,
+                  //           titleColor: primaryColor,
+                  //           title: tr.signWithPasswordAndEmal,
+                  //           child: const SizedBox(
+                  //             height: 40,
+                  //           ),
+                  //         ),
+                  //       );
+                  //     },
+                  //   )
                 ],
               ),
             ),
@@ -495,7 +642,7 @@ class _GenderWidgetState extends State<GenderWidget> {
           children: [
             Row(
               children: [
-                Text('Male', style: textStyleWithPrimarySemiBold),
+                Text(context.l10n.male, style: textStyleWithPrimarySemiBold),
                 Transform.scale(
                   scale: 1.5,
                   child: Checkbox(
@@ -522,7 +669,7 @@ class _GenderWidgetState extends State<GenderWidget> {
             ),
             Row(
               children: [
-                Text('Femal', style: textStyleWithPrimarySemiBold),
+                Text(context.l10n.female, style: textStyleWithPrimarySemiBold),
                 Transform.scale(
                   scale: 1.5,
                   child: Checkbox(

@@ -22,7 +22,8 @@ class CommonHeader extends StatelessWidget {
           ),
           Container(
             width: 250.w,
-            height: 40.h,
+            // height: 40.h,
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: const Color(0xff218FE4),
@@ -36,6 +37,7 @@ class CommonHeader extends StatelessWidget {
                   color: Colors.white,
                   height: 1,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),

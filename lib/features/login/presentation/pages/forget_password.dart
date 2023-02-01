@@ -11,6 +11,7 @@ import 'package:home_cure/features/login/presentation/forget_password_bloc/forge
 import 'package:home_cure/features/login/presentation/forget_password_bloc/forget_password_state.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -85,11 +86,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           const patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
                           final regExp = RegExp(patttern);
                           if (v!.isEmpty) {
-                            return 'please enter your Phone Number';
+                            return context.l10n.plEnterPhone;
                           }
                           return regExp.hasMatch(v)
                               ? null
-                              : 'invalid Phone Number';
+                              : context.l10n.inavlidPhonenumber;
                         },
                       ),
                       SizedBox(
@@ -104,7 +105,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           }
                           return Button1(
                             size: Size(120.h, 36.h),
-                            title: 'Send',
+                            title:context.l10n.send,
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 await context

@@ -17,7 +17,7 @@ import 'package:home_cure/di/get_it.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-    print('object');
+  print('object');
 
   await Firebase.initializeApp();
   await AwesomeNotifications().initialize(
@@ -30,7 +30,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
         channelDescription: 'Notification channel for basic tests',
         defaultColor: const Color(0xFF9D50DD),
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
       )
     ],
   );
@@ -43,13 +43,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
     ),
   );
   await HiveService().init();
-
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await AwesomeNotifications().initialize(
     'resource://mipmap/launcher_icon',
@@ -61,7 +60,7 @@ void main() async {
         channelDescription: 'Notification channel for basic tests',
         defaultColor: const Color(0xFF9D50DD),
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
       )
     ],
   );

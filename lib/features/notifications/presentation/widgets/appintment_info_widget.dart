@@ -9,6 +9,7 @@ import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cub
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 import 'package:intl/intl.dart';
 
 // class AppointmentsStatus  {
@@ -17,42 +18,63 @@ import 'package:intl/intl.dart';
 //   ONPROCESSING: 'onprocessing',
 //   DONE: 'done',
 // };
-class AppointmentInfoWidget extends StatelessWidget {
+class AppointmentInfoWidget extends StatefulWidget {
   const AppointmentInfoWidget({
     super.key,
     required this.request,
   });
   final Appointment request;
-  String getStatus() {
-    if (request.isWaiting) {
-      return 'Accepted';
+
+  @override
+  State<AppointmentInfoWidget> createState() => _AppointmentInfoWidgetState();
+}
+
+class _AppointmentInfoWidgetState extends State<AppointmentInfoWidget> {
+  String getStatus(BuildContext context) {
+    if (widget.request.isWaiting) {
+      return context.l10n.accepted;
     }
-    if (request.isOnPeocessing) {
-      return 'On Processing';
+    if (widget.request.isOnPeocessing) {
+      return context.l10n.onProccessing;
     }
-    if (request.isDone) {
-      return 'Completed';
+    if (widget.request.isDone) {
+      return context.l10n.completed;
     }
-    return 'Pending';
+    return context.l10n.pending;
+  }
+
+  String? local;
+  String getAgo(DateTime date) {
+    final duration = DateTime.now().difference(date);
+    if (duration.inDays > 0) {
+      return '${duration.inDays} ${context.l10n.day}';
+    }
+    if (duration.inHours > 0) {
+      return '${duration.inHours} ${context.l10n.hours}';
+    }
+    if (duration.inMinutes > 0) {
+      return '${duration.inMinutes} ${context.l10n.minutes}';
+    }
+    return '';
   }
 
   Color getColor() {
-    if (request.isOpened) return seocondColor;
-    if (request.isWaiting) return seocondColor;
-    if (request.isOnPeocessing) return seocondColor;
+    if (widget.request.isOpened) return seocondColor;
+    if (widget.request.isWaiting) return seocondColor;
+    if (widget.request.isOnPeocessing) return seocondColor;
 
     return primaryColor;
   }
 
   Widget getIcon() {
-    if (request.isVideo) {
+    if (widget.request.isVideo) {
       return Icon(
         Icons.video_call,
         size: 25,
         color: getColor(),
       );
     }
-    if (request.isTele) {
+    if (widget.request.isTele) {
       return Assets.svg.phone3.svg(
         height: 25,
         color: getColor(),
@@ -65,14 +87,24 @@ class AppointmentInfoWidget extends StatelessWidget {
     );
   }
 
-  String getTitleString() {
-    if (request.isVideo) {
-      return 'Video Request';
+  String getTitleString(BuildContext context) {
+    if (widget.request.isVideo) {
+      return context.l10n.videoRequest;
     }
-    if (request.isTele) {
-      return 'Call Request';
+    if (widget.request.isTele) {
+      return context.l10n.callRequest;
     }
-    return 'Appointment Request';
+    return context.l10n.appointmentRequest;
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        local = context.l10n.localeName;
+      });
+    });
+    super.initState();
   }
 
   @override
@@ -84,10 +116,11 @@ class AppointmentInfoWidget extends StatelessWidget {
             .isUser;
         if (isUser) {
           context.router
-              .push(AppointmentDetailsPageRoute(appointment: request));
+              .push(AppointmentDetailsPageRoute(appointment: widget.request));
         } else {
-          context.router
-              .push(AppointmentDetailsPageAdpterRoute(appointment: request));
+          context.router.push(
+            AppointmentDetailsPageAdpterRoute(appointment: widget.request),
+          );
         }
       },
       child: LayoutBuilder(
@@ -97,7 +130,7 @@ class AppointmentInfoWidget extends StatelessWidget {
               Container(
                 height: 100.h,
                 width: 6,
-                color: request.isDone ? primaryColor : seocondColor,
+                color: widget.request.isDone ? primaryColor : seocondColor,
               ),
               const SizedBox(
                 width: 5,
@@ -122,21 +155,21 @@ class AppointmentInfoWidget extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 6,
                                 ),
-                                height: 25.h,
+                                height: 20.h,
                                 width: 120.w,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: request.status == 'waiting'
+                                  color: widget.request.status == 'waiting'
                                       ? const Color(0xffD74B7F).withOpacity(.2)
-                                      : request.status == 'done'
+                                      : widget.request.status == 'done'
                                           ? const Color(0xff0A84E1)
                                               .withOpacity(.2)
                                           : const Color(0xff1AA9A0)
                                               .withOpacity(.2),
                                 ),
                                 child: Text(
-                                  'On Processing',
-                                  // getStatus(),
+                                  //'On Processing',
+                                  getStatus(context),
                                   style: textStyleWithSecondSemiBold.copyWith(
                                     fontSize: 12.sp,
                                     height: 1,
@@ -147,13 +180,36 @@ class AppointmentInfoWidget extends StatelessWidget {
                                 height: 10.h,
                               ),
                               Text(
-                                getTitleString(), //  'Call Request',
+                                getTitleString(context), //  'Call Request',
                                 style: textStyleWithPrimarySemiBold.copyWith(
                                   fontSize: 14.sp,
                                   height: 1,
                                   color: const Color(0xff5D6C7A),
                                 ),
-                              )
+                              ),
+                              if (widget.request.createdAt != null)
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                    Text(
+                                      context.l10n.localeName == 'ar'
+                                          ? '${context.l10n.ago} ${getAgo(
+                                              widget.request.createdAt!,
+                                            )}'
+                                          : '${getAgo(
+                                              widget.request.createdAt!,
+                                            )} ${context.l10n.ago}', //  'Call Request',
+                                      style:
+                                          textStyleWithPrimarySemiBold.copyWith(
+                                        fontSize: 14.sp,
+                                        height: 1,
+                                        color: const Color(0xff5D6C7A),
+                                      ),
+                                    ),
+                                  ],
+                                )
                             ],
                           ),
                         ),
@@ -175,14 +231,20 @@ class AppointmentInfoWidget extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      DateFormat('EEEE')
-                                          .format(request.date), //   'Friday',
+                                      DateFormat(
+                                        'EEEE',
+                                        App.isAr(context) ? 'ar' : 'en',
+                                      ).format(
+                                        widget.request.date,
+                                      ), //   'Friday',
                                       style: textStyleWithPrimarySemiBold
                                           .copyWith(fontSize: 14.sp),
                                     ),
                                     Text(
-                                      DateFormat('EEEE, d MMM, yyyy')
-                                          .format(request.date),
+                                      DateFormat(
+                                        'EEEE, d MMM, yyyy',
+                                        App.isAr(context) ? 'ar' : 'en',
+                                      ).format(widget.request.date),
                                       style:
                                           textStyleWithPrimarySemiBold.copyWith(
                                         fontSize: 12.sp,
@@ -195,13 +257,18 @@ class AppointmentInfoWidget extends StatelessWidget {
                                         if (state is TimeSlotCubitStateLoaded) {
                                           final timeSlots = state.timeSlots;
 
-                                          final timeSlot = timeSlots.firstWhere(
-                                            (element) =>
-                                                element.id == request.timeslot,
-                                          );
+                                          final timeSlot =
+                                              widget.request.timeslot;
                                           return Text(
-                                            timeSlot
-                                                .startSting, //   '05:52 PM',
+                                            timeSlot.startSting
+                                                .replaceAll(
+                                                  'AM',
+                                                  context.l10n.morning,
+                                                )
+                                                .replaceAll(
+                                                  'PM',
+                                                  context.l10n.evening,
+                                                ), //   '05:52 PM',
                                             style: textStyleWithPrimarySemiBold
                                                 .copyWith(
                                               fontSize: 12.sp,
@@ -211,14 +278,6 @@ class AppointmentInfoWidget extends StatelessWidget {
                                         }
                                         return const Text('');
                                       },
-                                    ),
-                                    Text(
-                                      'Number: 20010000000000',
-                                      style:
-                                          textStyleWithSecondSemiBold.copyWith(
-                                        fontSize: 8.sp,
-                                        color: const Color(0xff5D6C7A),
-                                      ),
                                     ),
                                   ],
                                 ),

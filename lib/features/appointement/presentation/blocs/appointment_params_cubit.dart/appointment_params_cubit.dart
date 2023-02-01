@@ -20,10 +20,23 @@ class AppointmentsParamsCubit extends Cubit<AppointmentsParamsState> {
     emit(state.copyWith(period: period));
   }
 
+  void addAllergic(
+    bool period,
+  ) {
+    emit(state.copyWith(allergic: period));
+  }
+
   void addPrice(
     int price,
   ) {
     emit(state.copyWith(price: price));
+  }
+
+  void addDiscount(
+    int discount,
+  ) {
+    print(discount);
+    emit(state.copyWith(discount: discount));
   }
 
   void addDyas(
@@ -87,6 +100,17 @@ class AppointmentsParamsCubit extends Cubit<AppointmentsParamsState> {
         : List.generate(10, (index) => null);
 
     _attatchments[index] = file;
+
+    emit(state.copyWith(attachments: [..._attatchments]));
+  }
+
+  Future<void> deleteFile(int index) async {
+    var _attatchments = <String?>[];
+    _attatchments = state.attachments != null
+        ? [...state.attachments!]
+        : List.generate(10, (index) => null);
+
+    _attatchments[index] = null;
 
     emit(state.copyWith(attachments: [..._attatchments]));
   }

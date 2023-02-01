@@ -12,6 +12,8 @@ import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/domain/entities/timeslot.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class CreateAppointementThirdPage extends StatefulWidget {
   const CreateAppointementThirdPage({
@@ -39,10 +41,16 @@ class _CreateAppointementThirdPageState
   }
 
   String fromTextFormat(TimeSlot timeslot) {
+    if (appLn10.localeName == 'ar') {
+      return '''${timeslot.startHour % 12}:${timeslot.startMinute} ${timeslot.startHour < 12 ? appLn10.morning : appLn10.evening}''';
+    }
     return '''${timeslot.startHour % 12}:${timeslot.startMinute} ${timeslot.startHour < 12 ? 'am' : 'pm'}''';
   }
 
   String toTextFormat(TimeSlot timeslot) {
+    if (appLn10.localeName == 'ar') {
+      return '''${timeslot.endHour % 12}:${timeslot.endMinute} ${timeslot.endHour < 12 ? appLn10.morning : appLn10.evening}''';
+    }
     return '''${timeslot.endHour % 12}:${timeslot.endMinute} ${timeslot.endHour < 12 ? 'am' : 'pm'}''';
   }
 
@@ -63,6 +71,30 @@ class _CreateAppointementThirdPageState
                           : element.startHour > 12),
                 )
                 .toList();
+            print(context.read<AppointmentsParamsCubit>().state.date);
+            print('date');
+            print(
+              DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+                DateTime.now().day,
+              ),
+            );
+
+            if (context.read<AppointmentsParamsCubit>().state.date ==
+                DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day,
+                )) {
+              timeSlosts = [...timeSlosts]
+                  .where(
+                    (element) =>
+                        element.startHour >
+                        DateTime.now().add(const Duration(hours: 2)).hour,
+                  )
+                  .toList();
+            }
             return Column(
               children: [
                 Padding(
@@ -83,17 +115,19 @@ class _CreateAppointementThirdPageState
                             children: [
                               Assets.svg.sun.svg(),
                               const Spacer(),
-                              Text(
-                                _period == EveningMorning.morning
-                                    ? 'Morning'
-                                    : 'Evening',
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
+                              Expanded(
+                                child: Text(
+                                  _period == EveningMorning.morning
+                                      ? context.l10n.morning
+                                      : context.l10n.evening,
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                               SizedBox(
                                 width: 20.sp,
@@ -114,7 +148,7 @@ class _CreateAppointementThirdPageState
                 ),
                 Center(
                   child: Text(
-                    'Select Time',
+                    context.l10n.selectTime,
                     style: TextStyle(
                       fontSize: 20.sp,
                       color: primaryColor,
@@ -126,90 +160,103 @@ class _CreateAppointementThirdPageState
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 20.h,
-                    ),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: timeSlosts.length,
-                    itemBuilder: (ctx, index) {
-                      final indexedTimeSlot = timeSlosts[index];
-                      return InkWell(
-                        onTap: () => setState(() {
-                          selectedIndex = index;
-                          context
-                              .read<AppointmentsParamsCubit>()
-                              .addTimeSlot(timeSlosts[index].id);
-                        }),
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 25.h),
-                          height: 77.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(23),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: const Offset(0, 3),
-                                color: Colors.black.withOpacity(
-                                  (context
-                                                  .read<
-                                                      AppointmentsParamsCubit>()
-                                                  .state
-                                                  .timeslot ==
-                                              indexedTimeSlot.id ||
-                                          selectedIndex == index)
-                                      ? .5
-                                      : .1,
-                                ),
-                                spreadRadius: 2,
-                                blurRadius: 6,
-                              )
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'From :',
-                                      style: textStyleWithSecondBold(),
-                                    ),
-                                    Text(
-                                      fromTextFormat(indexedTimeSlot),
-                                      //   ' 10 am',
-                                      style: textStyleWithPrimaryBold.copyWith(
-                                        color: const Color(0xff31ADE0),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'To :',
-                                      style: textStyleWithSecondBold(),
-                                    ),
-                                    Text(
-                                      toTextFormat(indexedTimeSlot),
-
-                                      // ' 10 pm',
-                                      style: textStyleWithPrimaryBold.copyWith(
-                                        color: const Color(0xff31ADE0),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
+                  child: timeSlosts.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: Text(context.l10n.notAvaialableAtThatDy),
                             ),
+                          ],
+                        )
+                      : ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 20.h,
                           ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: timeSlosts.length,
+                          itemBuilder: (ctx, index) {
+                            final indexedTimeSlot = timeSlosts[index];
+                            return InkWell(
+                              onTap: () => setState(() {
+                                selectedIndex = index;
+                                context
+                                    .read<AppointmentsParamsCubit>()
+                                    .addTimeSlot(timeSlosts[index].id);
+                              }),
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 25.h),
+                                height: 77.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(23),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(0, 3),
+                                      color: Colors.black.withOpacity(
+                                        (context
+                                                        .read<
+                                                            AppointmentsParamsCubit>()
+                                                        .state
+                                                        .timeslot ==
+                                                    indexedTimeSlot.id ||
+                                                selectedIndex == index)
+                                            ? .5
+                                            : .1,
+                                      ),
+                                      spreadRadius: 2,
+                                      blurRadius: 6,
+                                    )
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${context.l10n.from} :',
+                                            style: textStyleWithSecondBold(),
+                                          ),
+                                          Text(
+                                            fromTextFormat(indexedTimeSlot),
+                                            //   ' 10 am',
+                                            style: textStyleWithPrimaryBold
+                                                .copyWith(
+                                              color: const Color(0xff31ADE0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${context.l10n.to} :',
+                                            style: textStyleWithSecondBold(),
+                                          ),
+                                          Text(
+                                            toTextFormat(indexedTimeSlot),
+
+                                            // ' 10 pm',
+                                            style: textStyleWithPrimaryBold
+                                                .copyWith(
+                                              color: const Color(0xff31ADE0),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -223,7 +270,7 @@ class _CreateAppointementThirdPageState
                         onPressed: () {
                           context.router.pop();
                         },
-                        title: 'Back',
+                        title: context.l10n.back,
                       ),
                       Button1(
                         onPressed: () {
@@ -232,13 +279,18 @@ class _CreateAppointementThirdPageState
                                   .state
                                   .timeslot ==
                               null) {
-                            ScaffoldMessenger.of(context)
-                              ..clearSnackBars()
-                              ..showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please select period'),
-                                ),
-                              );
+                            showSimpleNotification(
+                              Text(context.l10n.pleaseselecttheperiod),
+                              background: Colors.red,
+                            );
+                            // ScaffoldMessenger.of(context)
+                            //   ..clearSnackBars()
+                            //   ..showSnackBar(
+                            //     SnackBar(
+                            //       content:
+                            //           Text(context.l10n.pleaseselecttheperiod),
+                            //     ),
+                            //   );
                             return;
                           }
                           if (widget.service.isVideo || widget.service.isTele) {
@@ -255,7 +307,7 @@ class _CreateAppointementThirdPageState
                             ),
                           );
                         },
-                        title: 'Next',
+                        title: context.l10n.next, // 'Next',
                       )
                     ],
                   ),

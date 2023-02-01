@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/gen/assets.gen.dart';
+import 'package:home_cure/l10n/l10n.dart';
 
 class PaymentStipper extends StatelessWidget {
   const PaymentStipper({
@@ -24,7 +25,7 @@ class PaymentStipper extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Payment method',
+                context.l10n.paymentMethod,
                 style: textStyleWithPrimarySemiBold.copyWith(
                   color: Colors.white,
                   fontSize: 25,

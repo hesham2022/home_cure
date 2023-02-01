@@ -6,6 +6,7 @@ import 'package:home_cure/features/appointement/data/models/get_appointments_res
 import 'package:home_cure/features/appointement/domain/entities/agora_token.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/entities/done_params.dart';
+import 'package:home_cure/features/appointement/domain/entities/rate_params.dart';
 
 abstract class IAppointmentRemote {
   IAppointmentRemote(this.apiConfig);
@@ -22,6 +23,7 @@ abstract class IAppointmentRemote {
   Future<Appointment> acceptAppointment(String appointmentId);
   Future<Appointment> onProgressAppointment(String appointmentId);
   Future<Appointment> doneAppointment(DoneParams params);
+  Future<Appointment> rate(RatingParams params);
 
   Future<List<Appointment>> getAppointments();
 
@@ -122,6 +124,18 @@ class AppointmentRemote extends IAppointmentRemote {
   Future<Appointment> doneAppointment(DoneParams params) async {
     final response = await apiConfig.post(
       kDoneAppointments + params.id,
+      body: params.toMap(),
+    );
+    final data = response.data as Map<String, dynamic>;
+
+    final appointmentResult = AppointmentModel.fromMap(data);
+    return appointmentResult;
+  }
+
+  @override
+  Future<Appointment> rate(RatingParams params) async {
+    final response = await apiConfig.post(
+      kRate,
       body: params.toMap(),
     );
     final data = response.data as Map<String, dynamic>;

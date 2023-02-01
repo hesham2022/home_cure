@@ -11,6 +11,7 @@ class SmallTextFiel extends StatelessWidget {
     this.controller,
     this.validator,
     this.isPhoneNumber = false,
+    this.onChanged,
   });
   final Color? color;
   final bool? enabled;
@@ -18,9 +19,10 @@ class SmallTextFiel extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final bool isPhoneNumber;
-
+  final Function(String)? onChanged;
   @override
   Widget build(BuildContext context) => TextFormField(
+        onChanged: onChanged,
         validator: validator,
         enabled: enabled,
         keyboardType: keyboardType,

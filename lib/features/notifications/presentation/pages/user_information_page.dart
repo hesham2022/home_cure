@@ -182,6 +182,21 @@ class UserInformationPage extends StatelessWidget {
                       )
                       .toList(),
                 ),
+                  const SizedBox(height: 30),
+                Text('Allergy', style: textStyleWithPrimarySemiBold),
+                const SizedBox(height: 40),
+                MedicalTableWidget(
+                  subtitle: 'Previous Surgeries',
+                  list: user.details.preSurgeries
+                      .map(
+                        (e) => MediaclModel(
+                          date: e.date,
+                          id: e.id,
+                          description: e.description,
+                        ),
+                      )
+                      .toList(),
+                ),
               ],
             ),
           )

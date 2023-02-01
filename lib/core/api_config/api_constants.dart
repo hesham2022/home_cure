@@ -1,6 +1,8 @@
-//const kBaseUrl = 'http://192.168.1.3:3000/v1';
-// const domain = 'https://wyca.herokuapp.com';
-const domain = 'http://192.168.1.4:8000';
+// const kBaseUrl = 'http://192.168.1.3:3000/v1';
+// const domain = 'https://hospital-home.herokuapp.com';
+const domain = 'https://homecure.online/api';
+
+// const domain = 'http://192.168.8.100:3000';
 
 // const kBaseUrl = 'https://wyca.herokuapp.com/v1';
 const kBaseUrl = '$domain/v1';
@@ -8,32 +10,52 @@ const kBaseUrl = '$domain/v1';
 const kRegister = '$kBaseUrl/auth/register';
 const kRegisterProvider = '$kBaseUrl/auth/provider/register';
 const kForgotPassword = '$kBaseUrl/auth/forgot-password';
+const kForgotPasswordFirebase = '$kBaseUrl/auth/forgot-password-firebase';
+
+const kChangePhoneNumber = '$kBaseUrl/auth/change-phoneNumber';
+
 const kSendOtp = '$kBaseUrl/auth/send-verification-otp';
 
 const kverifyForgotPassword = '$kBaseUrl/auth/verify-forget-password-otp';
+const kverifyChangePhoneNumber = '$kBaseUrl/auth/verify-change-phoneNumber-otp';
+
 const kVerifyOtp = '$kBaseUrl/auth/verify-otp';
+const kVerifyOtpFirebase = '$kBaseUrl/auth/verify-otp-firebase';
 
 const kResetPassword = '$kBaseUrl/auth/reset-password';
+const kResetPasswordFirebase = '$kBaseUrl/auth/reset-password-firebase';
+
+const kResetPhoneNumber = '$kBaseUrl/auth/reset-phoneNumber';
+const kResetPhoneNumberFirebase = '$kBaseUrl/auth/reset-phoneNumber-firebase';
+
 const kLogin = '$kBaseUrl/auth/login';
 const kProviderLogin = '$kBaseUrl/provider-auth/login';
 const kUpadetProvider = '$kBaseUrl/providers/update-me';
 
 const kUploadProviderPhoto = '$kBaseUrl/providers/update-me/upload-photo';
 const kUploadProviderAttachment = '$kBaseUrl/providers/update-me/attachments';
-
+const kDeleteProviderAttachment =
+    '$kBaseUrl/providers/update-me/attachments/delete';
+const kDeleteUserAttachment = '$kBaseUrl/users/update-me/attachments/delete';
 const kLoginProvider = '$kBaseUrl/auth/provider/login';
 const kPhotosUrl = '$domain/img/attachments/';
 
 const kGetMe = '$kBaseUrl/auth/me';
 const kUsers = '$kBaseUrl/users/';
+const kProviders = '$kBaseUrl/providers/';
+
 const kgetSevices = '$kBaseUrl/service';
 const kTimeslot = '$kBaseUrl/timeslot';
 const kAds = '$kBaseUrl/ad';
 
 const kApppointment = '$kBaseUrl/appointment';
+const kSetting = '$kBaseUrl/settings';
+const kComplainment = '$kBaseUrl/compainments';
+
 const kAcceptAppointments = '$kApppointment/provider/accept/';
 const kOnProccessingAppointments = '$kApppointment/provider/OnProcessing/';
 const kDoneAppointments = '$kApppointment/provider/done/';
+const kRate = '$kApppointment/rate';
 
 const kUserPay = '$kApppointment/pay/';
 const kPorividerPay = '$kApppointment/provider/pay/';

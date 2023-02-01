@@ -6,3 +6,4 @@ abstract class CallingEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+class GetComapnySettingsEvent extends CallingEvent{}

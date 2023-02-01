@@ -59,7 +59,7 @@ class HorizontalListItem extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      service.title,
+                      service.getTitle(context),
                       style: TextStyle(
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w400,

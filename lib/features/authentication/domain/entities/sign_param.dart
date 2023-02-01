@@ -51,13 +51,16 @@ class SignParam {
         phoneNumber: phoneNumber ?? this.phoneNumber,
       );
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        'name': name,
-        'password': password,
-        'email': email,
-        'phoneNumber': '+2$phoneNumber',
-        'gender': gender,
-        'birthOfDate': birthOfDate.toIso8601String(),
-        'fcm': PushNotifications.fcmToken
-      };
+  Map<String, dynamic> toMap() {
+    final m = <String, dynamic>{
+      'name': name,
+      'password': password,
+      'phoneNumber': '+2$phoneNumber',
+      'gender': gender,
+      'birthOfDate': birthOfDate.toIso8601String(),
+      'fcm': PushNotifications.fcmToken ?? ''
+    };
+    if (email.isNotEmpty) m['email'] = email;
+    return m;
+  }
 }

@@ -1,8 +1,11 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:home_cure/core/api_errors/index.dart';
 import 'package:home_cure/core/useCase/use_case.dart';
+import 'package:home_cure/core/utils/hive_helper.dart';
 import 'package:home_cure/features/appointement/domain/entities/appointment.dart';
 import 'package:home_cure/features/appointement/domain/usecases/get_appointments.dart';
 
@@ -63,12 +66,13 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsCubitState> {
 
   Future<void> getMyAppointsFunc() async {
     // await EasyLoading.dismiss();
-    // await EasyLoading.show();
+    // awaitEasyLoading.show();
     emit(MyAppointmentsCubitStateLoading());
     final response = await getMyAppoints(NoParams());
     // await EasyLoading.dismiss();
     await response.fold(
       (l) async {
+        
         await EasyLoading.showError(l.errorMessege);
         emit(MyAppointmentsCubitStateError(l));
       },
@@ -76,5 +80,35 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsCubitState> {
         emit(MyAppointmentsCubitStateLoaded(r));
       },
     );
+  }
+}
+
+Future<void> addToSched(String key, String id) async {
+  await Hive.box<String>(
+    HiveService.shculdedBox,
+  ).put(
+    key,
+    id,
+  );
+}
+
+Future sculded(List<Appointment> appointments) async {
+  final notificationsMap = HiveService.schuldedBox().toMap();
+  final notifications = notificationsMap.values.toList();
+  for (final i in appointments) {
+    if (!notifications.contains(i.id)) {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          channelKey: 'basic_channel',
+          id: DateTime.now().millisecond,
+          title: 'Hello',
+        ),
+        schedule: NotificationCalendar.fromDate(
+          date: DateTime(i.date.year, i.date.month, i.date.day)
+              .add(const Duration(seconds: 5)),
+        ),
+      );
+      await addToSched(i.id, i.id);
+    }
   }
 }
