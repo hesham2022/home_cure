@@ -7,7 +7,6 @@
 
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/bootstrap.dart';
-
 void main() {
   bootstrap(() => const App());
 }
