@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>47809000316-mi7lcgmdvoq6d05p78rs6aa624611env.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.47809000316-mi7lcgmdvoq6d05p78rs6aa624611env</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>47809000316-a4tk06aj4n3fulfgonfs70lgbntn6adm.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCamKNe54s-1-h37SNQBxSx2Wmf8l2ejRc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>47809000316</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>homecure.com</string>
+	<key>PROJECT_ID</key>
+	<string>homecure-75f01</string>
+	<key>STORAGE_BUCKET</key>
+	<string>homecure-75f01.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:47809000316:ios:3b4cac9f384a33f6466af9</string>
+</dict>
+</plist>
