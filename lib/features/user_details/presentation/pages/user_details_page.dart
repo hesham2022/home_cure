@@ -28,13 +28,20 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   final heighController = TextEditingController();
   final weightController = TextEditingController();
   final bloodTypeontroller = TextEditingController();
-
+  bool smoke = false;
+  bool aclhol = false;
   bool dirty = false;
   String _previousHeight = '';
   String _previousHWeight = '';
 
   @override
   void initState() {
+    final state = context.read<UserCubit>().state;
+    if (state is UserCubitStateLoaded) {
+      aclhol = state.user.details.alcohol;
+      smoke = state.user.details.smoke;
+      setState(() {});
+    }
     super.initState();
   }
 
@@ -46,6 +53,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     // weightController.clear();
     // heighController.dispose();
     // weightController.dispose();
+
     super.dispose();
   }
 
@@ -80,6 +88,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 var details = user.details;
                 _previousHeight = state.user.details.height.toString();
                 _previousHWeight = state.user.details.weight.toString();
+                // smoke = state.user.details.smoke;
+                // aclhol = state.user.details.alcohol;
 
                 return Column(
                   children: [
@@ -119,12 +129,14 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                             alcoholics: details.alcohol,
                             smooking: details.smoke,
                             onSmookingChange: (value) {
+                              smoke = value;
                               details = details.copyWith(smoke: value);
                               setState(() {
                                 dirty = true;
                               });
                             },
                             onAlcholChange: (value) {
+                              aclhol = value;
                               details = details.copyWith(alcohol: value);
                               setState(() {
                                 dirty = true;
@@ -176,6 +188,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                                 // }
                                 context.read<UserCubit>().updateUserDeatilsFunc(
                                       details.copyWith(
+                                        smoke: smoke,
+                                        alcohol: aclhol,
                                         height: int.parse(heighController.text),
                                         weight:
                                             int.parse(weightController.text),

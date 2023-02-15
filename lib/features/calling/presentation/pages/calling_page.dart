@@ -17,6 +17,7 @@ import 'package:home_cure/features/calling/data/models/comapny_settings_model.da
 import 'package:home_cure/features/calling/data/models/compliantment_model.dart';
 import 'package:home_cure/features/calling/presentation/bloc/calling_bloc.dart';
 import 'package:home_cure/features/calling/presentation/bloc/comlainment_cubit.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:home_cure/l10n/l10n.dart';
@@ -131,177 +132,188 @@ class _CallingPageState extends State<CallingPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(35),
-        child: BlocBuilder<CallingBloc, CallingState>(
-          builder: (context, state) {
-            if (state is CallingLoaded) {
-              return Column(
-                children: [
-                  SizedBox(height: 25.h),
+      child: Column(
+        children: [
+          const MyBackButton(),
+          Padding(
+            padding: const EdgeInsets.all(35),
+            child: BlocBuilder<CallingBloc, CallingState>(
+              builder: (context, state) {
+                if (state is CallingLoaded) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 25.h),
 
-                  Center(child: Assets.img.logo.image(height: 70, width: 70)),
+                      Center(
+                          child: Assets.img.logo.image(height: 70, width: 70)),
 
-                  // CommonContainer(
-                  //   height: 40.h,
-                  //   color: Colors.white.withOpacity(.6),
-                  // ),
+                      // CommonContainer(
+                      //   height: 40.h,
+                      //   color: Colors.white.withOpacity(.6),
+                      // ),
 
-                  SizedBox(height: 25.h),
-                  CommonContainer(
-                    height: 150.h,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 10,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: Assets.svg.phone.svg(height: 30, width: 30),
+                      SizedBox(height: 25.h),
+                      CommonContainer(
+                        height: 150.h,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 20,
+                            horizontal: 10,
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: 1,
-                            color: seocondColor,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // Text(
-                              //   'SUPPORT SERVICE',
-                              //   textAlign: TextAlign.center,
-                              //   style: textStyleWithSecondSemiBold.copyWith(
-                              //     fontSize: 12.sp,
-                              //     fontFamily: 'Oswald',
-                              //     height: 1,
-                              //     color: const Color(0xff1AA9A0),
-                              //   ),
-                              // ),
-                              Text(
-                                ' ${context.l10n.contactUs}',
-                                textAlign: TextAlign.center,
-                                style: textStyleWithPrimarySemiBold.copyWith(
-                                  fontSize: 20.sp,
-                                  fontFamily: 'Oswald',
-                                  height: 1,
-                                ),
+                              Expanded(
+                                child:
+                                    Assets.svg.phone.svg(height: 30, width: 30),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: 1,
+                                color: seocondColor,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Text(
+                                  //   'SUPPORT SERVICE',
+                                  //   textAlign: TextAlign.center,
+                                  //   style: textStyleWithSecondSemiBold.copyWith(
+                                  //     fontSize: 12.sp,
+                                  //     fontFamily: 'Oswald',
+                                  //     height: 1,
+                                  //     color: const Color(0xff1AA9A0),
+                                  //   ),
+                                  // ),
+                                  Text(
+                                    ' ${context.l10n.contactUs}',
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        textStyleWithPrimarySemiBold.copyWith(
+                                      fontSize: 20.sp,
+                                      fontFamily: 'Oswald',
+                                      height: 1,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40.h,
-                  ),
+                      SizedBox(
+                        height: 40.h,
+                      ),
 
-                  SizedBox(
-                    height: 350,
-                    child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 20.w,
-                        childAspectRatio: 141 / 124,
-                      ),
-                      itemCount:
-                          contactMethods(state.comapnySettingsModel).length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () => setState(() {
-                            current = index;
-                            print(
-                              contactMethods(
-                                state.comapnySettingsModel,
-                              )[index]
-                                  .url,
-                            );
-                            if (contactMethods(
-                                  state.comapnySettingsModel,
-                                )[index]
-                                    .func !=
-                                null) {
-                              contactMethods(
-                                state.comapnySettingsModel,
-                              )[index]
-                                  .func!(
-                                context,
-                                state.comapnySettingsModel.phones,
-                              );
-                            } else {
-                              launchUrl(
-                                Uri.parse(
+                      SizedBox(
+                        height: 350,
+                        child: GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20.w,
+                            childAspectRatio: 141 / 124,
+                          ),
+                          itemCount:
+                              contactMethods(state.comapnySettingsModel).length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () => setState(() {
+                                current = index;
+                                print(
                                   contactMethods(
                                     state.comapnySettingsModel,
                                   )[index]
                                       .url,
-                                ),
-                              );
-                            }
-                          }),
-                          child: CommonContainer(
-                            color:
-                                current == index ? primaryColor : Colors.white,
-                            br: 23,
-                            height: 92.h,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: SvgPicture.asset(
-                                    contactMethods(
+                                );
+                                if (contactMethods(
                                       state.comapnySettingsModel,
                                     )[index]
-                                        .icon,
-                                    color:
-                                        current == index ? Colors.white : null,
-                                  ),
+                                        .func !=
+                                    null) {
+                                  contactMethods(
+                                    state.comapnySettingsModel,
+                                  )[index]
+                                      .func!(
+                                    context,
+                                    state.comapnySettingsModel.phones,
+                                  );
+                                } else {
+                                  launchUrl(
+                                    Uri.parse(
+                                      contactMethods(
+                                        state.comapnySettingsModel,
+                                      )[index]
+                                          .url,
+                                    ),
+                                  );
+                                }
+                              }),
+                              child: CommonContainer(
+                                color: current == index
+                                    ? primaryColor
+                                    : Colors.white,
+                                br: 23,
+                                height: 92.h,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: SvgPicture.asset(
+                                        contactMethods(
+                                          state.comapnySettingsModel,
+                                        )[index]
+                                            .icon,
+                                        color: current == index
+                                            ? Colors.white
+                                            : null,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Text(
-                    context.l10n.addCompliant,
-                    style: textStyleWithPrimaryBold,
-                  ), //
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const AddCompliant(),
-                  SizedBox(
-                    height: 40.h,
-                  ),
-                ],
-              );
-            }
-            if (state is CallingFailed) {
-              return Center(
-                child: Text(state.error.errorMessege),
-              );
-            }
-            if (state is CallingLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return const Center();
-          },
-        ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Text(
+                        context.l10n.addCompliant,
+                        style: textStyleWithPrimaryBold,
+                      ), //
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const AddCompliant(),
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                    ],
+                  );
+                }
+                if (state is CallingFailed) {
+                  return Center(
+                    child: Text(state.error.errorMessege),
+                  );
+                }
+                if (state is CallingLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return const Center();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -25,9 +25,9 @@ class SettingTap extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: CommonContainer(
-        br: 20,
-        height: 130.h,
-        width: 330,
+        br: 20.h,
+        height: 120.h,
+        width: 390.h,
         color: Colors.white,
         child: Column(
           children: [
@@ -39,8 +39,8 @@ class SettingTap extends StatelessWidget {
                   topRight: Radius.circular(20),
                 ),
               ),
-              height: 22,
-              width: 330,
+              height: 22.h,
+              width: 390.h,
               child: Center(
                 child: iconTitle != null
                     ? Text(
@@ -49,14 +49,14 @@ class SettingTap extends StatelessWidget {
                         style: textStyleWithPrimaryBold.copyWith(
                           color: Colors.white,
                           height: 1,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       )
                     : const SizedBox(),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.sp),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -25,6 +25,7 @@ import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
 import 'package:home_cure/features/home/presentation/blocs/our_doctors_cubit/our_doctors_cubit.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/appointement_attach_widget.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/appointment_action_dialouge.dart';
 import 'package:home_cure/features/notifications/presentation/widgets/map_widget.dart';
@@ -278,6 +279,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          const MyBackButton(),
+
                           const SizedBox(
                             height: 60,
                           ),
@@ -290,7 +293,10 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                             ),
                             child: Center(
                               child: Text(
-                                ancestors.first.title,
+                                App.isAr(context)
+                                    ? ancestors.first.arTitle ??
+                                        ancestors.first.title
+                                    : ancestors.first.title,
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.w400,
@@ -571,13 +577,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                             final timeSlot =
                                                 _appointment.timeslot;
                                             return Text(
-                                              timeSlot.startSting.replaceAll(
-                                                'AM',
-                                                context.l10n.morning,
-                                              )..replaceAll(
-                                                  'PM',
-                                                  context.l10n.evening,
-                                                ), //   '0
+                                              timeSlot.startSting
+                                                  .replaceAll(
+                                                    'AM',
+                                                    context.l10n.morning,
+                                                  )
+                                                  .replaceAll(
+                                                    'PM',
+                                                    context.l10n.evening,
+                                                  ), //   '0
                                               style: textStyleWithSecondBold(),
                                             );
                                           }
@@ -610,13 +618,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                             final timeSlot =
                                                 _appointment.timeslot;
                                             return Text(
-                                              timeSlot.endSting.replaceAll(
-                                                'AM',
-                                                context.l10n.morning,
-                                              )..replaceAll(
-                                                  'PM',
-                                                  context.l10n.evening,
-                                                ), //   '0
+                                              timeSlot.endSting
+                                                  .replaceAll(
+                                                    'AM',
+                                                    context.l10n.morning,
+                                                  )
+                                                  .replaceAll(
+                                                    'PM',
+                                                    context.l10n.evening,
+                                                  ), //   '0
                                               style: textStyleWithSecondBold(),
                                             );
                                           }

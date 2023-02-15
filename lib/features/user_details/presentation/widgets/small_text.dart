@@ -11,8 +11,10 @@ class SmallTextFiel extends StatelessWidget {
     this.controller,
     this.validator,
     this.isPhoneNumber = false,
+    this.scrollPadding=const EdgeInsets.all(20),
     this.onChanged,
   });
+  final EdgeInsets scrollPadding;
   final Color? color;
   final bool? enabled;
   final TextInputType? keyboardType;
@@ -25,11 +27,12 @@ class SmallTextFiel extends StatelessWidget {
         onChanged: onChanged,
         validator: validator,
         enabled: enabled,
+        scrollPadding: scrollPadding,
         keyboardType: keyboardType,
         controller: controller,
         decoration: InputDecoration(
           prefixText: isPhoneNumber == true ? '+2' : null,
-          prefixStyle: Theme.of(context).textTheme.subtitle1,
+          prefixStyle: Theme.of(context).textTheme.titleMedium,
           contentPadding: const EdgeInsets.all(5),
           fillColor: color ?? const Color(0xff1AA9A0).withOpacity(.1),
           filled: true,

@@ -35,6 +35,7 @@ class DoctorProfile extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(40),
         child: Column(
+          
           children: [
             // CommonHeader(
             //   title: '${App.isAr(context) ? 'د.' : 'Dr'}. ${user.name}',

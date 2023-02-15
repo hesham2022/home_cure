@@ -82,6 +82,9 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                     height: 40.h,
                     width: 90.w,
                     child: SmallTextFiel(
+                      scrollPadding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 200,
+                      ),
                       onChanged: widget.onChanged,
                       keyboardType: TextInputType.number,
                       controller: widget.heightController,
@@ -102,6 +105,9 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                     height: 40.h,
                     width: 90.w,
                     child: SmallTextFiel(
+                      scrollPadding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 200,
+                      ),
                       onChanged: widget.onChanged,
                       keyboardType: TextInputType.number,
                       controller: widget.weightController,
@@ -123,7 +129,7 @@ class _HeightWeightWidgetState extends State<HeightWeightWidget> {
                     width: 90.w,
                     child: DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        prefixStyle: Theme.of(context).textTheme.subtitle1,
+                        prefixStyle: Theme.of(context).textTheme.titleMedium,
                         contentPadding: const EdgeInsets.all(5),
                         fillColor: const Color(0xff1AA9A0).withOpacity(.1),
                         filled: true,

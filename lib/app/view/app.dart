@@ -242,7 +242,7 @@ class AppState extends State<App> {
                   // ),
                   MaterialApp.router(
                 scaffoldMessengerKey: scaffoldMessengerKey, // add this
-debugShowCheckedModeBanner: false,
+                debugShowCheckedModeBanner: false,
                 locale: Locale(_locale),
                 theme: ThemeData(
                   fontFamily: _locale == 'en' ? 'Segoe UI' : 'Cairo',
@@ -252,6 +252,7 @@ debugShowCheckedModeBanner: false,
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate, // Here !
                 ],
                 supportedLocales: AppLocalizations.supportedLocales,
                 routerDelegate: _appRouter.delegate(),

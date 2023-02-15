@@ -137,7 +137,7 @@ class _AppointmentInfoWidgetState extends State<AppointmentInfoWidget> {
               ),
               Expanded(
                 child: Container(
-                  height: 100.h,
+                  height: 110.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),

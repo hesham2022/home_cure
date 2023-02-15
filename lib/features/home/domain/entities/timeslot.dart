@@ -34,7 +34,6 @@ class TimeSlot extends Equatable {
   final String startSting;
   final String endSting;
   final String id;
-
   Map<String, dynamic> toJson() => <String, dynamic>{
         'startMinute': startMinute,
         'endMinute': endMinute,

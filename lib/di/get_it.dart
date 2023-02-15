@@ -63,6 +63,7 @@ Future<void> init() async {
   getIt
     // Utils
     ..registerLazySingleton<ApiClient>(ApiClient.new)
+    
     // Data Sources
     ..registerLazySingleton<ITokenStorage>(TokenStorage.new)
     ..registerLazySingleton<IAuthRemotDataSource>(

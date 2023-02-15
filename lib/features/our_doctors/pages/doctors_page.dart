@@ -10,6 +10,7 @@ import 'package:home_cure/core/widgets/common_header.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/presentation/blocs/our_doctors_cubit/our_doctors_cubit.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/l10n/l10n.dart';
 
 class DoctorsPage extends StatefulWidget {
@@ -70,6 +71,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
+                        const MyBackButton(),
                         SizedBox(
                           height: 50.h,
                         ),

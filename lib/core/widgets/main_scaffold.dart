@@ -181,8 +181,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                                 }
                               }),
                               child: currentIndex == index
-                                  ? 
-                                  Column(
+                                  ? Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [

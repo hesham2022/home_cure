@@ -344,7 +344,7 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
       name: 'VaricationCodePageRouter',
       page: VaricationCodePage,
     ),
-     AutoRoute<void>(
+    AutoRoute<void>(
       path: 'varication_code_firebase_page',
       name: 'VaricationCodeFirebasePageRouter',
       page: VaricationCodeFirebasePage,
@@ -489,3 +489,10 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
 class $AppRouter {}
 
 /// if name == 'Hesjam' ; print 'hello'
+class EmptyRouterPage extends AutoRouter {
+  const EmptyRouterPage({super.key});
+}
+
+class EmptyRouterScreen extends AutoRouter {
+  const EmptyRouterScreen({super.key});
+}

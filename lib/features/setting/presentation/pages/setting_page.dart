@@ -236,10 +236,13 @@ class _SettingPageState extends State<SettingPage> {
                         // SizedBox(
                         //   height: 30.h,
                         // ),
+                        // const Text('+20106606289'),
                         SettingTap(
                           iconTitle: context.l10n.phone,
                           icon: Assets.svg.phone.svg(color: Colors.white),
-                          title: user.phoneNumber,
+                          title: App.isAr(context)
+                              ? '${user.phoneNumber.replaceAll('+', '')}+'
+                              : user.phoneNumber,
                           onTap: () {
                             context.router.push(
                               const ChangePhoneNumberFirebasePageRoute(),

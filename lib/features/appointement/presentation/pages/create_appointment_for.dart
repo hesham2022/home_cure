@@ -16,6 +16,7 @@ import 'package:home_cure/features/appointement/domain/entities/create_appointme
 import 'package:home_cure/features/appointement/presentation/blocs/appointment_params_cubit.dart/appointment_params_cubit.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -43,6 +44,7 @@ class _CreateAppointementFourthPageState
     return SingleChildScrollView(
       child: Column(
         children: [
+          const MyBackButton(),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state is HomeServicesLoaded) {

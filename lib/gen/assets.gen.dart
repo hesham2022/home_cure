@@ -539,7 +539,9 @@ class SvgGenImage {
     SvgTheme? theme,
   }) {
     return SvgPicture.asset(
+      
       _assetName,
+      theme: theme??SvgTheme(),
       key: key,
       matchTextDirection: matchTextDirection,
       bundle: bundle,
@@ -556,7 +558,7 @@ class SvgGenImage {
       excludeFromSemantics: excludeFromSemantics,
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
-      theme: theme,
+      // theme: theme,
     );
   }
 

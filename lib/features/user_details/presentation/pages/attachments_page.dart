@@ -14,6 +14,7 @@ import 'package:home_cure/features/authentication/data/models/user_model.dart';
 import 'package:home_cure/features/authentication/domain/entities/upload_attachment_params.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:intl/intl.dart';
 
@@ -84,200 +85,210 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
                 EasyLoading.showError(state.error.errorMessege);
               }
             },
-            child: Padding(
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 50.h,
-                  ),
-                  CommonHeader(title: context.l10n.attachments),
-                  // if (widget.attachments == null)
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: [
-                  //     IconButton(
-                  //       onPressed: () async {
-                  //         final file = await FilePicker.platform.pickFiles();
-                  //         if (file != null) {
-                  //           await context.read<UserCubit>().uploadUserAttatchmentFunc(
-                  //                 UploadAttachmentParams(
-                  //                   attachment: file.files.first.path!,
-                  //                   name: file.files.first.name,
-                  //                 ),
-                  //               );
-                  //         }
-                  //       },
-                  //       icon: Icon(
-                  //         Icons.upload,
-                  //         color: primaryColor,
-                  //         size: 40.sp,
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
-                  if (attachments.isEmpty)
-                    Center(child: Text(context.l10n.noData))
-                  else
-                    Column(
-                      children: [
-                        ...attachments.map(
-                          (e) {
-                            final extension =
-                                e.url.split('/').last.split('.').last;
-                            return Column(
-                              children: [
-                                ListTile(
-                                  leading: IconButton(
-                                    onPressed: () async {
-                                      await showDialog<void>(
-                                        useRootNavigator: false,
-                                        context: context,
-                                        builder: (_) => Dialog(
-                                          // backgroundColor: Colors.white.withOpacity(.8),
-                                          insetPadding:
-                                              const EdgeInsets.all(10),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                          child: CommonContainer(
-                                            gradient: LinearGradient(
-                                              begin:
-                                                  FractionalOffset.bottomRight,
-                                              end: FractionalOffset.topLeft,
-                                              colors: [
-                                                const Color(0xffF8E5E8)
-                                                    .withOpacity(.8),
-                                                const Color(0xffE6DAF5)
-                                                    .withOpacity(.8),
-                                                const Color(0xffE4F0FC)
-                                                    .withOpacity(.8),
-                                                const Color(0xffE8EEF2)
-                                                    .withOpacity(.8),
-                                              ],
-                                            ),
-                                            // height: (widget.appointment.isOnPeocessing && widget.appointment.payed)
-                                            height: 130,
-                                            // width: 300,
+            child: Column(
+              children: [
+                const MyBackButton(),
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50.h,
+                      ),
+                      CommonHeader(title: context.l10n.attachments),
+                      // if (widget.attachments == null)
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      //     IconButton(
+                      //       onPressed: () async {
+                      //         final file = await FilePicker.platform.pickFiles();
+                      //         if (file != null) {
+                      //           await context.read<UserCubit>().uploadUserAttatchmentFunc(
+                      //                 UploadAttachmentParams(
+                      //                   attachment: file.files.first.path!,
+                      //                   name: file.files.first.name,
+                      //                 ),
+                      //               );
+                      //         }
+                      //       },
+                      //       icon: Icon(
+                      //         Icons.upload,
+                      //         color: primaryColor,
+                      //         size: 40.sp,
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
+                      if (attachments.isEmpty)
+                        Center(child: Text(context.l10n.noData))
+                      else
+                        Column(
+                          children: [
+                            ...attachments.map(
+                              (e) {
+                                final extension =
+                                    e.url.split('/').last.split('.').last;
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      leading: IconButton(
+                                        onPressed: () async {
+                                          await showDialog<void>(
+                                            useRootNavigator: false,
+                                            context: context,
+                                            builder: (_) => Dialog(
+                                              // backgroundColor: Colors.white.withOpacity(.8),
+                                              insetPadding:
+                                                  const EdgeInsets.all(10),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              child: CommonContainer(
+                                                gradient: LinearGradient(
+                                                  begin: FractionalOffset
+                                                      .bottomRight,
+                                                  end: FractionalOffset.topLeft,
+                                                  colors: [
+                                                    const Color(0xffF8E5E8)
+                                                        .withOpacity(.8),
+                                                    const Color(0xffE6DAF5)
+                                                        .withOpacity(.8),
+                                                    const Color(0xffE4F0FC)
+                                                        .withOpacity(.8),
+                                                    const Color(0xffE8EEF2)
+                                                        .withOpacity(.8),
+                                                  ],
+                                                ),
+                                                // height: (widget.appointment.isOnPeocessing && widget.appointment.payed)
+                                                height: 130,
+                                                // width: 300,
 
-                                            child: Form(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(20),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      context.l10n.areYouSure,
-                                                      style:
-                                                          textStyleWithPrimaryBold,
-                                                    ),
-                                                    Row(
+                                                child: Form(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .center,
+                                                              .spaceBetween,
                                                       children: [
-                                                        Button1(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
-                                                          },
-                                                          title: context
-                                                              .l10n.cancel,
-                                                          size: const Size(
-                                                            140,
-                                                            5,
-                                                          ),
+                                                        Text(
+                                                          context
+                                                              .l10n.areYouSure,
+                                                          style:
+                                                              textStyleWithPrimaryBold,
                                                         ),
-                                                        const SizedBox(
-                                                          width: 40,
-                                                        ),
-                                                        Button1(
-                                                          onPressed: () async {
-                                                            await context
-                                                                .read<
-                                                                    UserCubit>()
-                                                                .deleteUserAttatchmentFunc(
-                                                                  e.id,
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Button1(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                  context,
                                                                 );
-                                                            Future.delayed(
-                                                                Duration.zero,
-                                                                () {
-                                                              Navigator.pop(
-                                                                context,
-                                                              );
-                                                            });
-                                                          },
-                                                          title:
-                                                              context.l10n.yes,
-                                                          size: const Size(
-                                                            140,
-                                                            5,
-                                                          ),
+                                                              },
+                                                              title: context
+                                                                  .l10n.cancel,
+                                                              size: const Size(
+                                                                140,
+                                                                5,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 40,
+                                                            ),
+                                                            Button1(
+                                                              onPressed:
+                                                                  () async {
+                                                                await context
+                                                                    .read<
+                                                                        UserCubit>()
+                                                                    .deleteUserAttatchmentFunc(
+                                                                      e.id,
+                                                                    );
+                                                                Future.delayed(
+                                                                    Duration
+                                                                        .zero,
+                                                                    () {
+                                                                  Navigator.pop(
+                                                                    context,
+                                                                  );
+                                                                });
+                                                              },
+                                                              title: context
+                                                                  .l10n.yes,
+                                                              size: const Size(
+                                                                140,
+                                                                5,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
+                                          );
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                      onTap: () async {
+                                        if (extension == 'png' ||
+                                            extension == 'jpeg' ||
+                                            extension == 'jpg') {
+                                          await context.router.push(
+                                            PhotoViewPageeRouter(
+                                              path:
+                                                  '$domain/img/attachments/${e.url}',
+                                            ),
+                                          );
+                                        }
+                                        if (extension == 'pdf') {
+                                          await context.router.push(
+                                            PdfViewerPageRouter(
+                                              paht:
+                                                  '$domain/img/attachments/${e.url}',
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      title: Text(
+                                        e.url.split('/').last,
+                                        style: textStyleWithPrimaryBold,
+                                      ),
+                                      subtitle: Text(
+                                        DateFormat('yyyy-MM-dd').format(e.date),
+                                        style: textStyleWithSecondSemiBold
+                                            .copyWith(
+                                          fontSize: 14,
                                         ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.delete),
-                                  ),
-                                  onTap: () async {
-                                    if (extension == 'png' ||
-                                        extension == 'jpeg' ||
-                                        extension == 'jpg') {
-                                      await context.router.push(
-                                        PhotoViewPageeRouter(
-                                          path:
-                                              '$domain/img/attachments/${e.url}',
-                                        ),
-                                      );
-                                    }
-                                    if (extension == 'pdf') {
-                                      await context.router.push(
-                                        PdfViewerPageRouter(
-                                          paht:
-                                              '$domain/img/attachments/${e.url}',
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  title: Text(
-                                    e.url.split('/').last,
-                                    style: textStyleWithPrimaryBold,
-                                  ),
-                                  subtitle: Text(
-                                    DateFormat('yyyy-MM-dd').format(e.date),
-                                    style: textStyleWithSecondSemiBold.copyWith(
-                                      fontSize: 14,
+                                      ),
+                                      trailing: getIcon(
+                                        e.url.split('/').last.split('.').last,
+                                        e.url,
+                                      ),
                                     ),
-                                  ),
-                                  trailing: getIcon(
-                                    e.url.split('/').last.split('.').last,
-                                    e.url,
-                                  ),
-                                ),
-                                const Divider(
-                                  height: 2,
-                                  thickness: 2,
-                                )
-                              ],
-                            );
-                          },
-                        ).toList()
-                      ],
-                    ),
-                ],
-              ),
+                                    const Divider(
+                                      height: 2,
+                                      thickness: 2,
+                                    )
+                                  ],
+                                );
+                              },
+                            ).toList()
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),

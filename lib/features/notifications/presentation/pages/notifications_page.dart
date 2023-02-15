@@ -84,7 +84,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   if (state is MyAppointmentsCubitStateLoaded) {
                     final appointments = state.appointments.reversed.toList();
                     return appointments.isEmpty
-                        ? Text(context.l10n.emptyDate)
+                        ? Text(context.l10n.emptyData)
                         : ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,

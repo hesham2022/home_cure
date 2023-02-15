@@ -11,6 +11,7 @@ import 'package:home_cure/features/appointement/presentation/pages/create_appoin
 import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/domain/entities/timeslot.dart';
 import 'package:home_cure/features/home/presentation/blocs/timeslot_cubit/timeslot_cubit.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -97,6 +98,7 @@ class _CreateAppointementThirdPageState
             }
             return Column(
               children: [
+                const MyBackButton(),
                 Padding(
                   padding: const EdgeInsets.only(left: 40, right: 40, top: 40),
                   child: Column(

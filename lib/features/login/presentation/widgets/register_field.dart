@@ -103,8 +103,17 @@ class _RegisterFieldState extends State<RegisterField> {
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-          prefixText: widget.isPhoneNumber == true ? '+2' : null,
-          prefixStyle: Theme.of(context).textTheme.subtitle1,
+          prefixText: App.isAr(context)
+              ? null
+              : widget.isPhoneNumber == true
+                  ? '+2'
+                  : null,
+          suffixText: !App.isAr(context)
+              ? null
+              : widget.isPhoneNumber == true
+                  ? '+2'
+                  : null,
+          prefixStyle: Theme.of(context).textTheme.titleMedium,
           errorText: widget.errorText,
           suffixIcon: widget.isPassword ? visibilityIcon() : null,
           contentPadding: const EdgeInsets.only(left: 16, right: 16),

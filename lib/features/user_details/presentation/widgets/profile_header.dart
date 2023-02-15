@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/app.dart';
-import 'package:home_cure/app/view/git_loading.dart';
 import 'package:home_cure/core/api_config/api_constants.dart';
 import 'package:home_cure/features/authentication/domain/entities/entities.dart';
 import 'package:home_cure/features/authentication/domain/entities/upload_user_photo_params.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit.dart';
 import 'package:home_cure/features/authentication/presentation/usr_bloc/user_cubit_state.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 
 class ProfileHeader extends StatefulWidget {
@@ -46,7 +46,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         listener: (context, state) {
           if (state is UserCubitStateLoaded) {
             EasyLoading.dismiss();
-           // Navigator.pop(context);
+            // Navigator.pop(context);
             setState(() {
               user = state.user;
             });
@@ -63,6 +63,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const MyBackButton(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -126,7 +127,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ],

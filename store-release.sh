@@ -1,0 +1,1 @@
+flutter build appbundle --flavor production --target lib/main_production.dart

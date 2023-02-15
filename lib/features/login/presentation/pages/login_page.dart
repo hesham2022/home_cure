@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
@@ -43,63 +43,63 @@ class _LoginPageState extends State<LoginPage> {
     EasyLoading.showError('Login Failed');
   }
 
-  Future<void> _handleSignIn(BuildContext context) async {
-    isSocialLoign = true;
-    try {
-      final _googleSignIn = GoogleSignIn();
-      await _googleSignIn.signOut();
-      final user = await _googleSignIn.signIn();
+  // Future<void> _handleSignIn(BuildContext context) async {
+  //   isSocialLoign = true;
+  //   try {
+  //     final _googleSignIn = GoogleSignIn();
+  //     await _googleSignIn.signOut();
+  //     final user = await _googleSignIn.signIn();
 
-      emilController.text = user!.email;
-      passwordController.text = user.id + user.email;
-      await Future.delayed(Duration.zero, () {
-        context.read<LoginBloc>().add(
-              LoginEmailOrPhoneChanged(user.email),
-            );
-        context.read<LoginBloc>().add(
-              LoginPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-        context.read<LoginBloc>().add(
-              const LoginSubmitted(),
-            );
-      });
-    } catch (e) {
-      resret(context);
-    }
-  }
+  //     emilController.text = user!.email;
+  //     passwordController.text = user.id + user.email;
+  //     await Future.delayed(Duration.zero, () {
+  //       context.read<LoginBloc>().add(
+  //             LoginEmailOrPhoneChanged(user.email),
+  //           );
+  //       context.read<LoginBloc>().add(
+  //             LoginPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //       context.read<LoginBloc>().add(
+  //             const LoginSubmitted(),
+  //           );
+  //     });
+  //   } catch (e) {
+  //     resret(context);
+  //   }
+  // }
 
-  Future<void> _handlleFb(BuildContext context) async {
-    isSocialLoign = true;
+  // Future<void> _handlleFb(BuildContext context) async {
+  //   isSocialLoign = true;
 
-    try {
-      final fb = FacebookAuth.instance;
-      await fb.logOut();
-      await fb.login();
+  //   try {
+  //     final fb = FacebookAuth.instance;
+  //     await fb.logOut();
+  //     await fb.login();
 
-      final userData = await FacebookAuth.instance.getUserData();
-      final user = FbResponse.fromJson(userData);
+  //     final userData = await FacebookAuth.instance.getUserData();
+  //     final user = FbResponse.fromJson(userData);
 
-      emilController.text = user.email;
-      passwordController.text = user.id + user.email;
-      await Future.delayed(Duration.zero, () {
-        context.read<LoginBloc>().add(
-              LoginEmailOrPhoneChanged(user.email),
-            );
-        context.read<LoginBloc>().add(
-              LoginPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-        context.read<LoginBloc>().add(
-              const LoginSubmitted(),
-            );
-      });
-    } catch (error) {
-      resret(context);
-    }
-  }
+  //     emilController.text = user.email;
+  //     passwordController.text = user.id + user.email;
+  //     await Future.delayed(Duration.zero, () {
+  //       context.read<LoginBloc>().add(
+  //             LoginEmailOrPhoneChanged(user.email),
+  //           );
+  //       context.read<LoginBloc>().add(
+  //             LoginPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //       context.read<LoginBloc>().add(
+  //             const LoginSubmitted(),
+  //           );
+  //     });
+  //   } catch (error) {
+  //     resret(context);
+  //   }
+  // }
 
   @override
   void initState() {

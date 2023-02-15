@@ -18,6 +18,7 @@ import 'package:home_cure/features/appointement/presentation/widgets/number_of_s
 import 'package:home_cure/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:home_cure/features/home/domain/entities/service.dart';
 import 'package:home_cure/features/home/presentation/blocs/home_bloc/home_bloc.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/l10n/l10n.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -53,6 +54,7 @@ class _CreateAppointementPageState extends State<CreateAppointementPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const MyBackButton(),
         // CommonHeader(title: widget.service.title),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

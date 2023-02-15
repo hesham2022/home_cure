@@ -3,10 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
@@ -49,80 +49,80 @@ class _RegisterPageState extends State<RegisterPage> {
   final rePasswordController = TextEditingController();
   bool enableFields = true;
 
-  Future<void> _handleSignIn(BuildContext context) async {
-    try {
-      final _googleSignIn = GoogleSignIn();
-      await _googleSignIn.signOut();
-      final user = await _googleSignIn.signIn();
-      nameController.text = user!.displayName!;
+  // Future<void> _handleSignIn(BuildContext context) async {
+  //   try {
+  //     final _googleSignIn = GoogleSignIn();
+  //     await _googleSignIn.signOut();
+  //     final user = await _googleSignIn.signIn();
+  //     nameController.text = user!.displayName!;
 
-      emailController.text = user.email;
-      passwordController.text = user.id + user.email;
-      rePasswordController.text = user.id + user.email;
-      await Future.delayed(Duration.zero, () {
-        context.read<SingUpBloc>().add(
-              LoginNameChanged(user.displayName!),
-            );
-        context.read<SingUpBloc>().add(
-              LoginUsernameChanged(user.email),
-            );
-        context.read<SingUpBloc>().add(
-              LoginPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-        context.read<SingUpBloc>().add(
-              LoginConfirmPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-      });
-      setState(() {
-        enableFields = false;
-      });
-    } catch (error) {
-      await EasyLoading.showError('Something Go Wrong');
-    }
-  }
+  //     emailController.text = user.email;
+  //     passwordController.text = user.id + user.email;
+  //     rePasswordController.text = user.id + user.email;
+  //     await Future.delayed(Duration.zero, () {
+  //       context.read<SingUpBloc>().add(
+  //             LoginNameChanged(user.displayName!),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginUsernameChanged(user.email),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginConfirmPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //     });
+  //     setState(() {
+  //       enableFields = false;
+  //     });
+  //   } catch (error) {
+  //     await EasyLoading.showError('Something Go Wrong');
+  //   }
+  // }
 
-  Future<void> _handlleFb(BuildContext context) async {
-    try {
-      final fb = FacebookAuth.instance;
-      await fb.logOut();
-      await fb.login();
+  // Future<void> _handlleFb(BuildContext context) async {
+  //   try {
+  //     final fb = FacebookAuth.instance;
+  //     await fb.logOut();
+  //     await fb.login();
 
-      final userData = await FacebookAuth.instance.getUserData();
-      final user = FbResponse.fromJson(userData);
-      nameController.text = user.name;
+  //     final userData = await FacebookAuth.instance.getUserData();
+  //     final user = FbResponse.fromJson(userData);
+  //     nameController.text = user.name;
 
-      emailController.text = user.email;
-      passwordController.text = user.id + user.email;
-      rePasswordController.text = user.id + user.email;
-      await Future.delayed(Duration.zero, () {
-        context.read<SingUpBloc>().add(
-              LoginNameChanged(user.name),
-            );
-        context.read<SingUpBloc>().add(
-              LoginUsernameChanged(user.email),
-            );
-        context.read<SingUpBloc>().add(
-              LoginPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-        context.read<SingUpBloc>().add(
-              LoginConfirmPasswordChanged(
-                user.id + user.email,
-              ),
-            );
-      });
-      setState(() {
-        enableFields = false;
-      });
-    } catch (error) {
-      await EasyLoading.showError('Something Go Wrong');
-    }
-  }
+  //     emailController.text = user.email;
+  //     passwordController.text = user.id + user.email;
+  //     rePasswordController.text = user.id + user.email;
+  //     await Future.delayed(Duration.zero, () {
+  //       context.read<SingUpBloc>().add(
+  //             LoginNameChanged(user.name),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginUsernameChanged(user.email),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //       context.read<SingUpBloc>().add(
+  //             LoginConfirmPasswordChanged(
+  //               user.id + user.email,
+  //             ),
+  //           );
+  //     });
+  //     setState(() {
+  //       enableFields = false;
+  //     });
+  //   } catch (error) {
+  //     await EasyLoading.showError('Something Go Wrong');
+  //   }
+  // }
 
   void resret(BuildContext context) {
     setState(() {
