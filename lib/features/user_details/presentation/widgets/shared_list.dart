@@ -40,15 +40,21 @@ class _SharedListState extends State<SharedList> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const MyBackButton(),
           Padding(
             padding: const EdgeInsets.all(30),
             child: Column(
               children: [
-                SizedBox(
-                  height: 50.h,
+                // SizedBox(
+                //   height: 50.h,
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const MyBackButton(),
+                    CommonHeader(title: widget.title),
+                    Container()
+                  ],
                 ),
-                CommonHeader(title: widget.title),
                 SizedBox(
                   height: 30.h,
                 ),

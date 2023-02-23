@@ -5,7 +5,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import
+// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,6 +43,20 @@ class $AssetsFontsGen {
 
   /// File path: assets/fonts/Segoe UI.ttf
   String get segoeUI => 'assets/fonts/Segoe UI.ttf';
+
+  /// List of all assets
+  List<String> get values => [
+        cairoBlack,
+        cairoBold,
+        cairoExtraBold,
+        cairoExtraLight,
+        cairoLight,
+        cairoMedium,
+        cairoRegular,
+        cairoSemiBold,
+        oswaldMedium,
+        segoeUI
+      ];
 }
 
 class $AssetsImgGen {
@@ -220,11 +234,67 @@ class $AssetsImgGen {
   AssetGenImage get sacffoldimg =>
       const AssetGenImage('assets/img/sacffoldimg.png');
 
+  /// File path: assets/img/vf.png
+  AssetGenImage get vf => const AssetGenImage('assets/img/vf.png');
+
   /// File path: assets/img/visa.png
   AssetGenImage get visa => const AssetGenImage('assets/img/visa.png');
 
   /// File path: assets/img/woman.png
   AssetGenImage get woman => const AssetGenImage('assets/img/woman.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        allLogoVersions02Jpg,
+        allLogoVersions02Png,
+        allLogoVersions06,
+        bGImgs,
+        callCenterRemovebgPreview,
+        callCenter,
+        image1,
+        log,
+        logo,
+        logo2,
+        logoone,
+        maskGroup1,
+        maskGroup7,
+        allergyRemovebgPreview,
+        allergy,
+        attractiveFemaleTraineeNurseBlueBackground,
+        caregiverHoldingOldManSShoulder232148239034,
+        cart,
+        cart2,
+        cartAgainRemovebgPreview,
+        cartAgain,
+        closeUpResearcherWorkingWithMicroscope232148882102,
+        currency,
+        dna,
+        doctorMeasuringBloodPressureOlderPatient8557411302,
+        doctorOfferingMedicalTeleconsultation232149328978,
+        doctorOfferingMedicalTeleconsultation232149329008,
+        fileRemovebgPreview,
+        file,
+        gif,
+        girl,
+        image2,
+        lo,
+        logoPng,
+        logoPng2,
+        map,
+        money,
+        noteBook,
+        ourDoctors,
+        phone2,
+        physicianSurgeonSurgeryIconPngFavpngMVCp5prtMkKhW6FvSyJky1nWhRemovebgPreview,
+        physiotherapist,
+        portraitConfidentYoungMaleDoctor1713375165,
+        pregnantWomanGynecologistDoctorHospital319651155,
+        radiology,
+        sacffoldimg,
+        vf,
+        visa,
+        woman
+      ];
 }
 
 class $AssetsSvgGen {
@@ -441,6 +511,75 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/whatsapp.svg
   SvgGenImage get whatsapp => const SvgGenImage('assets/svg/whatsapp.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        brain,
+        coronaCare,
+        dermatology,
+        generalSurgery,
+        generalPractitioner,
+        intravenousTherapy,
+        nurseAid,
+        orthopedics,
+        pediatrician,
+        professionalNurse,
+        quickService,
+        addRegister,
+        cardiolgy,
+        cartSvg,
+        checkMark,
+        checkSvg,
+        consultant,
+        done,
+        ent,
+        eye,
+        facebook,
+        fees,
+        galleryRegister,
+        geriatrics,
+        gogle,
+        graiticMediciene,
+        handMoneyIcon,
+        heart,
+        heartOut,
+        home,
+        home2,
+        image,
+        insta,
+        lock2,
+        lock3,
+        lockIcon,
+        logo,
+        logo2,
+        logoSvg,
+        mail,
+        maternity,
+        moon,
+        noteSvg,
+        opthalomogy,
+        pediatrics,
+        personAvatar,
+        phone,
+        phone3,
+        phoneOut,
+        promo,
+        psycharity,
+        pulmonolgy,
+        registerLater,
+        reshotIconHealthVP6L9S3WXK,
+        ring,
+        ringOut,
+        setting,
+        settingOut,
+        spcialist,
+        sun,
+        twitter,
+        urology,
+        userPersonIcon,
+        web,
+        whatsapp
+      ];
 }
 
 class Assets {
@@ -509,6 +648,8 @@ class AssetGenImage {
     );
   }
 
+  ImageProvider provider() => AssetImage(_assetName);
+
   String get path => _assetName;
 
   String get keyName => _assetName;
@@ -530,18 +671,17 @@ class SvgGenImage {
     AlignmentGeometry alignment = Alignment.center,
     bool allowDrawingOutsideViewBox = false,
     WidgetBuilder? placeholderBuilder,
-    Color? color,
-    BlendMode colorBlendMode = BlendMode.srcIn,
     String? semanticsLabel,
     bool excludeFromSemantics = false,
-    Clip clipBehavior = Clip.hardEdge,
-    bool cacheColorFilter = false,
-    SvgTheme? theme,
+    SvgTheme theme = const SvgTheme(),
+    ColorFilter? colorFilter,
+    @deprecated Color? color,
+    @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
+    @deprecated Clip? clipBehavior,
+    @deprecated bool cacheColorFilter = false,
   }) {
     return SvgPicture.asset(
-      
       _assetName,
-      theme: theme??SvgTheme(),
       key: key,
       matchTextDirection: matchTextDirection,
       bundle: bundle,
@@ -552,15 +692,18 @@ class SvgGenImage {
       alignment: alignment,
       allowDrawingOutsideViewBox: allowDrawingOutsideViewBox,
       placeholderBuilder: placeholderBuilder,
-      color: color,
-      colorBlendMode: colorBlendMode,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
+      theme: theme,
+      colorFilter: colorFilter,
+      color: color,
+      colorBlendMode: colorBlendMode,
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
-      // theme: theme,
     );
   }
 
   String get path => _assetName;
+
+  String get keyName => _assetName;
 }

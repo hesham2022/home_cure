@@ -35,7 +35,6 @@ class AppointmentsParamsCubit extends Cubit<AppointmentsParamsState> {
   void addDiscount(
     int discount,
   ) {
-    print(discount);
     emit(state.copyWith(discount: discount));
   }
 

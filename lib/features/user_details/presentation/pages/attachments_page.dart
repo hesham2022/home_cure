@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/core/api_config/api_constants.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
+import 'package:home_cure/core/utils/pick_files_helper.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
@@ -33,6 +33,7 @@ class AttachmentModel {
 
 class _AttachmentsPageState extends State<AttachmentsPage> {
   late List<Attachment> attachments;
+  bool isUser = true;
   @override
   void initState() {
     if (widget.attachments == null) {
@@ -43,6 +44,10 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
     } else {
       attachments = widget.attachments!;
     }
+    setState(() {
+      isUser =
+          (context.read<UserCubit>().state as UserCubitStateLoaded).user.isUser;
+    });
     super.initState();
   }
 
@@ -87,39 +92,18 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
             },
             child: Column(
               children: [
-                const MyBackButton(),
                 Padding(
                   padding: const EdgeInsets.all(30),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 50.h,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const MyBackButton(),
+                          CommonHeader(title: context.l10n.attachments),
+                          Container(),
+                        ],
                       ),
-                      CommonHeader(title: context.l10n.attachments),
-                      // if (widget.attachments == null)
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.end,
-                      //   children: [
-                      //     IconButton(
-                      //       onPressed: () async {
-                      //         final file = await FilePicker.platform.pickFiles();
-                      //         if (file != null) {
-                      //           await context.read<UserCubit>().uploadUserAttatchmentFunc(
-                      //                 UploadAttachmentParams(
-                      //                   attachment: file.files.first.path!,
-                      //                   name: file.files.first.name,
-                      //                 ),
-                      //               );
-                      //         }
-                      //       },
-                      //       icon: Icon(
-                      //         Icons.upload,
-                      //         color: primaryColor,
-                      //         size: 40.sp,
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
                       if (attachments.isEmpty)
                         Center(child: Text(context.l10n.noData))
                       else
@@ -132,113 +116,130 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
                                 return Column(
                                   children: [
                                     ListTile(
-                                      leading: IconButton(
-                                        onPressed: () async {
-                                          await showDialog<void>(
-                                            useRootNavigator: false,
-                                            context: context,
-                                            builder: (_) => Dialog(
-                                              // backgroundColor: Colors.white.withOpacity(.8),
-                                              insetPadding:
-                                                  const EdgeInsets.all(10),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                              ),
-                                              child: CommonContainer(
-                                                gradient: LinearGradient(
-                                                  begin: FractionalOffset
-                                                      .bottomRight,
-                                                  end: FractionalOffset.topLeft,
-                                                  colors: [
-                                                    const Color(0xffF8E5E8)
-                                                        .withOpacity(.8),
-                                                    const Color(0xffE6DAF5)
-                                                        .withOpacity(.8),
-                                                    const Color(0xffE4F0FC)
-                                                        .withOpacity(.8),
-                                                    const Color(0xffE8EEF2)
-                                                        .withOpacity(.8),
-                                                  ],
-                                                ),
-                                                // height: (widget.appointment.isOnPeocessing && widget.appointment.payed)
-                                                height: 130,
-                                                // width: 300,
-
-                                                child: Form(
-                                                  child: Padding(
-                                                    padding:
+                                      leading: !isUser
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () async {
+                                                await showDialog<void>(
+                                                  useRootNavigator: false,
+                                                  context: context,
+                                                  builder: (_) => Dialog(
+                                                    insetPadding:
                                                         const EdgeInsets.all(
-                                                            20),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          context
-                                                              .l10n.areYouSure,
-                                                          style:
-                                                              textStyleWithPrimaryBold,
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Button1(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                  context,
-                                                                );
-                                                              },
-                                                              title: context
-                                                                  .l10n.cancel,
-                                                              size: const Size(
-                                                                140,
-                                                                5,
+                                                      10,
+                                                    ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                        30,
+                                                      ),
+                                                    ),
+                                                    child: CommonContainer(
+                                                      gradient: LinearGradient(
+                                                        begin: FractionalOffset
+                                                            .bottomRight,
+                                                        end: FractionalOffset
+                                                            .topLeft,
+                                                        colors: [
+                                                          const Color(
+                                                            0xffF8E5E8,
+                                                          ).withOpacity(.8),
+                                                          const Color(
+                                                            0xffE6DAF5,
+                                                          ).withOpacity(.8),
+                                                          const Color(
+                                                            0xffE4F0FC,
+                                                          ).withOpacity(.8),
+                                                          const Color(
+                                                            0xffE8EEF2,
+                                                          ).withOpacity(.8),
+                                                        ],
+                                                      ),
+                                                      height: 130,
+                                                      child: Form(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(
+                                                            20,
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                context.l10n
+                                                                    .areYouSure,
+                                                                style:
+                                                                    textStyleWithPrimaryBold,
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 40,
-                                                            ),
-                                                            Button1(
-                                                              onPressed:
-                                                                  () async {
-                                                                await context
-                                                                    .read<
-                                                                        UserCubit>()
-                                                                    .deleteUserAttatchmentFunc(
-                                                                      e.id,
-                                                                    );
-                                                                Future.delayed(
-                                                                    Duration
-                                                                        .zero,
-                                                                    () {
-                                                                  Navigator.pop(
-                                                                    context,
-                                                                  );
-                                                                });
-                                                              },
-                                                              title: context
-                                                                  .l10n.yes,
-                                                              size: const Size(
-                                                                140,
-                                                                5,
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Button1(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator
+                                                                          .pop(
+                                                                        context,
+                                                                      );
+                                                                    },
+                                                                    title: context
+                                                                        .l10n
+                                                                        .cancel,
+                                                                    size:
+                                                                        const Size(
+                                                                      140,
+                                                                      5,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 40,
+                                                                  ),
+                                                                  Button1(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      await context
+                                                                          .read<
+                                                                              UserCubit>()
+                                                                          .deleteUserAttatchmentFunc(
+                                                                            e.id,
+                                                                          );
+                                                                      Future.delayed(
+                                                                          Duration
+                                                                              .zero,
+                                                                          () {
+                                                                        Navigator
+                                                                            .pop(
+                                                                          context,
+                                                                        );
+                                                                      });
+                                                                    },
+                                                                    title: context
+                                                                        .l10n
+                                                                        .yes,
+                                                                    size:
+                                                                        const Size(
+                                                                      140,
+                                                                      5,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
+                                                );
+                                              },
+                                              icon: const Icon(Icons.delete),
                                             ),
-                                          );
-                                        },
-                                        icon: const Icon(Icons.delete),
-                                      ),
                                       onTap: () async {
                                         if (extension == 'png' ||
                                             extension == 'jpeg' ||
@@ -292,38 +293,20 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
             ),
           ),
         ),
-        if (App.isAr(context))
+        if (isUser && App.isAr(context))
           Positioned(
             bottom: 70.h,
             right: 50,
             child: Column(
               children: [
-                // FloatingActionButton(
-                //   onPressed: () async {
-                //     final file = await FilePicker.platform.pickFiles();
-                //     if (file != null) {
-                //       await context.read<UserCubit>().uploadUserAttatchmentFunc(
-                //             UploadAttachmentParams(
-                //               attachment: file.files.first.path!,
-                //               name: file.files.first.name,
-                //             ),
-                //           );
-                //     }
-                //   },
-                //   child: const Icon(Icons.add),
-                // ),
-                // Text(
-                //   'Add Attachment',
-                //   style: textStyleWithPrimaryBold,
-                // ),
                 Button1(
                   onPressed: () async {
-                    final file = await FilePicker.platform.pickFiles();
+                    final file = await Picker.pickGallaryImage();
                     if (file != null) {
                       await context.read<UserCubit>().uploadUserAttatchmentFunc(
                             UploadAttachmentParams(
-                              attachment: file.files.first.path!,
-                              name: file.files.first.name,
+                              attachment: file.path,
+                              name: file.name,
                             ),
                           );
                     }
@@ -345,40 +328,21 @@ class _AttachmentsPageState extends State<AttachmentsPage> {
               ],
             ),
           )
-        else
+        else if (isUser)
           Positioned(
             bottom: 70.h,
             left: 50,
             child: Column(
               children: [
-                // FloatingActionButton(
-                //   onPressed: () async {
-                //     final file = await FilePicker.platform.pickFiles();
-                //     if (file != null) {
-                //       await context.read<UserCubit>().uploadUserAttatchmentFunc(
-                //             UploadAttachmentParams(
-                //               attachment: file.files.first.path!,
-                //               name: file.files.first.name,
-                //             ),
-                //           );
-                //     }
-                //   },
-                //   child: const Icon(Icons.add),
-                // ),
-                // Text(
-                //   'Add Attachment',
-                //   style: textStyleWithPrimaryBold,
-                // ),
-
                 Button1(
                   title: '',
                   onPressed: () async {
-                    final file = await FilePicker.platform.pickFiles();
+                    final file = await Picker.pickGallaryImage();
                     if (file != null) {
                       await context.read<UserCubit>().uploadUserAttatchmentFunc(
                             UploadAttachmentParams(
-                              attachment: file.files.first.path!,
-                              name: file.files.first.name,
+                              attachment: file.path,
+                              name: file.name,
                             ),
                           );
                     }

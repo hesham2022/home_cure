@@ -128,6 +128,11 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
               path: 'create_appointement',
               page: CreateAppointementPage,
             ),
+            AutoRoute<void>(
+              path: 'photo_view_page',
+              name: 'PhotoViewPageeRouter',
+              page: PhotoViewPage,
+            ),
             CustomRoute<void>(
               barrierDismissible: true,
               transitionsBuilder: TransitionsBuilders.slideTop,

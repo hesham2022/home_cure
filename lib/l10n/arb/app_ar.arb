@@ -5,6 +5,7 @@
     "description": "Text shown in the AppBar of the Counter Page"
   },
   "home_doctor": "طبيب منزلي",
+  "vf": "فودافون كاش",
   "and_we_will_contact_you_soon": "وسوف نتصل بك قريبًا",
   "contact": "اتصل",
   "customaer_service": "خدمة العملاء",
@@ -15,7 +16,7 @@
   "amoking": "التدخين",
   "done": "تم",
   "transportaions": "قد تضاف تكلفه انتقال حسب المنطقه",
-  "daysNumber": "عدد الايم",
+  "daysNumber": "عدد الايام",
   "totla": "اجمالي",
   "cancel": "إلغاء",
   "main Complaint": "الشكوى الرئيسية",
@@ -212,8 +213,7 @@
   "phoneNumberSholdNotBeEmpty": "يجب ألا يكون رقم الهاتف فارغًا",
   "invalidPhoneNumber": "رقم الهاتف غير صحيح",
   "notIdentical": "ليست متطابقة",
-  "emptyData":"لا يوجد بيانات",
-
+  "emptyData": "لا يوجد بيانات",
   "homecureEmail": "لا يجب عليك استخدام اي ايميل الا  @homecure",
   "createAccount": "انشاء حساب",
   "phone": "الهاتف",

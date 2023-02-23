@@ -63,15 +63,20 @@ class _ChangePhoneNumberFirebasePageState
           child: SafeArea(
             child: Column(
               children: [
-                const MyBackButton(),
                 Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding: const EdgeInsets.only(top: 30, right: 40, left: 40),
                   child: Center(
                     child: Form(
                       autovalidateMode: AutovalidateMode.always,
                       key: _formKey,
                       child: Column(
                         children: [
+                          Row(
+                            children: const [
+                              MyBackButton(),
+                            ],
+                          ),
+
                           const SizedBox(
                             height: 50,
                           ),

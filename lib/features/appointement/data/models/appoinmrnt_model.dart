@@ -91,7 +91,7 @@ class AppointmentModel extends Appointment {
         date: map['date'] is int
             ? DateTime.fromMillisecondsSinceEpoch(map['date'] as int)
             : DateTime.parse(map['date'] as String),
-        timeslot: TimeSlot.fromJson(map['timeslot'] as Map<String, dynamic>),
+        timeslot: TimeSlot.fromJson(map['timeslot'] as Map<dynamic, dynamic>),
         user: map['user'] as String,
         service: map['service'] as String,
         paymentMethod: map['paymentMethod'] as String,
@@ -155,7 +155,7 @@ class AppointmentModel extends Appointment {
       'id': id,
       'reason': reason,
       'date': date.millisecondsSinceEpoch,
-      'timeslot': timeslot,
+      'timeslot': timeslot.toJson(),
       'user': user,
       'service': service,
       'paymentMethod': paymentMethod,

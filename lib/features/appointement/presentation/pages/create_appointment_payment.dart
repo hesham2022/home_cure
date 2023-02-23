@@ -36,6 +36,19 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
   Appointment? _appointment;
   String paymentMethod = '';
   @override
+  void initState() {
+    if (widget.service.priceDiscount != null &&
+        widget.service.priceDiscount != 0 &&
+        widget.service.hasRangOfDays() == true) {
+      context.read<AppointmentsParamsCubit>().addDiscount(
+            widget.service.priceDiscount! *
+                context.read<AppointmentsParamsCubit>().state.days!,
+          );
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: BlocListener<AppointmentsCubit, AppointmentsCubitState>(
@@ -56,7 +69,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
             context.router.push(
               WebViewPaymentRoute(
                 callbackPayment: (url) {
-                  if (url.contains('&success=true&')) {
+                  if (url.contains('success=true')) {
                     context
                         .read<AppointmentsCubit>()
                         .userPayFunc(state.appointment.id);
@@ -81,12 +94,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
             );
             if (context.read<TimeSlotCubit>().state
                 is TimeSlotCubitStateLoaded) {
-              final timeSlot = (context.read<TimeSlotCubit>().state
-                      as TimeSlotCubitStateLoaded)
-                  .timeSlots
-                  .firstWhere(
-                    (element) => element.id == state.appointment.timeslot,
-                  );
+              final timeSlot = state.appointment.timeslot;
 
               AwesomeNotifications().createNotification(
                 content: NotificationContent(
@@ -132,12 +140,7 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
             );
             if (context.read<TimeSlotCubit>().state
                 is TimeSlotCubitStateLoaded) {
-              final timeSlot = (context.read<TimeSlotCubit>().state
-                      as TimeSlotCubitStateLoaded)
-                  .timeSlots
-                  .firstWhere(
-                    (element) => element.id == state.appointment.timeslot,
-                  );
+              final timeSlot = state.appointment.timeslot;
 
               AwesomeNotifications().createNotification(
                 content: NotificationContent(
@@ -170,11 +173,15 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
           children: [
             const PaymentStipper(),
             Padding(
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.all(40).copyWith(bottom: 20),
               child: Column(
                 children: [
                   if (widget.service.hasRangOfDays())
                     FessContainerForDays(
+                      discount: context
+                          .read<AppointmentsParamsCubit>()
+                          .state
+                          .discount,
                       price: widget.service.price.toDouble(),
                       days: AppointmentsParamsCubit.get(context).state.days!,
                     )
@@ -218,30 +225,30 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                                     child: InkWell(
                                       onTap: () {
                                         setState(() {
-                                          paymentMethod = 'cash';
+                                          paymentMethod = 'vodafone cash';
                                         });
                                         context
                                             .read<AppointmentsParamsCubit>()
                                             .addPaymentMethod(paymentMethod);
                                       },
                                       child: Container(
-                                        decoration: paymentMethod != 'cash'
-                                            ? null
-                                            : BoxDecoration(
-                                                border: Border.all(
-                                                  color: Colors.red,
-                                                ),
-                                              ),
+                                        decoration:
+                                            paymentMethod != 'vodafone cash'
+                                                ? null
+                                                : BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             Column(
                                               children: [
-                                                Assets.img.currency
-                                                    .image(height: 30),
+                                                Assets.img.vf.image(height: 30),
                                                 Text(
-                                                  context.l10n.cash,
+                                                  context.l10n.vf,
                                                   style:
                                                       textStyleWithSecondBold()
                                                           .copyWith(),
@@ -367,11 +374,12 @@ class _CreateAppointmentPaymentState extends State<CreateAppointmentPayment> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
+            // const SizedBox(
+            //   height: 40,
+            // ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.sp),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 30.sp).copyWith(bottom: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

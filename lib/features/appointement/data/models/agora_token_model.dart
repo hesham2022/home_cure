@@ -22,10 +22,3 @@ class AgoraTokenModel extends AgoraToken {
 
   String toJson() => json.encode(toMap());
 }
-// upcoming /!SECTION remove  not paid 
-// remove competed from new
-// bug after done in provide_detai
-// bood type be Optional(),
-// in adding in eldery care 
-// starts review
-// cancel and reasonx

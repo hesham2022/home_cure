@@ -17,7 +17,6 @@ import 'package:home_cure/features/calling/data/models/comapny_settings_model.da
 import 'package:home_cure/features/calling/data/models/compliantment_model.dart';
 import 'package:home_cure/features/calling/presentation/bloc/calling_bloc.dart';
 import 'package:home_cure/features/calling/presentation/bloc/comlainment_cubit.dart';
-import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/features/login/presentation/widgets/register_field.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:home_cure/l10n/l10n.dart';
@@ -134,16 +133,13 @@ class _CallingPageState extends State<CallingPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const MyBackButton(),
           Padding(
-            padding: const EdgeInsets.all(35),
+            padding: const EdgeInsets.all(30),
             child: BlocBuilder<CallingBloc, CallingState>(
               builder: (context, state) {
                 if (state is CallingLoaded) {
                   return Column(
                     children: [
-                      SizedBox(height: 25.h),
-
                       Center(
                           child: Assets.img.logo.image(height: 70, width: 70)),
 

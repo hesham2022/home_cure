@@ -29,7 +29,7 @@ class UserModel extends User {
     super.qualifications,
     super.specialization,
     super.experience,
-    super.degree
+    super.degree,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         details: (json['role'] as String) != 'user'
@@ -56,7 +56,7 @@ class UserModel extends User {
                 ),
               ),
         specialization: json['specialization'] as String?,
-                experience: json['experience'] as int?,
+        experience: json['experience'] as int?,
         degree: json['degree'] as String?,
 
         //     (json['specialization'] as List<dynamic>?) as List<String>?,
@@ -74,7 +74,7 @@ class UserModel extends User {
         'photo': photo,
         'birthOfDate': birthOfDate.toIso8601String(),
         'id': id,
-        'experience':experience,
+        'experience': experience,
         'degree': degree
       };
 }
@@ -244,7 +244,6 @@ class Attachment {
     required this.name,
   });
   factory Attachment.fromJson(Map<String, dynamic> json) {
-    print(json);
     return Attachment(
       date: DateTime.parse(json['date'] as String),
       id: json['_id'] as String,

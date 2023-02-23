@@ -35,13 +35,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
     }
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(35.w),
+        padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-            SizedBox(
-              height: 25.h,
-            ),
-            Center(child: Assets.img.logo.image(height: 100, width: 100)),
+            Center(child: Assets.img.logo.image(height: 70, width: 70)),
             SizedBox(
               height: 25.h,
             ),
@@ -54,7 +51,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               },
             ),
             SizedBox(
-              height: 50.h,
+              height: 25.h,
             ),
             if (initialValue == ReqestNotificion.notification)
               BlocBuilder<NotificationsCubit, NotificationsCubitState>(

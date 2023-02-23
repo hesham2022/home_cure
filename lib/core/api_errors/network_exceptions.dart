@@ -152,8 +152,15 @@ abstract class NetworkExceptions extends AppError with _$NetworkExceptions {
               return 'لم يتم العثور على الموعد';
             case 'Phone Number already taken':
               return 'رقم الهاتف مأخوذ بالفعل';
+            case 'The is no availabel doctors in this time':
+              return 'لا يوجد أطباء متاحون في هذا الوقت';
+            case 'The is no availabel laboratorys in this time':
+              return 'لا يوجد أطباء متاحون في هذا الوقت';
             default:
           }
+        }
+        if (reason == 'The is no availabel laboratorys in this time') {
+          return 'The is no availabel laboratories in this time';
         }
         return reason;
       },
@@ -238,5 +245,4 @@ abstract class NetworkExceptions extends AppError with _$NetworkExceptions {
     );
   }
   // return errorMessage;
-
 }

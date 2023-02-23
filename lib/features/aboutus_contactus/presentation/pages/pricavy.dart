@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
 import 'package:home_cure/features/calling/presentation/bloc/calling_bloc.dart';
+import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/l10n/l10n.dart';
 
 class Privacy extends StatefulWidget {
@@ -30,10 +31,17 @@ class _PrivacyState extends State<Privacy> {
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-            const SizedBox(
-              height: 50,
+            // const SizedBox(
+            //   height: 50,
+            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const MyBackButton(),
+                CommonHeader(title: context.l10n.privacy),
+                Container(),
+              ],
             ),
-            CommonHeader(title: context.l10n.privacy),
             BlocBuilder<CallingBloc, CallingState>(
               builder: (context, state) {
                 if (state is CallingLoaded) {

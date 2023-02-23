@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:home_cure/l10n/l10n.dart';
 
@@ -14,7 +13,7 @@ class FessContainer extends StatelessWidget {
   final double price;
   final bool isPackage;
   final int? discount;
-  
+
   @override
   Widget build(BuildContext context) {
     final isAr = context.l10n.localeName == 'ar';
@@ -110,18 +109,21 @@ class FessContainerForDays extends StatelessWidget {
     super.key,
     required this.price,
     required this.days,
+    required this.discount,
     this.isPackage = false,
   });
   final double price;
+  final int? discount;
 
   final bool isPackage;
   final int days;
   @override
   Widget build(BuildContext context) {
+    //context.read<AppointmentsParamsCubit>()
     final isAr = context.l10n.localeName == 'ar';
 
     return Container(
-      height: App.isAr(context) ? 160.h : 130.h,
+      // height: App.isAr(context) ? 160.h : 130.h,
       decoration: BoxDecoration(
         color: const Color(0xffFFFFFF),
         borderRadius: BorderRadius.circular(10),
@@ -147,11 +149,14 @@ class FessContainerForDays extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  '${context.l10n.price} : $price ${context.l10n.egp}',
+                  '${context.l10n.price} : ${price * days.toDouble()} ${context.l10n.egp}',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: const Color(0xff1AA9A0),
                     fontWeight: FontWeight.w400,
+                    decoration: (discount != null && discount! > 0)
+                        ? TextDecoration.lineThrough
+                        : null,
                   ),
                 ),
                 const SizedBox(
@@ -173,11 +178,27 @@ class FessContainerForDays extends StatelessWidget {
                       ),
                     ],
                   ),
+                if (discount != null && discount! > 0)
+                  Column(
+                    children: [
+                      Text(
+                        '${context.l10n.discount}: $discount',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: const Color(0xff1AA9A0),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                    ],
+                  ),
                 if (days > 0)
                   Column(
                     children: [
                       Text(
-                        '${context.l10n.totla}: ${price * days.toDouble()}',
+                        '${context.l10n.totla}: ${price * days.toDouble() - (discount ?? 0)}',
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: const Color(0xff1AA9A0),
@@ -188,6 +209,7 @@ class FessContainerForDays extends StatelessWidget {
                   ),
               ],
             ),
+
             const Spacer(),
             //
             Container(

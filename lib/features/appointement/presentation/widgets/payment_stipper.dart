@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:home_cure/app/view/app.dart';
 import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/gen/assets.gen.dart';
@@ -12,7 +13,7 @@ class PaymentStipper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 230.h,
       decoration: const BoxDecoration(
         color: primaryColor,
         borderRadius: BorderRadius.only(
@@ -21,10 +22,25 @@ class PaymentStipper extends StatelessWidget {
         ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const MyBackButton(),
-
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 65),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const MyBackButton(),
+                Row(
+                  children: const [
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+                Container()
+              ],
+            ),
+          ),
           Center(
             child: Text(
               context.l10n.paymentMethod,
@@ -37,7 +53,7 @@ class PaymentStipper extends StatelessWidget {
 
           /// Stipper
           Padding(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(20),
             child: Row(
               children: [
                 CircleAvatar(

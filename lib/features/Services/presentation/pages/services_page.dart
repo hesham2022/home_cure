@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_cure/app/app.dart';
+import 'package:home_cure/core/flags/global_flags.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_container.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
@@ -110,246 +113,201 @@ class _ServicesPageState extends State<ServicesPage> {
       return list;
     }
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        if (state is HomeServicesLoaded) {
-          return Column(
-            children: [
-              const MyBackButton(),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(30.sp).copyWith(top: 0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CommonHeader(
-                            title: widget.service.getTitle(context),
-                          ),
-                          InfoButton(
-                            info: App.isAr(context)
-                                ? (widget.service.arDescription ??
-                                    widget.service.description)
-                                : widget.service.description,
-                          )
-                        ],
-                      ),
-                      Expanded(
-                        child: CustomScrollView(
-                          slivers: <Widget>[
-                            // SliverToBoxAdapter(
-                            //   child: CommonHeader(
-                            //     title: widget.service.getTitle(context),
-                            //   ),
-                            // ),
-                            SliverGrid(
-                              gridDelegate: _delegate,
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final mainService = state.services.firstWhere(
-                                    (element) =>
-                                        element.id ==
-                                        filterred[index].ancestors.first,
-                                  );
-                                  final title = (isAr &&
-                                          (filterred[index].arTitle != null))
-                                      ? filterred[index].arTitle!
-                                      : filterred[index].title;
-                                  final titelWords = title.split(' ');
+    return WillPopScope(
+      onWillPop: () async {
+        if (Platform.isIOS) {
+          return shouldPop;
+        } else {
+          return true;
+        }
+      },
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is HomeServicesLoaded) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(30.sp),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const MyBackButton(),
+                            Row(
+                              children: [
+                                CommonHeader(
+                                  title: widget.service.getTitle(context),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                InfoButton(
+                                  info: App.isAr(context)
+                                      ? (widget.service.arDescription ??
+                                          widget.service.description)
+                                      : widget.service.description,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: CustomScrollView(
+                            slivers: <Widget>[
+                              SliverGrid(
+                                gridDelegate: _delegate,
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    final mainService =
+                                        state.services.firstWhere(
+                                      (element) =>
+                                          element.id ==
+                                          filterred[index].ancestors.first,
+                                    );
+                                    final title = (isAr &&
+                                            (filterred[index].arTitle != null))
+                                        ? filterred[index].arTitle!
+                                        : filterred[index].title;
+                                    final titelWords = title.split(' ');
 
-                                  final firstPartOfTitle = titelWords.length < 2
-                                      ? title
-                                      : title
-                                          .split(' ')
-                                          .sublist(0, 2)
-                                          .join(' ');
-                                  String? secondPartOfTitle;
-                                  if (titelWords.length > 2) {
-                                    secondPartOfTitle =
-                                        title.split(' ').sublist(2).join(' ');
-                                  }
+                                    final firstPartOfTitle =
+                                        titelWords.length < 2
+                                            ? title
+                                            : title
+                                                .split(' ')
+                                                .sublist(0, 2)
+                                                .join(' ');
+                                    String? secondPartOfTitle;
+                                    if (titelWords.length > 2) {
+                                      secondPartOfTitle =
+                                          title.split(' ').sublist(2).join(' ');
+                                    }
 
-                                  return InkWell(
-                                    onTap: () async {
-                                      // special case is elderly Care
-                                      // if (widget.service.children[index].mainService ==
-                                      // if (mainService.title == 'Eldery Care'
-                                      //     // ||
-                                      //     //     filterred[index].hasRangOfDays()
-                                      //     ) {
-                                      //   await context.router
-                                      //       .push<void>(
-                                      //     CreateAppointementSecondRoute(
-                                      //       service: filterred[index],
-                                      //     ),
-                                      //   )
-                                      //       .then((value) {
-                                      //     AppointmentsParamsCubit.get(context)
-                                      //         .clear();
-                                      //   });
-                                      //   // finish the fucntion
-                                      //   return;
-                                      // }
-
-                                      if (filterred[index]
-                                          .children
-                                          .isNotEmpty) {
-                                        await context.router.push(
-                                          ServicesRoute(
-                                            service: filterred[index],
-                                          ),
-                                        );
-                                      } else {
-                                        if (mainService.title ==
-                                            'Our Doctors') {
-                                          await context.router.push<void>(
-                                            DoctorsRoute(
+                                    return InkWell(
+                                      onTap: () async {
+                                        if (filterred[index]
+                                            .children
+                                            .isNotEmpty) {
+                                          await context.router.push(
+                                            ServicesRoute(
                                               service: filterred[index],
                                             ),
                                           );
                                         } else {
-                                          await context.router
-                                              .push<void>(
-                                            CreateAppointementRoute(
-                                              service: filterred[index],
-                                            ),
-                                          )
-                                              .then((value) {
-                                            AppointmentsParamsCubit.get(context)
-                                                .clear();
-                                          });
+                                          if (mainService.title ==
+                                              'Our Doctors') {
+                                            await context.router.push<void>(
+                                              DoctorsRoute(
+                                                service: filterred[index],
+                                              ),
+                                            );
+                                          } else {
+                                            await context.router
+                                                .push<void>(
+                                              CreateAppointementRoute(
+                                                service: filterred[index],
+                                              ),
+                                            )
+                                                .then((value) {
+                                              AppointmentsParamsCubit.get(
+                                                context,
+                                              ).clear();
+                                            });
+                                          }
                                         }
-                                      }
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffFFFFFF),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: filterred[index]
-                                                        .photo
-                                                        .isNotEmpty
-                                                    ? SvgPicture.asset(
-                                                        filterred[index].photo,
-                                                        color: const Color(
-                                                          0xff1aa9a0,
-                                                        ),
-                                                      )
-                                                    : Assets.img.logo.image(),
-                                                // const Icon(
-                                                //     Icons.hourglass_top_outlined,
-                                                //     size: 40,
-                                                //     color: seocondColor,
-                                                //   ),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 10,
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xffFFFFFF),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: filterred[index]
+                                                          .photo
+                                                          .isNotEmpty
+                                                      ? SvgPicture.asset(
+                                                          filterred[index]
+                                                              .photo,
+                                                          color: const Color(
+                                                            0xff1aa9a0,
+                                                          ),
+                                                        )
+                                                      : Assets.img.logo.image(),
                                                 ),
-                                                height: .5,
-                                                color: const Color(0xff1AA9A0),
-                                              ),
-                                              Text(
-                                                firstPartOfTitle,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: filterred.length > 2
-                                                      ? 12.sp
-                                                      : 17.sp,
+                                                Container(
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 10,
+                                                  ),
+                                                  height: .5,
                                                   color:
                                                       const Color(0xff1AA9A0),
                                                 ),
-                                              ),
-                                              if (secondPartOfTitle != null)
                                                 Text(
-                                                  secondPartOfTitle,
+                                                  firstPartOfTitle,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    fontSize: 10.sp,
+                                                    fontSize:
+                                                        filterred.length > 2
+                                                            ? 12.sp
+                                                            : 17.sp,
                                                     color:
                                                         const Color(0xff1AA9A0),
                                                   ),
                                                 ),
-                                            ],
+                                                if (secondPartOfTitle != null)
+                                                  Text(
+                                                    secondPartOfTitle,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      color: const Color(
+                                                        0xff1AA9A0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        // if (widget.service.children[index].period != null)
-                                        //   Positioned(
-                                        //     right: 2.w,
-                                        //     top: 2.w,
-                                        //     child: CircleAvatar(
-                                        //       foregroundColor: Colors.white,
-                                        //       backgroundColor: primaryColor,
-                                        //       radius: 11,
-                                        //       child: Text(
-                                        //         widget.service.children[index].period.toString(),
-                                        //         textAlign: TextAlign.center,
-                                        //         style: TextStyle(
-                                        //           height: 1,
-                                        //           fontSize: 12.sp,
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // if (widget.service.children[index].features != null &&
-                                        //     widget.service.children[index].features!['days'] !=
-                                        //         null)
-                                        // Positioned(
-                                        //   left: 2.w,
-                                        //   top: 2.w,
-                                        //   child: CircleAvatar(
-                                        //     foregroundColor: Colors.white,
-                                        //     backgroundColor: Colors.white,
-                                        //     radius: 11,
-                                        //     child: Text(
-                                        //       '${widget.service.children[index].features!['days']} d',
-                                        //       textAlign: TextAlign.center,
-                                        //       style: TextStyle(
-                                        //         height: 1,
-                                        //         color: primaryColor,
-                                        //         fontSize: 12.sp,
-                                        //         fontWeight: FontWeight.bold,
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // )
-                                      ],
-                                    ),
-                                  );
-                                },
-                                childCount: filterred.length,
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  childCount: filterred.length,
+                                ),
                               ),
-                            ),
-                            // if (widget.service.title == 'Eldery Care')
-                            //   ...getElderyDays(),
-                            const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 80),
-                            )
-                          ],
+                              const SliverPadding(
+                                padding: EdgeInsets.only(bottom: 80),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        }
-        return const SizedBox();
-      },
+              ],
+            );
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 }
@@ -362,8 +320,8 @@ class InfoButton extends StatelessWidget {
   final String info;
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         showDialog<void>(
           context: context,
           builder: (context) => Dialog(
@@ -373,8 +331,6 @@ class InfoButton extends StatelessWidget {
             ),
             child: Container(
               padding: const EdgeInsets.all(20),
-              // height: 500, // Change as per your requirement
-              // width: 500, // Change as per your requirement
               child: Text(
                 info,
                 textAlign: TextAlign.center,
@@ -383,10 +339,31 @@ class InfoButton extends StatelessWidget {
           ),
         );
       },
-      icon: const Icon(
-        Icons.info,
-        color: primaryColor,
-      ),
+      child: App.isAr(context)
+          ? const CircleAvatar(
+              radius: 15,
+              child: Text(
+                '؟',
+                style: TextStyle(
+                  height: 1,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          : const CircleAvatar(
+              radius: 15,
+              child: Text(
+                '?',
+                style: TextStyle(
+                  height: 1,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
     );
   }
 }

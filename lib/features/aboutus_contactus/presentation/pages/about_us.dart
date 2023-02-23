@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_cure/app/app.dart';
 import 'package:home_cure/core/widgets/common_header.dart';
 import 'package:home_cure/features/calling/presentation/bloc/calling_bloc.dart';
-import 'package:home_cure/features/home/presentation/pages/home.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 import 'package:home_cure/l10n/l10n.dart';
 
@@ -30,14 +29,10 @@ class _AboutUsState extends State<AboutUs> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const MyBackButton(),
           Padding(
             padding: const EdgeInsets.all(30),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 25,
-                ),
                 Center(child: Assets.img.logo.image(height: 70, width: 70)),
                 CommonHeader(title: context.l10n.aboutUs),
                 BlocBuilder<CallingBloc, CallingState>(

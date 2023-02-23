@@ -31,8 +31,8 @@ class CommonHeader extends StatelessWidget {
             child: Center(
               child: Text(
                 title,
-                style: TextStyle(
-                  fontSize: 20.sp,
+                style: const TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                   height: 1,

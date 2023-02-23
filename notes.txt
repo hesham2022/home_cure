@@ -1,5 +1,22 @@
-1= loader 
-2-preview photo
-3- maps 
-4- smoke and alhol
-5- edit in ios 
+
+// pick from gallary
+// preview 
+// back aligned with logo
+// exlamation mark 
+// gallary
+// DONE
+// fixed padding 
+// discount not work properly  with range of day
+
+
+admin apnel
+// edit 
+// edit has sessions
+// edit active and inactive user
+// can't edit user
+// permissions for dashboard 
+// logo in admin panel 
+// appointment medical history 
+// paymob release mood
+
+

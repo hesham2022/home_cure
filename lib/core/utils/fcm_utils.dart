@@ -64,13 +64,14 @@ class PushNotifications {
     }
     FirebaseMessaging.onMessage.listen(
       (event) async {
+        print('___' * 200);
         if (event.data['appointment'] != null) {
           final appointment = AppointmentModel.fromJson(
             event.data['appointment'] as String,
           );
           final notificationModel = NotificationsModel(
             title: event.notification!.title!,
-            sentTime: event.sentTime!,
+            sentTime: event.sentTime ?? DateTime.now(),
             appointment: appointment,
           );
           context.read<NotificationsCubit>().add(notificationModel);

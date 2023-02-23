@@ -93,7 +93,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
                 return Column(
                   children: [
-                    const ProfileHeader(),
+                    const ProfileHeader(
+                      showBackButton: true,
+                    ),
                     SizedBox(
                       height: 20.h,
                     ),

@@ -111,7 +111,7 @@ class _RegisterFieldState extends State<RegisterField> {
           suffixText: !App.isAr(context)
               ? null
               : widget.isPhoneNumber == true
-                  ? '+2'
+                  ? '2+'
                   : null,
           prefixStyle: Theme.of(context).textTheme.titleMedium,
           errorText: widget.errorText,

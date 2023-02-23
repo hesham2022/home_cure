@@ -18,20 +18,8 @@ class ChangePhoneNumberFirebaseCubit
     emit(ChangePhoneNumberFirebaseStateLoading());
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '+2${param.email}',
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // await FirebaseAuth.instance
-        //     .signInWithCredential(credential)
-        //     .then((value) async {
-        //   if (value.user != null) {
-
-        //   } else {
-        //     print('not verified');
-        //   }
-        // });
-      },
+      verificationCompleted: (PhoneAuthCredential credential) async {},
       verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-
         emit(ChangePhoneNumberFirebaseStateError(NetworkExceptions(e)));
       },
       codeSent: (String? verficationID, int? resendToken) {
@@ -46,15 +34,6 @@ class ChangePhoneNumberFirebaseCubit
         verificationCode = verificationID;
       },
     );
-    // final result = await _authenticationRepository.changePhoneNumber(param);
-    // result.fold(
-    //   (l) => emit(ChangePhoneNumberFirebaseStateError(l)),
-    //   (r) => emit(
-    //     ChangePhoneNumberFirebaseStateChangePhoneNumberFirebaseTokenLoaded(
-    //       param.email,
-    //     ),
-    //   ),
-    // );
   }
 
   Future<void> resetPassword(ResetPasswordParams param) async {

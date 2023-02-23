@@ -1,6 +1,6 @@
 name: home_cure
 description: A Very Good Project created by Very Good CLI.
-version: 1.0.0+2
+version: 1.0.0+3
 publish_to: none
 
 environment:
@@ -42,6 +42,7 @@ dependencies:
   # google_sign_in: ^5.4.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  image_picker: ^0.8.6+1
   internet_connection_checker: ^1.0.0+1
   intl: ^0.17.0
   overlay_support: ^2.0.1
@@ -57,7 +58,7 @@ dev_dependencies:
   auto_route_generator: ^5.0.3
   bloc_test: ^9.0.3
   build_runner: ^2.2.0
-  flutter_gen_runner: ^5.2.0
+  flutter_gen_runner:
   flutter_launcher_icons: ^0.11.0
   flutter_test:
     sdk: flutter

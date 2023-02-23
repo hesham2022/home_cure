@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:home_cure/core/flags/global_flags.dart';
 import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/utils/to_tree.dart';
 import 'package:home_cure/di/get_it.dart';
@@ -33,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     context.read<AdsCubit>().getAdsFunc();
     context.read<NotificationsCubit>().getUserNotifications();
     context.router;
-    getIt
-        // Utils
-        .registerLazySingleton<StackRouter>(() => context.router);
+
     super.initState();
   }
 
@@ -44,14 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const MyBackButton(),
           Padding(
-            padding: EdgeInsets.all(40.sp).copyWith(top: 0),
+            padding: const EdgeInsets.all(30),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
                 Center(child: Assets.img.logo.image(height: 70, width: 70)),
 
                 const SizedBox(
@@ -123,28 +118,30 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class MyBackButton extends StatelessWidget {
-  const MyBackButton({super.key});
+  const MyBackButton({super.key, this.buttonColor});
+  final Color? buttonColor;
   @override
   Widget build(BuildContext context) {
     return (!Platform.isIOS)
         ? Container()
-        : Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: InkWell(
-                  // padding: const EdgeInsets.all(0).copyWith(top: 10),
-                  onTap: () {
-                    context.router.pop();
-                  },
-                  child: const Icon(
-                    Icons.arrow_back_ios_sharp,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
+        : InkWell(
+            // padding: const EdgeInsets.all(0).copyWith(top: 10),
+            onTap: () {
+              shouldPop = true;
+              context.router.pop();
+              shouldPop = false;
+            },
+            child: Icon(
+              Icons.arrow_back_ios_sharp,
+              size: 20,
+              color: buttonColor ?? Colors.black,
+            ),
           );
   }
+}
+
+void backFunc(BuildContext context) {
+  shouldPop = true;
+  context.router.pop();
+  shouldPop = false;
 }

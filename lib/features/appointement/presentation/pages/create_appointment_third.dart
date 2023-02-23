@@ -43,16 +43,16 @@ class _CreateAppointementThirdPageState
 
   String fromTextFormat(TimeSlot timeslot) {
     if (appLn10.localeName == 'ar') {
-      return '''${timeslot.startHour % 12}:${timeslot.startMinute} ${timeslot.startHour < 12 ? appLn10.morning : appLn10.evening}''';
+      return '''${timeslot.startHour % 12}:${timeslot.startMinute.toString().padLeft(2, '0')} ${timeslot.startHour < 12 ? appLn10.morning : appLn10.evening}''';
     }
-    return '''${timeslot.startHour % 12}:${timeslot.startMinute} ${timeslot.startHour < 12 ? 'am' : 'pm'}''';
+    return '''${timeslot.startHour % 12}:${timeslot.startMinute.toString().padLeft(2, '0')} ${timeslot.startHour < 12 ? 'am' : 'pm'}''';
   }
 
   String toTextFormat(TimeSlot timeslot) {
     if (appLn10.localeName == 'ar') {
-      return '''${timeslot.endHour % 12}:${timeslot.endMinute} ${timeslot.endHour < 12 ? appLn10.morning : appLn10.evening}''';
+      return '''${timeslot.endHour % 12}:${timeslot.endMinute.toString().padLeft(2, '0')} ${timeslot.endHour < 12 ? appLn10.morning : appLn10.evening}''';
     }
-    return '''${timeslot.endHour % 12}:${timeslot.endMinute} ${timeslot.endHour < 12 ? 'am' : 'pm'}''';
+    return '''${timeslot.endHour % 12}:${timeslot.endMinute.toString().padLeft(2, '0')} ${timeslot.endHour < 12 ? 'am' : 'pm'}''';
   }
 
   @override
@@ -72,17 +72,12 @@ class _CreateAppointementThirdPageState
                           : element.startHour > 12),
                 )
                 .toList();
-            print(context.read<AppointmentsParamsCubit>().state.date);
-            print('date');
-            print(
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month,
-                DateTime.now().day,
-              ),
-            );
 
-            if (context.read<AppointmentsParamsCubit>().state.date ==
+            if (DateTime(
+                  context.read<AppointmentsParamsCubit>().state.date!.year,
+                  context.read<AppointmentsParamsCubit>().state.date!.month,
+                  context.read<AppointmentsParamsCubit>().state.date!.day,
+                ) ==
                 DateTime(
                   DateTime.now().year,
                   DateTime.now().month,
@@ -91,53 +86,64 @@ class _CreateAppointementThirdPageState
               timeSlosts = [...timeSlosts]
                   .where(
                     (element) =>
+                        (DateTime.now().hour + 2 < 24) &&
                         element.startHour >
-                        DateTime.now().add(const Duration(hours: 2)).hour,
+                            (DateTime.now().add(const Duration(hours: 2)).hour),
                   )
                   .toList();
             }
             return Column(
               children: [
-                const MyBackButton(),
                 Padding(
-                  padding: const EdgeInsets.only(left: 40, right: 40, top: 40),
+                  padding: const EdgeInsets.only(left: 40, right: 40, top: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
                         height: 35.h,
                       ),
-                      CommonContainer(
-                        height: 77.h,
-                        br: 23,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Assets.svg.sun.svg(),
-                              const Spacer(),
-                              Expanded(
-                                child: Text(
-                                  _period == EveningMorning.morning
-                                      ? context.l10n.morning
-                                      : context.l10n.evening,
-                                  style: TextStyle(
-                                    fontSize: 20.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
-                                  ),
-                                  textAlign: TextAlign.center,
+                      Row(
+                        children: [
+                          const MyBackButton(),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: CommonContainer(
+                              height: 55,
+                              br: 23,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Assets.svg.sun.svg(
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                    Text(
+                                      _period == EveningMorning.morning
+                                          ? context.l10n.morning
+                                          : context.l10n.evening,
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(
+                                      width: 20.sp,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                width: 20.sp,
-                              ),
-                              const Spacer(),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
 
                       SizedBox(
@@ -270,7 +276,7 @@ class _CreateAppointementThirdPageState
                     children: [
                       Button1(
                         onPressed: () {
-                          context.router.pop();
+                          backFunc(context);
                         },
                         title: context.l10n.back,
                       ),

@@ -1,10 +1,8 @@
-// const kBaseUrl = 'http://192.168.1.3:3000/v1';
-// const domain = 'https://hospital-home.herokuapp.com';
-const domain = 'https://homecure.online/api';
+// remote server
+// const domain = 'https://homecure.online/api';
+// loclal server
+const domain = 'http://10.0.2.2:3000';
 
-// const domain = 'http://192.168.8.100:3000';
-
-// const kBaseUrl = 'https://wyca.herokuapp.com/v1';
 const kBaseUrl = '$domain/v1';
 
 const kRegister = '$kBaseUrl/auth/register';

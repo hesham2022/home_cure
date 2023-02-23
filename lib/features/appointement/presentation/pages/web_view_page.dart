@@ -46,7 +46,7 @@ class _WebViewPaymentPageState extends State<WebViewPaymentPage> {
     flutterWebviewPlugin.onUrlChanged.listen((String url) {
       print(' url $url');
 
-      if (url.contains('&success=false&') || url.contains('&success=true&')) {
+      if (url.contains('success=false&') || url.contains('success=true&')) {
         Navigator.of(context).pop();
         flutterWebviewPlugin.close();
         widget.callbackPayment.call(url);

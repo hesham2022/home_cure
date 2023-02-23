@@ -114,6 +114,8 @@ class Appointment extends Equatable {
   bool get isOnPeocessing => status == 'onprocessing';
   bool get isDone => status == 'done';
   bool get isCredifCard => paymentMethod == 'credit card';
+  bool get isVf => paymentMethod == 'vodafone cash';
+
   bool get isCash => paymentMethod == 'cash';
   bool get hasDays => days != null;
   bool get hasSessions => sessions != null;

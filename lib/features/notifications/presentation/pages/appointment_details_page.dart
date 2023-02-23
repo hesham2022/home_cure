@@ -130,7 +130,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                       as TimeSlotCubitStateLoaded)
                   .timeSlots
                   .firstWhere(
-                    (element) => element.id == _appointment.timeslot,
+                    (element) => element.id == _appointment.timeslot.id,
                   );
 
               AwesomeNotifications().createNotification(
@@ -160,13 +160,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           if (_appointment.isWaiting) {
             cubit.onProgressFunc(_appointment.id);
           }
-          // if (_appointment.isOnPeocessing &&
-          //     inProviderApp &&
-          //     !_appointment.payed &&
-          //     _appointment.isCash) {
-          //   context.read<AppointmentsCubit>().providerPayFunc(_appointment.id);
-          //   return;
-          // }
+
           if (_appointment.isOnPeocessing) {
             cubit.doneFunc(
               DoneParams(id: _appointment.id, providerComment: value),
@@ -279,54 +273,39 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          const MyBackButton(),
-
                           const SizedBox(
-                            height: 60,
+                            height: 20,
                           ),
 
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: const Color(0xff218FE4),
-                            ),
-                            child: Center(
-                              child: Text(
-                                App.isAr(context)
-                                    ? ancestors.first.arTitle ??
-                                        ancestors.first.title
-                                    : ancestors.first.title,
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                  height: 1,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const MyBackButton(),
+                              Container(
+                                width: 250,
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xff218FE4),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    App.isAr(context)
+                                        ? ancestors.first.arTitle ??
+                                            ancestors.first.title
+                                        : ancestors.first.title,
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                      height: 1,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              Container()
+                            ],
                           ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.end,
-                          //   children: [
-                          //     IconButton(
-                          //       onPressed: () {
-                          //         Clipboard.setData(
-                          //           ClipboardData(text: _appointment.id),
-                          //         ).then((_) {
-                          //           ScaffoldMessenger.of(context).showSnackBar(
-                          //             const SnackBar(
-                          //               content: Text(
-                          //                 'Id copied to clipboard',
-                          //               ),
-                          //             ),
-                          //           );
-                          //         });
-                          //       },
-                          //       icon: const Icon(Icons.copy_all),
-                          //     ),
-                          //   ],
-                          // ),
 
                           const SizedBox(
                             height: 30,
@@ -448,7 +427,9 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       Text(
                                         _appointment.isCredifCard
                                             ? context.l10n.creditCard
-                                            : context.l10n.cash,
+                                            : _appointment.isVf
+                                                ? context.l10n.vf
+                                                : context.l10n.cash,
                                         style: textStyleWithSecondBold(),
                                       ),
                                     ],
@@ -476,7 +457,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     ],
                                   ),
                                   if (!_appointment.payed &&
-                                      _appointment.isCredifCard &&
+                                      // _appointment.isCredifCard &&
                                       !inProviderApp)
                                     Column(
                                       children: [
@@ -810,113 +791,6 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                 ),
                               ),
                             ),
-                          // if (inProviderApp)
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         Text(
-                          //           'Pateient Name: :',
-                          //           style: textStyleWithPrimarySemiBold,
-                          //         ),
-                          //         Text(
-                          //           user.name,
-                          //           style: textStyleWithSecondBold(),
-                          //         )
-                          //       ],
-                          //     ),
-
-                          //     /// More
-                          //     InkWell(
-                          //       child: Text(
-                          //         'More ',
-                          //         style: TextStyle(
-                          //           color: Colors.blue,
-                          //           fontSize: 20.sp,
-                          //           fontWeight: FontWeight.bold,
-                          //           fontStyle: FontStyle.italic,
-                          //           decoration: TextDecoration.underline,
-                          //           decorationStyle:
-                          //               TextDecorationStyle.double,
-                          //         ),
-                          //       ),
-                          //       onTap: () {
-                          //         context.router.push(
-                          //           UserInformationPageRoute(
-                          //             user: user,
-                          //           ),
-                          //         );
-                          //       },
-                          //     )
-                          //   ],
-                          // ),
-
-                          // const SizedBox(height: 30),
-                          // Payment Tap
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         Text(
-                          //           'Payed :',
-                          //           style: textStyleWithPrimarySemiBold,
-                          //         ),
-                          //         if (_appointment.payed)
-                          //           const Icon(
-                          //             Icons.check,
-                          //             color: seocondColor,
-                          //             size: 30,
-                          //           )
-                          //         else
-                          //           const Icon(
-                          //             Icons.close,
-                          //             color: seocondColor,
-                          //             size: 30,
-                          //           ),
-                          //       ],
-                          //     ),
-                          //     if (!_appointment.payed &&
-                          //         _appointment.isCredifCard)
-                          //       Row(
-                          //         children: [
-                          //           const SizedBox(
-                          //             width: 20,
-                          //           ),
-                          //           InkWell(
-                          //             child: Text(
-                          //               'Pay Now',
-                          //               style: TextStyle(
-                          //                 color: Colors.blue,
-                          //                 fontSize: 20.sp,
-                          //                 fontWeight: FontWeight.bold,
-                          //                 fontStyle: FontStyle.italic,
-                          //                 decoration: TextDecoration.underline,
-                          //                 decorationStyle:
-                          //                     TextDecorationStyle.double,
-                          //               ),
-                          //             ),
-                          //             onTap: () {
-                          //               context
-                          //                   .read<AppointmentsCubit>()
-                          //                   .cratePaymentLinkFunc(
-                          //                     _appointment.id,
-                          //                   );
-                          //             },
-                          //           )
-                          //         ],
-                          //       ),
-                          //   ],
-                          // ),
-                          //  if(_appointment.prop)   Column(
-                          //       children: const [
-                          //         SizedBox(
-                          //           height: 30,
-                          //         ),
-                          //         Text('provider'),
-                          //       ],
-                          //     ),
 
                           if (_appointment.hasSessions)
                             Column(

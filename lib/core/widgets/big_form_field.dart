@@ -26,16 +26,20 @@ class BighFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      scrollPadding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 200,
+      ),
       validator: validator,
       enabled: enabled,
       focusNode: focusNode,
-      minLines: 10,
-      maxLines: 20,
+      minLines: 5,
+      maxLines: 10,
       controller: controller,
       style: style,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10),
-        hintText: hint ?? context.l10n.select_what_you_feel, //'Descripe What  You Feel',
+        hintText: hint ??
+            context.l10n.select_what_you_feel, //'Descripe What  You Feel',
         hintStyle: TextStyle(
           fontSize: 12.sp,
           color: const Color(0xff1AA9A0),

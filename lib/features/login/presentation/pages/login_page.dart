@@ -11,7 +11,6 @@ import 'package:home_cure/core/routing/routing.gr.dart';
 import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/di/get_it.dart';
-import 'package:home_cure/features/login/domain/entities/fb_response.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_bloc.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_event.dart';
 import 'package:home_cure/features/login/presentation/bloc/login_state.dart';
@@ -165,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(
                               height: 60.h,
                             ),
+
                             // if (state.loginWithEmail)
                             BlocBuilder<LoginBloc, LoginState>(
                               builder: (context, state) {

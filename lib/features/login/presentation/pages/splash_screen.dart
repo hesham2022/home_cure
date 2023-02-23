@@ -1,4 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:home_cure/core/widgets/common_button.dart';
 import 'package:home_cure/core/widgets/common_scaffold.dart';
 import 'package:home_cure/gen/assets.gen.dart';
 
@@ -15,7 +17,8 @@ class SplashScreen extends StatelessWidget {
           children: [
             Center(
               child: Assets.img.logoone.image(),
-            )
+            ),
+
           ],
         ),
       ),

@@ -23,14 +23,14 @@ import '../../features/appointement/domain/entities/appointment.dart' as _i57;
 import '../../features/appointement/presentation/pages/create_appointement.dart'
     as _i28;
 import '../../features/appointement/presentation/pages/create_appointment_for.dart'
-    as _i31;
-import '../../features/appointement/presentation/pages/create_appointment_payment.dart'
     as _i32;
+import '../../features/appointement/presentation/pages/create_appointment_payment.dart'
+    as _i33;
 import '../../features/appointement/presentation/pages/create_appointment_second.dart'
-    as _i29;
-import '../../features/appointement/presentation/pages/create_appointment_third.dart'
     as _i30;
-import '../../features/appointement/presentation/pages/done_page.dart' as _i34;
+import '../../features/appointement/presentation/pages/create_appointment_third.dart'
+    as _i31;
+import '../../features/appointement/presentation/pages/done_page.dart' as _i35;
 import '../../features/appointement/presentation/pages/web_view_page.dart'
     as _i2;
 import '../../features/authentication/data/models/user_model.dart' as _i61;
@@ -66,13 +66,13 @@ import '../../features/login/presentation/pages/verify_otp_page.dart' as _i3;
 import '../../features/login/presentation/pages/verify_phone_number_firebase.dart'
     as _i6;
 import '../../features/notifications/presentation/pages/appointment_details_page.dart'
-    as _i33;
+    as _i34;
 import '../../features/notifications/presentation/pages/notifications_page.dart'
-    as _i37;
+    as _i38;
 import '../../features/notifications/presentation/pages/user_information_page.dart'
     as _i51;
-import '../../features/our_doctors/pages/doctor_profile.dart' as _i36;
-import '../../features/our_doctors/pages/doctors_page.dart' as _i35;
+import '../../features/our_doctors/pages/doctor_profile.dart' as _i37;
+import '../../features/our_doctors/pages/doctors_page.dart' as _i36;
 import '../../features/provider/presentation/pages/appointment_details_page_adpter.dart'
     as _i50;
 import '../../features/provider/presentation/pages/main_provider_page.dart'
@@ -100,7 +100,7 @@ import '../../features/user_details/presentation/pages/main_complaintment_page.d
 import '../../features/user_details/presentation/pages/pdf_viewer_page.dart'
     as _i39;
 import '../../features/user_details/presentation/pages/photo_view_page.dart'
-    as _i38;
+    as _i29;
 import '../../features/user_details/presentation/pages/previous_sergerious_page.dart'
     as _i46;
 import '../../features/user_details/presentation/pages/user_details_page.dart'
@@ -357,11 +357,22 @@ class AppRouter extends _i55.RootStackRouter {
         barrierDismissible: true,
       );
     },
+    PhotoViewPageeRouter.name: (routeData) {
+      final args = routeData.argsAs<PhotoViewPageeRouterArgs>();
+      return _i55.CupertinoPageX<void>(
+        routeData: routeData,
+        child: _i29.PhotoViewPage(
+          key: args.key,
+          path: args.path,
+          provider: args.provider,
+        ),
+      );
+    },
     CreateAppointementSecondRoute.name: (routeData) {
       final args = routeData.argsAs<CreateAppointementSecondRouteArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i29.CreateAppointementSecondPage(
+        child: _i30.CreateAppointementSecondPage(
           key: args.key,
           service: args.service,
         ),
@@ -374,7 +385,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<CreateAppointementThirdRouteArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i30.CreateAppointementThirdPage(
+        child: _i31.CreateAppointementThirdPage(
           key: args.key,
           service: args.service,
           period: args.period,
@@ -388,7 +399,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<CreateAppointementFourthRouteArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i31.CreateAppointementFourthPage(
+        child: _i32.CreateAppointementFourthPage(
           key: args.key,
           service: args.service,
         ),
@@ -401,7 +412,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<CreateAppointmentPaymentArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i32.CreateAppointmentPayment(
+        child: _i33.CreateAppointmentPayment(
           key: args.key,
           service: args.service,
         ),
@@ -414,7 +425,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<AppointmenCompletePayPageRouteArgs>();
       return _i55.CupertinoPageX<_i57.Appointment>(
         routeData: routeData,
-        child: _i33.AppointmentDetailsPage(
+        child: _i34.AppointmentDetailsPage(
           key: args.key,
           appointment: args.appointment,
         ),
@@ -423,7 +434,7 @@ class AppRouter extends _i55.RootStackRouter {
     DoneRoute.name: (routeData) {
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: const _i34.DonePage(),
+        child: const _i35.DonePage(),
         transitionsBuilder: _i55.TransitionsBuilders.slideTop,
         opaque: true,
         barrierDismissible: true,
@@ -433,7 +444,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<DoctorsRouteArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i35.DoctorsPage(
+        child: _i36.DoctorsPage(
           key: args.key,
           service: args.service,
         ),
@@ -446,7 +457,7 @@ class AppRouter extends _i55.RootStackRouter {
       final args = routeData.argsAs<DoctorProfileArgs>();
       return _i55.CustomPage<void>(
         routeData: routeData,
-        child: _i36.DoctorProfile(
+        child: _i37.DoctorProfile(
           key: args.key,
           user: args.user,
         ),
@@ -458,26 +469,16 @@ class AppRouter extends _i55.RootStackRouter {
     NotificationsRoute.name: (routeData) {
       return _i55.CupertinoPageX<void>(
         routeData: routeData,
-        child: const _i37.NotificationsPage(),
+        child: const _i38.NotificationsPage(),
       );
     },
     AppointmentDetailsPageRoute.name: (routeData) {
       final args = routeData.argsAs<AppointmentDetailsPageRouteArgs>();
       return _i55.CupertinoPageX<void>(
         routeData: routeData,
-        child: _i33.AppointmentDetailsPage(
+        child: _i34.AppointmentDetailsPage(
           key: args.key,
           appointment: args.appointment,
-        ),
-      );
-    },
-    PhotoViewPageeRouter.name: (routeData) {
-      final args = routeData.argsAs<PhotoViewPageeRouterArgs>();
-      return _i55.CupertinoPageX<void>(
-        routeData: routeData,
-        child: _i38.PhotoViewPage(
-          key: args.key,
-          path: args.path,
         ),
       );
     },
@@ -702,6 +703,11 @@ class AppRouter extends _i55.RootStackRouter {
                 _i55.RouteConfig(
                   CreateAppointementRoute.name,
                   path: 'create_appointement',
+                  parent: HomeRouter.name,
+                ),
+                _i55.RouteConfig(
+                  PhotoViewPageeRouter.name,
+                  path: 'photo_view_page',
                   parent: HomeRouter.name,
                 ),
                 _i55.RouteConfig(
@@ -1515,7 +1521,47 @@ class CreateAppointementRouteArgs {
 }
 
 /// generated route for
-/// [_i29.CreateAppointementSecondPage]
+/// [_i29.PhotoViewPage]
+class PhotoViewPageeRouter
+    extends _i55.PageRouteInfo<PhotoViewPageeRouterArgs> {
+  PhotoViewPageeRouter({
+    _i56.Key? key,
+    required String path,
+    _i29.PhotoViewPageProvider provider = _i29.PhotoViewPageProvider.newtwork,
+  }) : super(
+          PhotoViewPageeRouter.name,
+          path: 'photo_view_page',
+          args: PhotoViewPageeRouterArgs(
+            key: key,
+            path: path,
+            provider: provider,
+          ),
+        );
+
+  static const String name = 'PhotoViewPageeRouter';
+}
+
+class PhotoViewPageeRouterArgs {
+  const PhotoViewPageeRouterArgs({
+    this.key,
+    required this.path,
+    this.provider = _i29.PhotoViewPageProvider.newtwork,
+  });
+
+  final _i56.Key? key;
+
+  final String path;
+
+  final _i29.PhotoViewPageProvider provider;
+
+  @override
+  String toString() {
+    return 'PhotoViewPageeRouterArgs{key: $key, path: $path, provider: $provider}';
+  }
+}
+
+/// generated route for
+/// [_i30.CreateAppointementSecondPage]
 class CreateAppointementSecondRoute
     extends _i55.PageRouteInfo<CreateAppointementSecondRouteArgs> {
   CreateAppointementSecondRoute({
@@ -1550,13 +1596,13 @@ class CreateAppointementSecondRouteArgs {
 }
 
 /// generated route for
-/// [_i30.CreateAppointementThirdPage]
+/// [_i31.CreateAppointementThirdPage]
 class CreateAppointementThirdRoute
     extends _i55.PageRouteInfo<CreateAppointementThirdRouteArgs> {
   CreateAppointementThirdRoute({
     _i56.Key? key,
     required _i58.ServiceEntity service,
-    _i29.EveningMorning? period,
+    _i30.EveningMorning? period,
   }) : super(
           CreateAppointementThirdRoute.name,
           path: 'create_appointement_third',
@@ -1581,7 +1627,7 @@ class CreateAppointementThirdRouteArgs {
 
   final _i58.ServiceEntity service;
 
-  final _i29.EveningMorning? period;
+  final _i30.EveningMorning? period;
 
   @override
   String toString() {
@@ -1590,7 +1636,7 @@ class CreateAppointementThirdRouteArgs {
 }
 
 /// generated route for
-/// [_i31.CreateAppointementFourthPage]
+/// [_i32.CreateAppointementFourthPage]
 class CreateAppointementFourthRoute
     extends _i55.PageRouteInfo<CreateAppointementFourthRouteArgs> {
   CreateAppointementFourthRoute({
@@ -1625,7 +1671,7 @@ class CreateAppointementFourthRouteArgs {
 }
 
 /// generated route for
-/// [_i32.CreateAppointmentPayment]
+/// [_i33.CreateAppointmentPayment]
 class CreateAppointmentPayment
     extends _i55.PageRouteInfo<CreateAppointmentPaymentArgs> {
   CreateAppointmentPayment({
@@ -1660,7 +1706,7 @@ class CreateAppointmentPaymentArgs {
 }
 
 /// generated route for
-/// [_i33.AppointmentDetailsPage]
+/// [_i34.AppointmentDetailsPage]
 class AppointmenCompletePayPageRoute
     extends _i55.PageRouteInfo<AppointmenCompletePayPageRouteArgs> {
   AppointmenCompletePayPageRoute({
@@ -1695,7 +1741,7 @@ class AppointmenCompletePayPageRouteArgs {
 }
 
 /// generated route for
-/// [_i34.DonePage]
+/// [_i35.DonePage]
 class DoneRoute extends _i55.PageRouteInfo<void> {
   const DoneRoute()
       : super(
@@ -1707,7 +1753,7 @@ class DoneRoute extends _i55.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i35.DoctorsPage]
+/// [_i36.DoctorsPage]
 class DoctorsRoute extends _i55.PageRouteInfo<DoctorsRouteArgs> {
   DoctorsRoute({
     _i56.Key? key,
@@ -1741,7 +1787,7 @@ class DoctorsRouteArgs {
 }
 
 /// generated route for
-/// [_i36.DoctorProfile]
+/// [_i37.DoctorProfile]
 class DoctorProfile extends _i55.PageRouteInfo<DoctorProfileArgs> {
   DoctorProfile({
     _i56.Key? key,
@@ -1775,7 +1821,7 @@ class DoctorProfileArgs {
 }
 
 /// generated route for
-/// [_i37.NotificationsPage]
+/// [_i38.NotificationsPage]
 class NotificationsRoute extends _i55.PageRouteInfo<void> {
   const NotificationsRoute()
       : super(
@@ -1787,7 +1833,7 @@ class NotificationsRoute extends _i55.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i33.AppointmentDetailsPage]
+/// [_i34.AppointmentDetailsPage]
 class AppointmentDetailsPageRoute
     extends _i55.PageRouteInfo<AppointmentDetailsPageRouteArgs> {
   AppointmentDetailsPageRoute({
@@ -1818,41 +1864,6 @@ class AppointmentDetailsPageRouteArgs {
   @override
   String toString() {
     return 'AppointmentDetailsPageRouteArgs{key: $key, appointment: $appointment}';
-  }
-}
-
-/// generated route for
-/// [_i38.PhotoViewPage]
-class PhotoViewPageeRouter
-    extends _i55.PageRouteInfo<PhotoViewPageeRouterArgs> {
-  PhotoViewPageeRouter({
-    _i56.Key? key,
-    required String path,
-  }) : super(
-          PhotoViewPageeRouter.name,
-          path: 'photo_view_page',
-          args: PhotoViewPageeRouterArgs(
-            key: key,
-            path: path,
-          ),
-        );
-
-  static const String name = 'PhotoViewPageeRouter';
-}
-
-class PhotoViewPageeRouterArgs {
-  const PhotoViewPageeRouterArgs({
-    this.key,
-    required this.path,
-  });
-
-  final _i56.Key? key;
-
-  final String path;
-
-  @override
-  String toString() {
-    return 'PhotoViewPageeRouterArgs{key: $key, path: $path}';
   }
 }
 

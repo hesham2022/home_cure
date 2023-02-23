@@ -72,7 +72,11 @@ class _ForgetPasswordFirebasePageState
           child: SafeArea(
             child: Column(
               children: [
-                const MyBackButton(),
+                Row(
+                  children: const [
+                    MyBackButton(),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.all(40),
                   child: Center(
