@@ -15,3 +15,4 @@ class GetTimeSlots extends UseCase<List<TimeSlot>, NoParams> {
     return repository.getTimeSlots();
   }
 }
+

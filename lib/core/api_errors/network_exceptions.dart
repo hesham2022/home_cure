@@ -155,7 +155,9 @@ abstract class NetworkExceptions extends AppError with _$NetworkExceptions {
             case 'The is no availabel doctors in this time':
               return 'لا يوجد أطباء متاحون في هذا الوقت';
             case 'The is no availabel laboratorys in this time':
-              return 'لا يوجد أطباء متاحون في هذا الوقت';
+              return 'لا يوجد معامل متاحون في هذا الوقت';
+            case 'The is no availabel nurses in this time':
+              return 'لا يوجد ممرضين متاحون في هذا الوقت';
             default:
           }
         }

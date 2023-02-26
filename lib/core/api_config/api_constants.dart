@@ -1,7 +1,7 @@
 // remote server
-// const domain = 'https://homecure.online/api';
+const domain = 'https://homecure.online/api';
 // loclal server
-const domain = 'http://10.0.2.2:3000';
+// const domain = 'http://192.168.8.100:3000';
 
 const kBaseUrl = '$domain/v1';
 
@@ -51,6 +51,9 @@ const kSetting = '$kBaseUrl/settings';
 const kComplainment = '$kBaseUrl/compainments';
 
 const kAcceptAppointments = '$kApppointment/provider/accept/';
+
+const kCheckTimeSlot = '$kApppointment/check-timeslot';
+
 const kOnProccessingAppointments = '$kApppointment/provider/OnProcessing/';
 const kDoneAppointments = '$kApppointment/provider/done/';
 const kRate = '$kApppointment/rate';

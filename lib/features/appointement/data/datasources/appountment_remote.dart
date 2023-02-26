@@ -26,6 +26,7 @@ abstract class IAppointmentRemote {
   Future<Appointment> rate(RatingParams params);
 
   Future<List<Appointment>> getAppointments();
+  Future<List<Appointment>> checkTimeSlot(String date);
 
   Future<Appointment> updateAppointment(Map<String, dynamic> body);
 }
@@ -142,5 +143,14 @@ class AppointmentRemote extends IAppointmentRemote {
 
     final appointmentResult = AppointmentModel.fromMap(data);
     return appointmentResult;
+  }
+
+  @override
+  Future<List<Appointment>> checkTimeSlot(String date) async {
+    final response = await apiConfig.post(kCheckTimeSlot, body: {'date': date});
+    final data = response.data as Map<String, dynamic>;
+
+    final appointmentResult = AppointmentResponse.fromJson(data);
+    return appointmentResult.results;
   }
 }

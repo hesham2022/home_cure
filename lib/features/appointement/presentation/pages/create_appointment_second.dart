@@ -594,8 +594,8 @@ class _MultiSelectCalenderState extends State<MultiSelectCalender> {
       );
     }
     return SfDateRangePicker(
-      initialDisplayDate: DateTime.now().add(const Duration(days: 6)),
-      initialSelectedDate: DateTime.now().add(const Duration(days: 6)),
+      initialDisplayDate: DateTime.now(),
+      initialSelectedDate: DateTime.now(),
       selectionMode: DateRangePickerSelectionMode.range,
       enablePastDates: false,
       controller: controller,

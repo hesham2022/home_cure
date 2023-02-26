@@ -15,3 +15,15 @@ class GetAppointments extends UseCase<List<Appointment>, NoParams> {
     return repository.getUserAppointments();
   }
 }
+
+class CheckTimeSlot extends UseCase<List<Appointment>, String> {
+  CheckTimeSlot(this.repository);
+  final IAppointmentRepository repository;
+
+  @override
+  Future<Either<NetworkExceptions, List<Appointment>>> call(
+    String params,
+  ) async {
+    return repository.checkTimeSlot(params);
+  }
+}

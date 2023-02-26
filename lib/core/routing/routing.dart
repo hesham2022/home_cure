@@ -124,7 +124,7 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
             ),
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'create_appointement',
               page: CreateAppointementPage,
             ),
@@ -135,26 +135,26 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
             ),
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'create_appointement_second',
               page: CreateAppointementSecondPage,
             ),
 
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'create_appointement_third',
               page: CreateAppointementThirdPage,
             ),
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'create_appointement_fourth',
               page: CreateAppointementFourthPage,
             ),
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'create_appointement_payment',
               page: CreateAppointmentPayment,
             ),
@@ -165,7 +165,7 @@ import 'package:home_cure/features/user_details/presentation/widgets/shared_list
             ),
             CustomRoute<void>(
               barrierDismissible: true,
-              transitionsBuilder: TransitionsBuilders.slideTop,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
               path: 'done_page',
               page: DonePage,
             ),

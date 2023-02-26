@@ -108,4 +108,13 @@ class AppointmentsRepository extends IAppointmentRepository {
       () => appointementRemote.rate(params),
     );
   }
+
+  @override
+  Future<Either<NetworkExceptions, List<Appointment>>> checkTimeSlot(
+    String date,
+  ) {
+    return guardFuture<List<Appointment>>(
+      () => appointementRemote.checkTimeSlot(date),
+    );
+  }
 }

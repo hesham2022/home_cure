@@ -177,6 +177,26 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     context.read<MyAppointmentsCubit>().addModified(appointment);
   }
 
+  Widget getProviderButton(BuildContext context) {
+    final appointDate = DateTime(
+      _appointment.date.year,
+      _appointment.date.month,
+      _appointment.date.day,
+      _appointment.timeslot.startHour,
+      _appointment.timeslot.startMinute,
+    );
+    final diff = DateTime.now().difference(appointDate);
+    final isValid = diff.inSeconds < 0;
+    if (_appointment.isOpened && !isValid) return const SizedBox();
+    return Button1(
+      title: getButtonTitle(context),
+      size: const Size(330, 40),
+      onPressed: () {
+        getAcction(context);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // print(_appointment.id);
@@ -949,13 +969,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ],
                             ),
                           if (!_appointment.isDone && inProviderApp)
-                            Button1(
-                              title: getButtonTitle(context),
-                              size: const Size(330, 40),
-                              onPressed: () {
-                                getAcction(context);
-                              },
-                            ),
+                            getProviderButton(context),
                           if ((!_appointment.rated && _appointment.isDone) &&
                               !inProviderApp)
                             Button1(

@@ -11,7 +11,7 @@ abstract class IAppointmentRepository {
   Future<Either<NetworkExceptions, Appointment>> createAppointement(
     CreateAppointmentParams params,
   );
-    Future<Either<NetworkExceptions, Appointment>> rate(
+  Future<Either<NetworkExceptions, Appointment>> rate(
     RatingParams params,
   );
   Future<Either<NetworkExceptions, Appointment>> userPayAppointment(
@@ -39,4 +39,5 @@ abstract class IAppointmentRepository {
     DoneParams params,
   );
   Future<Either<NetworkExceptions, List<Appointment>>> getUserAppointments();
+  Future<Either<NetworkExceptions, List<Appointment>>> checkTimeSlot(String date);
 }

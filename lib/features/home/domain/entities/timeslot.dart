@@ -10,19 +10,22 @@ class TimeSlot extends Equatable {
     required this.endSting,
     required this.id,
   });
-  factory TimeSlot.fromJson(Map<dynamic, dynamic> json) => TimeSlot(
-        startMinute: json['startMinute'] as int,
-        endMinute: json['endMinute'] as int,
-        startHour: json['startHour'] as int,
-        endHour: json['endHour'] as int,
-        startSting:
-            getTimeString(json['startHour'] as int, json['startMinute'] as int),
-        endSting:
-            getTimeString(json['endHour'] as int, json['endMinute'] as int),
-        id: json['id'] != null
-            ? json['id'] as String
-            : (json['_id'] as String?) ?? '',
-      );
+  factory TimeSlot.fromJson(Map<dynamic, dynamic> json) {
+    print('time slot is ');
+    print(json);
+    return TimeSlot(
+      startMinute: json['startMinute'] as int,
+      endMinute: json['endMinute'] as int,
+      startHour: json['startHour'] as int,
+      endHour: json['endHour'] as int,
+      startSting:
+          getTimeString(json['startHour'] as int, json['startMinute'] as int),
+      endSting: getTimeString(json['endHour'] as int, json['endMinute'] as int),
+      id: json['id'] != null
+          ? json['id'] as String
+          : (json['_id'] as String?) ?? '',
+    );
+  }
   static String getTimeString(int h, int m) {
     final period = h < 12 ? 'AM' : 'PM';
     final hours = h % 12 == 0 ? 12 : h % 12;

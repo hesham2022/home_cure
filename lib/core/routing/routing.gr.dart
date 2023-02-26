@@ -352,7 +352,7 @@ class AppRouter extends _i55.RootStackRouter {
           service: args.service,
           customPrice: args.customPrice,
         ),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );
@@ -376,7 +376,7 @@ class AppRouter extends _i55.RootStackRouter {
           key: args.key,
           service: args.service,
         ),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );
@@ -390,7 +390,7 @@ class AppRouter extends _i55.RootStackRouter {
           service: args.service,
           period: args.period,
         ),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );
@@ -403,7 +403,7 @@ class AppRouter extends _i55.RootStackRouter {
           key: args.key,
           service: args.service,
         ),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );
@@ -416,7 +416,7 @@ class AppRouter extends _i55.RootStackRouter {
           key: args.key,
           service: args.service,
         ),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );
@@ -435,7 +435,7 @@ class AppRouter extends _i55.RootStackRouter {
       return _i55.CustomPage<void>(
         routeData: routeData,
         child: const _i35.DonePage(),
-        transitionsBuilder: _i55.TransitionsBuilders.slideTop,
+        transitionsBuilder: _i55.TransitionsBuilders.slideLeft,
         opaque: true,
         barrierDismissible: true,
       );

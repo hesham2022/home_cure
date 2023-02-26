@@ -63,7 +63,7 @@ Future<void> init() async {
   getIt
     // Utils
     ..registerLazySingleton<ApiClient>(ApiClient.new)
-    
+
     // Data Sources
     ..registerLazySingleton<ITokenStorage>(TokenStorage.new)
     ..registerLazySingleton<IAuthRemotDataSource>(
@@ -105,6 +105,7 @@ Future<void> init() async {
     ..registerLazySingleton<UpdateUserDetails>(() => UpdateUserDetails(getIt()))
     ..registerLazySingleton<GetTimeSlots>(() => GetTimeSlots(getIt()))
     ..registerLazySingleton<StartVideo>(() => StartVideo(getIt()))
+    ..registerLazySingleton<CheckTimeSlot>(() => CheckTimeSlot(getIt()))
     ..registerLazySingleton<UploadUserAttachments>(
       () => UploadUserAttachments(getIt()),
     )
