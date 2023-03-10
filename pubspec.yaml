@@ -110,3 +110,5 @@ flutter_gen:
   # Optional
   integrations:
     flutter_svg: true
+dependency_overrides:
+  intl: ^0.18.0

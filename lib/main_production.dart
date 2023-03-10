@@ -17,7 +17,6 @@ import 'package:home_cure/di/get_it.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  print('object');
 
   await Firebase.initializeApp();
   await AwesomeNotifications().initialize(
